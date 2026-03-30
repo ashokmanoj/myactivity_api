@@ -1,0 +1,49 @@
+meta {
+  name: Sync Maps (Bulk)
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/api/v1/instituation-map/sync
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "maps": [
+      {
+        "ProjectID": 1,
+        "InstituteID": 1
+      },
+      {
+        "ProjectID": 1,
+        "InstituteID": 2
+      },
+      {
+        "ProjectID": 2,
+        "InstituteID": 1
+      }
+    ]
+  }
+}
+
+tests {
+  test("Status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Response has success true", function() {
+    expect(res.getBody().success).to.equal(true);
+  });
+  test("Results has synced array", function() {
+    expect(res.getBody().results.synced).to.be.an('array');
+  });
+  test("Results has failed array", function() {
+    expect(res.getBody().results.failed).to.be.an('array');
+  });
+}

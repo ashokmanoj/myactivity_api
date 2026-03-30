@@ -1,0 +1,38 @@
+meta {
+  name: Create Project
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/api/v1/project
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "ProjectName": "ICT Program 2025",
+    "Domain": "ictprogram",
+    "ProjectCode": "ICTP25",
+    "LogoPath": "/logos/ict.png",
+    "StartDate": "2025-01-01",
+    "EndDate": "2025-12-31"
+  }
+}
+
+tests {
+  test("Status is 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+  test("Response has success true", function() {
+    expect(res.getBody().success).to.equal(true);
+  });
+  test("Project is created", function() {
+    expect(res.getBody().message).to.include('created');
+  });
+}

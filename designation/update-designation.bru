@@ -1,0 +1,36 @@
+meta {
+  name: Update Designation
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/api/v1/designation/1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "Designation": "Senior Technical Executive"
+  }
+}
+
+tests {
+  test("Status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Response has success true", function() {
+    expect(res.getBody().success).to.equal(true);
+  });
+  test("Designation is updated", function() {
+    expect(res.getBody().message).to.include('updated');
+  });
+  test("Data has updated designation", function() {
+    expect(res.getBody().data.designation).to.equal('Senior Technical Executive');
+  });
+}

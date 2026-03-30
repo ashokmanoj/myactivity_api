@@ -1,0 +1,37 @@
+meta {
+  name: Update Project
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/api/v1/project/{{project_id}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "ProjectName": "ICT Program 2025 Updated",
+    "Domain": "ictprogram",
+    "ProjectCode": "ICTP25",
+    "StartDate": "2025-01-01",
+    "EndDate": "2026-12-31"
+  }
+}
+
+tests {
+  test("Status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Response has success true", function() {
+    expect(res.getBody().success).to.equal(true);
+  });
+  test("Project is updated", function() {
+    expect(res.getBody().message).to.include('updated');
+  });
+}

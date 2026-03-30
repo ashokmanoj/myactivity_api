@@ -1,0 +1,41 @@
+meta {
+  name: Update Instituation
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/api/v1/instituation/{{institute_id}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "InstituteName": "JORHAT HSS UPDATED",
+    "InstituteCode": "18240501021",
+    "ProjectID": 1,
+    "DistrictID": 1,
+    "BlockID": 1,
+    "Address": "NEW ADDRESS, JORHAT, ASSAM",
+    "Pincode": 785001,
+    "Latitude": 26.7509,
+    "Longitude": 94.2037
+  }
+}
+
+tests {
+  test("Status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Response has success true", function() {
+    expect(res.getBody().success).to.equal(true);
+  });
+  test("Instituation is updated", function() {
+    expect(res.getBody().message).to.include('updated');
+  });
+}

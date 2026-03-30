@@ -1,0 +1,34 @@
+meta {
+  name: Update Map
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/api/v1/instituation-map/{{map_id}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "ProjectID": 2,
+    "InstituteID": 1
+  }
+}
+
+tests {
+  test("Status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Response has success true", function() {
+    expect(res.getBody().success).to.equal(true);
+  });
+  test("Mapping is updated", function() {
+    expect(res.getBody().message).to.include('updated');
+  });
+}

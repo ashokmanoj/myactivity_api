@@ -1,0 +1,32 @@
+meta {
+  name: Get All Blocks
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/block
+  body: none
+  auth: none
+}
+
+params:query {
+  ~districtId: 1
+  ~lastSyncedAt: 2025-01-01T00:00:00Z
+}
+
+headers {
+  Content-Type: application/json
+}
+
+tests {
+  test("Status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Response has success true", function() {
+    expect(res.getBody().success).to.equal(true);
+  });
+  test("Data is an array", function() {
+    expect(res.getBody().data).to.be.an('array');
+  });
+}

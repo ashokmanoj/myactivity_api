@@ -1,0 +1,40 @@
+meta {
+  name: Create Map
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/api/v1/instituation-map
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "ProjectID": 1,
+    "InstituteID": 1
+  }
+}
+
+tests {
+  test("Status is 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+  test("Response has success true", function() {
+    expect(res.getBody().success).to.equal(true);
+  });
+  test("Mapping is created", function() {
+    expect(res.getBody().message).to.include('created');
+  });
+  test("Data has ProjectID", function() {
+    expect(res.getBody().data).to.have.property('projectid');
+  });
+  test("Data has InstituteID", function() {
+    expect(res.getBody().data).to.have.property('instituteid');
+  });
+}

@@ -1,0 +1,33 @@
+meta {
+  name: Get Map By ID
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/instituation-map/{{map_id}}
+  body: none
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+tests {
+  test("Status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Response has success true", function() {
+    expect(res.getBody().success).to.equal(true);
+  });
+  test("Data has InstituteProjectMapID", function() {
+    expect(res.getBody().data).to.have.property('instituteprojectmapid');
+  });
+  test("Data has ProjectName", function() {
+    expect(res.getBody().data).to.have.property('projectname');
+  });
+  test("Data has InstituteName", function() {
+    expect(res.getBody().data).to.have.property('institutename');
+  });
+}

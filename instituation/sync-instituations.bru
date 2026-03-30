@@ -1,0 +1,70 @@
+meta {
+  name: Sync Instituations (Bulk)
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/api/v1/instituation/sync
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "institutions": [
+      {
+        "InstituteName": "JORHAT HSS",
+        "InstituteCode": "18240501021",
+        "ProjectID": 1,
+        "DistrictID": 1,
+        "BlockID": 1,
+        "Address": "AT ROAD, JORHAT, ASSAM",
+        "Pincode": 785001,
+        "Latitude": 26.7509,
+        "Longitude": 94.2037
+      },
+      {
+        "InstituteName": "SIBSAGAR GOVT SCHOOL",
+        "InstituteCode": "18310501001",
+        "ProjectID": 1,
+        "DistrictID": 2,
+        "BlockID": 2,
+        "Address": "MAIN ROAD, SIBSAGAR, ASSAM",
+        "Pincode": 785640,
+        "Latitude": 26.9834,
+        "Longitude": 94.6361
+      },
+      {
+        "InstituteName": "DIBRUGARH HS",
+        "InstituteCode": "18230501007",
+        "ProjectID": 1,
+        "DistrictID": 1,
+        "BlockID": 1,
+        "Address": "DIBRUGARH TOWN, ASSAM",
+        "Pincode": 786001,
+        "Latitude": 27.4728,
+        "Longitude": 94.9120
+      }
+    ]
+  }
+}
+
+tests {
+  test("Status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Response has success true", function() {
+    expect(res.getBody().success).to.equal(true);
+  });
+  test("Results has synced array", function() {
+    expect(res.getBody().results.synced).to.be.an('array');
+  });
+  test("Results has failed array", function() {
+    expect(res.getBody().results.failed).to.be.an('array');
+  });
+}
