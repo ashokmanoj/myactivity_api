@@ -1,0 +1,26 @@
+meta {
+  name: Sync Blocks (Bulk)
+  type: http
+  seq: 6
+}
+post {
+  url: {{base_url}}/api/v1/block/sync
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "blocks": [
+      { "blockName": "JORHAT EAST",    "districtId": 1 },
+      { "blockName": "JORHAT WEST",    "districtId": 1 },
+      { "blockName": "SIBSAGAR NORTH", "districtId": 2 }
+    ]
+  }
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("3 synced", function() { expect(res.getBody().results.synced.length).to.equal(3); });
+}

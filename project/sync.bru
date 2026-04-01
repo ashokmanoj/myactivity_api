@@ -1,0 +1,27 @@
+meta {
+  name: Sync Projects (Bulk)
+  type: http
+  seq: 6
+}
+post {
+  url: {{base_url}}/api/v1/project/sync
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "projects": [
+      { "projectName": "ICT Program 2025",    "domain": "ictprogram",    "projectCode": "ICTP25", "startDate": "2025-01-01", "endDate": "2025-12-31" },
+      { "projectName": "Tele Education 2025", "domain": "teleeducation", "projectCode": "TELE25", "startDate": "2025-03-01", "endDate": "2026-02-28" }
+    ]
+  }
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("synced array", function() { expect(res.getBody().results.synced).to.be.an("array"); });
+  test("failed array", function() { expect(res.getBody().results.failed).to.be.an("array"); });
+  test("2 synced", function() { expect(res.getBody().results.synced.length).to.equal(2); });
+}

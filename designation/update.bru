@@ -1,0 +1,23 @@
+meta {
+  name: Update Designation
+  type: http
+  seq: 4
+}
+put {
+  url: {{base_url}}/api/v1/designation/{{designation_id}}
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "designation": "Senior Field Engineer",
+    "projectId": 1
+  }
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("updated", function() { expect(res.getBody().message).to.include("updated"); });
+}

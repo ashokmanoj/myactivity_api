@@ -1,0 +1,20 @@
+meta {
+  name: Get Project By ID
+  type: http
+  seq: 2
+}
+get {
+  url: {{base_url}}/api/v1/project/{{project_id}}
+  body: none
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("has projectId", function() { expect(res.getBody().data).to.have.property("projectId"); });
+  test("has projectName", function() { expect(res.getBody().data).to.have.property("projectName"); });
+  test("has createdAt", function() { expect(res.getBody().data).to.have.property("createdAt"); });
+  test("has updatedAt", function() { expect(res.getBody().data).to.have.property("updatedAt"); });
+}

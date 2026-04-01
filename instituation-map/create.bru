@@ -1,0 +1,23 @@
+meta {
+  name: Create Map
+  type: http
+  seq: 3
+}
+post {
+  url: {{base_url}}/api/v1/instituation-map
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "projectId": 1,
+    "instituteId": 1
+  }
+}
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("created", function() { expect(res.getBody().message).to.include("created"); });
+}

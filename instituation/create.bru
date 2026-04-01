@@ -1,0 +1,30 @@
+meta {
+  name: Create Instituation
+  type: http
+  seq: 3
+}
+post {
+  url: {{base_url}}/api/v1/instituation
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "instituteName": "JORHAT HSS",
+    "instituteCode": "18240501021",
+    "projectId": 1,
+    "districtId": 1,
+    "blockId": 1,
+    "address": "AT ROAD, JORHAT, ASSAM",
+    "pincode": 785001,
+    "latitude": 26.7509,
+    "longitude": 94.2037
+  }
+}
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("created", function() { expect(res.getBody().message).to.include("created"); });
+}

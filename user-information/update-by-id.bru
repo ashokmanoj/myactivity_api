@@ -1,0 +1,27 @@
+meta {
+  name: Update User Information By ID
+  type: http
+  seq: 5
+}
+put {
+  url: {{base_url}}/api/v1/user-information/{{user_info_id}}
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "bankName":        "Punjab National Bank",
+    "branchName":      "Jorhat Branch",
+    "accountNumber":   "98765432101",
+    "ifscCode":        "PUNB0001234",
+    "experienceStatus": "3 Years",
+    "department":      "Operations"
+  }
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("updated", function() { expect(res.getBody().message).to.include("updated"); });
+}

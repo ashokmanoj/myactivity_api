@@ -1,0 +1,34 @@
+meta {
+  name: Sync Designations (Bulk)
+  type: http
+  seq: 6
+}
+post {
+  url: {{base_url}}/api/v1/designation/sync
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "designations": [
+      { "designation": "Installation Interns",  "projectId": 1 },
+      { "designation": "Manager",               "projectId": 1 },
+      { "designation": "Nodal Officer",         "projectId": 1 },
+      { "designation": "Operation Executive",   "projectId": 1 },
+      { "designation": "Project Manager",       "projectId": 1 },
+      { "designation": "Regional Manager",      "projectId": 1 },
+      { "designation": "State Head",            "projectId": 1 },
+      { "designation": "Supervisor",            "projectId": 1 },
+      { "designation": "Technical Executive",   "projectId": 1 },
+      { "designation": "Training Interns",      "projectId": 1 }
+    ]
+  }
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("all 10 synced", function() { expect(res.getBody().results.synced.length).to.equal(10); });
+  test("0 failed", function() { expect(res.getBody().results.failed.length).to.equal(0); });
+}

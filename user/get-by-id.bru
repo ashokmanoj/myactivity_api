@@ -1,0 +1,20 @@
+meta {
+  name: Get User By ID (user_tbl)
+  type: http
+  seq: 2
+}
+get {
+  url: {{base_url}}/api/v1/user/{{user_id}}
+  body: none
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("has userId", function() { expect(res.getBody().data).to.have.property("userId"); });
+  test("has empCode", function() { expect(res.getBody().data).to.have.property("empCode"); });
+  test("has fullName", function() { expect(res.getBody().data).to.have.property("fullName"); });
+  test("has userInfo", function() { expect(res.getBody().data).to.have.property("userInfo"); });
+}

@@ -1,0 +1,23 @@
+meta {
+  name: Create District
+  type: http
+  seq: 3
+}
+post {
+  url: {{base_url}}/api/v1/district
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "districtName": "JORHAT",
+    "stateCode": "AS"
+  }
+}
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("created", function() { expect(res.getBody().message).to.include("created"); });
+}

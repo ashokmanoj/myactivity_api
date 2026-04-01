@@ -1,0 +1,62 @@
+meta {
+  name: Create User Information
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/api/v1/user-information
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "userId":             1,
+    "title":              "Mr",
+    "photoAvailable":     false,
+    "payrollGroup":       "Group A",
+    "emergencyPhone":     "9876500001",
+    "fatherName":         "Ramesh Sharma",
+    "motherName":         "Sunita Sharma",
+    "spouseName":         "",
+    "aadharNumber":       "123456789012",
+    "panNumber":          "ABCDE1234F",
+    "permAddress":        "123 MG Road",
+    "permCity":           "Jorhat",
+    "permState":          "Assam",
+    "permCountry":        "India",
+    "permPincode":        "785001",
+    "currAddress":        "456 AT Road",
+    "currCity":           "Jorhat",
+    "currState":          "Assam",
+    "currCountry":        "India",
+    "currPincode":        "785001",
+    "sameAsPermanent":    false,
+    "bankName":           "State Bank of India",
+    "branchName":         "Jorhat Main Branch",
+    "accountNumber":      "12345678901",
+    "ifscCode":           "SBIN0001234",
+    "bankDocument":       "",
+    "reportingRm":        "Bikash Kumar",
+    "executiveName":      "Jyoti Das",
+    "districtOfPosting":  "Jorhat",
+    "blockOfPosting":     "Jorhat East",
+    "experienceStatus":   "2 Years",
+    "department":         "Technical",
+    "designationId":      1
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("created", function() { expect(res.getBody().message).to.include("created"); });
+  test("has userInfoId", function() { expect(res.getBody().data).to.have.property("userInfoId"); });
+  test("has user JOIN data", function() { expect(res.getBody().data).to.have.property("user"); });
+  test("user has empCode", function() { expect(res.getBody().data.user).to.have.property("empCode"); });
+  test("user has fullName", function() { expect(res.getBody().data.user).to.have.property("fullName"); });
+}

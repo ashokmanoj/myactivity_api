@@ -1,0 +1,42 @@
+meta {
+  name: Sync Users Bulk (user_tbl)
+  type: http
+  seq: 7
+}
+post {
+  url: {{base_url}}/api/v1/user/sync
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "users": [
+      {
+        "empCode":      "EMP001",
+        "fullName":     "Rahul Sharma",
+        "dateOfBirth":  "1995-06-15",
+        "gender":       "Male",
+        "mobileNumber": "9876543210",
+        "email":        "rahul.sharma@myactivity.com",
+        "nationality":  "Indian"
+      },
+      {
+        "empCode":      "EMP002",
+        "fullName":     "Priya Das",
+        "dateOfBirth":  "1998-03-22",
+        "gender":       "Female",
+        "mobileNumber": "9876543220",
+        "email":        "priya.das@myactivity.com",
+        "nationality":  "Indian"
+      }
+    ]
+  }
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("2 synced", function() { expect(res.getBody().results.synced.length).to.equal(2); });
+  test("0 failed", function() { expect(res.getBody().results.failed.length).to.equal(0); });
+}

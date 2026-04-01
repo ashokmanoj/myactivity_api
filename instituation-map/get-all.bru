@@ -1,0 +1,20 @@
+meta {
+  name: Get All Maps
+  type: http
+  seq: 1
+}
+get {
+  url: {{base_url}}/api/v1/instituation-map
+  body: none
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+query {
+  ~projectId: 1
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

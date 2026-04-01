@@ -1,0 +1,18 @@
+meta {
+  name: Get District By ID
+  type: http
+  seq: 2
+}
+get {
+  url: {{base_url}}/api/v1/district/{{district_id}}
+  body: none
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("has districtId", function() { expect(res.getBody().data).to.have.property("districtId"); });
+  test("has blocks", function() { expect(res.getBody().data).to.have.property("blocks"); });
+}

@@ -1,0 +1,23 @@
+meta {
+  name: Update District
+  type: http
+  seq: 4
+}
+put {
+  url: {{base_url}}/api/v1/district/{{district_id}}
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "districtName": "JORHAT UPDATED",
+    "stateCode": "AS"
+  }
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("updated", function() { expect(res.getBody().message).to.include("updated"); });
+}

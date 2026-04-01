@@ -1,0 +1,26 @@
+meta {
+  name: Update User Information By UserID
+  type: http
+  seq: 6
+}
+put {
+  url: {{base_url}}/api/v1/user-information/user/{{user_id}}
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "permAddress":    "789 New Colony",
+    "permCity":       "Sibsagar",
+    "currAddress":    "789 New Colony",
+    "currCity":       "Sibsagar",
+    "sameAsPermanent": true
+  }
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("updated", function() { expect(res.getBody().message).to.include("updated"); });
+}

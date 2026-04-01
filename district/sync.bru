@@ -1,0 +1,26 @@
+meta {
+  name: Sync Districts (Bulk)
+  type: http
+  seq: 6
+}
+post {
+  url: {{base_url}}/api/v1/district/sync
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "districts": [
+      { "districtName": "JORHAT",    "stateCode": "AS" },
+      { "districtName": "SIBSAGAR",  "stateCode": "AS" },
+      { "districtName": "DIBRUGARH", "stateCode": "AS" }
+    ]
+  }
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("3 synced", function() { expect(res.getBody().results.synced.length).to.equal(3); });
+}

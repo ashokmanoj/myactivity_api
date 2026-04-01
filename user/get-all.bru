@@ -1,0 +1,23 @@
+meta {
+  name: Get All Users (user_tbl)
+  type: http
+  seq: 1
+}
+get {
+  url: {{base_url}}/api/v1/user
+  body: none
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+query {
+  ~projectId: 1
+  ~gender: Male
+  ~lastSyncedAt: 2025-01-01T00:00:00Z
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+  test("has timestamp", function() { expect(res.getBody().timestamp).to.be.a("string"); });
+}

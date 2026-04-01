@@ -1,0 +1,24 @@
+meta {
+  name: Update User (user_tbl)
+  type: http
+  seq: 5
+}
+put {
+  url: {{base_url}}/api/v1/user/{{user_id}}
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "fullName":     "Rahul Kumar Sharma",
+    "mobileNumber": "9876543211",
+    "nationality":  "Indian"
+  }
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("updated", function() { expect(res.getBody().message).to.include("updated"); });
+}

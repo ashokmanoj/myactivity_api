@@ -1,0 +1,30 @@
+meta {
+  name: Create User (user_tbl)
+  type: http
+  seq: 4
+}
+post {
+  url: {{base_url}}/api/v1/user
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "empCode":      "EMP001",
+    "fullName":     "Rahul Sharma",
+    "dateOfBirth":  "1995-06-15",
+    "gender":       "Male",
+    "mobileNumber": "9876543210",
+    "email":        "rahul.sharma@myactivity.com",
+    "nationality":  "Indian"
+  }
+}
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("created", function() { expect(res.getBody().message).to.include("created"); });
+  test("has userId", function() { expect(res.getBody().data).to.have.property("userId"); });
+  test("has empCode", function() { expect(res.getBody().data.empCode).to.equal("EMP001"); });
+}

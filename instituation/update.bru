@@ -1,0 +1,23 @@
+meta {
+  name: Update Instituation
+  type: http
+  seq: 4
+}
+put {
+  url: {{base_url}}/api/v1/instituation/{{institute_id}}
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "address": "NEW ADDRESS, JORHAT, ASSAM",
+    "pincode": 785002
+  }
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("updated", function() { expect(res.getBody().message).to.include("updated"); });
+}

@@ -1,0 +1,17 @@
+meta {
+  name: Get User Information By UserID
+  type: http
+  seq: 3
+}
+get {
+  url: {{base_url}}/api/v1/user-information/user/{{user_id}}
+  body: none
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("userId matches", function() { expect(res.getBody().data.userId).to.equal(1); });
+}
