@@ -1,0 +1,32 @@
+meta {
+  name: Update Company
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/api/v1//company/{{companyId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "companyName": "Tata Consultancy Services Ltd",
+    "industry": "IT Services & Consulting",
+    "email": "info@tcs.com",
+    "phone": "+91-9876543299",
+    "website": "https://www.tcs.com",
+    "address": "TCS House, Raveline Street, Fort",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "country": "India",
+    "pincode": "400001",
+    "logoPath": "/uploads/logos/tcs_updated.png"
+  }
+}
+
+vars:pre-request {
+  baseUrl: http://192.168.1.128:3000
+  companyId: 1
+}

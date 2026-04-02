@@ -1,0 +1,32 @@
+meta {
+  name: Create Company
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/v1//company
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "companyName": "Tata Consultancy Services",
+    "companyCode": "TCS001",
+    "industry": "Information Technology",
+    "email": "contact@tcs.com",
+    "phone": "+91-9876543210",
+    "website": "https://www.tcs.com",
+    "address": "TCS House, Raveline Street, Fort",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "country": "India",
+    "pincode": "400001",
+    "logoPath": "/uploads/logos/tcs.png"
+  }
+}
+
+vars:pre-request {
+  baseUrl: http://192.168.1.128:3000
+}

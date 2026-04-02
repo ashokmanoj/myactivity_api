@@ -1,0 +1,15 @@
+meta {
+  name: Get All Companies
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/v1//company
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  baseUrl: http://192.168.1.128:3000
+}
