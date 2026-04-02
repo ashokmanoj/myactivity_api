@@ -1,0 +1,20 @@
+meta {
+  name: Get Login Profile
+  type: http
+  seq: 4
+}
+get {
+  url: {{base_url}}/api/v1/auth/profile/{{user_id}}
+  body: none
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("has loginId", function() { expect(res.getBody().data).to.have.property("loginId"); });
+  test("no password", function() { expect(res.getBody().data.password).to.be.undefined; });
+  test("has user", function() { expect(res.getBody().data).to.have.property("user"); });
+  test("has company", function() { expect(res.getBody().data).to.have.property("company"); });
+}
