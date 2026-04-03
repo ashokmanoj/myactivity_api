@@ -3,22 +3,26 @@ meta {
   type: http
   seq: 2
 }
+
 post {
   url: {{base_url}}/api/v1/auth/register-login
   body: json
   auth: none
 }
+
 headers {
   Content-Type: application/json
 }
+
 body:json {
   {
     "userId":       1,
-    "mobileNumber": "9876543210",
+    "mobileNumber": "9876543230",
     "password":     "Test@123",
     "companyId":    1
   }
 }
+
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("created", function() { expect(res.getBody().message).to.include("created"); });

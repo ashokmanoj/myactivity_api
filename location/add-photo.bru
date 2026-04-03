@@ -1,0 +1,25 @@
+meta {
+  name: Add Photo to Location
+  type: http
+  seq: 8
+}
+post {
+  url: {{base_url}}/api/v1/location/{{location_id}}/photo
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "photoFilename": "jorhat_visit_01.jpg",
+    "fullpathUrl":   "https://myactivity.com/uploads/locations/jorhat_visit_01.jpg"
+  }
+}
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("added", function() { expect(res.getBody().message).to.include("added"); });
+  test("has locationPhotoId", function() { expect(res.getBody().data).to.have.property("locationPhotoId"); });
+  test("has fullpathUrl", function() { expect(res.getBody().data).to.have.property("fullpathUrl"); });
+}

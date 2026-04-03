@@ -1,0 +1,47 @@
+meta {
+  name: Sync Locations (Bulk from Mobile)
+  type: http
+  seq: 7
+}
+post {
+  url: {{base_url}}/api/v1/location/sync
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "locations": [
+      {
+        "userId":        1,
+        "locationName":  "Jorhat HSS",
+        "locationType":  "Field",
+        "lat":           26.7509,
+        "lon":           94.2037,
+        "geoAddress":    "AT Road, Jorhat, Assam",
+        "geoPincode":    "785001",
+        "description":   "Field visit",
+        "institutionId": 1
+      },
+      {
+        "userId":        2,
+        "locationName":  "Sibsagar School",
+        "locationType":  "Field",
+        "lat":           26.9834,
+        "lon":           94.6361,
+        "geoAddress":    "Main Road, Sibsagar, Assam",
+        "geoPincode":    "785640",
+        "description":   "Field visit",
+        "institutionId": 2
+      }
+    ]
+  }
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("synced array", function() { expect(res.getBody().results.synced).to.be.an("array"); });
+  test("2 synced", function() { expect(res.getBody().results.synced.length).to.equal(2); });
+  test("0 failed", function() { expect(res.getBody().results.failed.length).to.equal(0); });
+}

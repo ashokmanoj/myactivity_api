@@ -1,0 +1,33 @@
+meta {
+  name: Create Location (with Photos)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/api/v1/location
+  body: multipart-form
+  auth: none
+}
+
+body:multipart-form {
+  userId: 1
+  locationName: Jorhat HSS Field Visit
+  locationType: Field
+  lat: 26.7509
+  lon: 94.2037
+  geoAddress: 5, Yeshwanthpur Industrial Area, Phase 1, Yeswanthpur, Bengaluru, Karnataka 560022, India
+  geoPincode: 785001
+  description: Monthly field visit to Jorhat HSS
+  institutionId: 1
+  photos: @file(photo1.jpg)
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("saved", function() { expect(res.getBody().message).to.include("saved"); });
+  test("has locationId", function() { expect(res.getBody().data).to.have.property("locationId"); });
+  test("has photos array", function() { expect(res.getBody().data.photos).to.be.an("array"); });
+  test("has user", function() { expect(res.getBody().data).to.have.property("user"); });
+  test("has institution", function() { expect(res.getBody().data).to.have.property("institution"); });
+}

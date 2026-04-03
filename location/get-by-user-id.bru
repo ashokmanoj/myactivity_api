@@ -1,0 +1,17 @@
+meta {
+  name: Get Locations By User ID
+  type: http
+  seq: 3
+}
+get {
+  url: {{base_url}}/api/v1/location/user/{{user_id}}
+  body: none
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
