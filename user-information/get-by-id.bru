@@ -3,14 +3,21 @@ meta {
   type: http
   seq: 2
 }
+
 get {
   url: {{base_url}}/api/v1/user-information/{{user_info_id}}
   body: none
   auth: none
 }
+
 headers {
   Content-Type: application/json
 }
+
+vars:pre-request {
+  user_info_id: 13
+}
+
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("has userInfoId", function() { expect(res.getBody().data).to.have.property("userInfoId"); });

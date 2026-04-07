@@ -3,17 +3,25 @@ meta {
   type: http
   seq: 1
 }
+
 get {
   url: {{base_url}}/api/v1/project
   body: none
   auth: none
 }
+
+params:query {
+  ~lastSyncedAt: 2025-01-01T00:00:00Z
+}
+
 headers {
   Content-Type: application/json
 }
-query {
-  ~lastSyncedAt: 2025-01-01T00:00:00Z
+
+vars:pre-request {
+  base_url: http://192.168.1.128:5000
 }
+
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });

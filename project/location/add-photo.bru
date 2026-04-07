@@ -3,20 +3,28 @@ meta {
   type: http
   seq: 8
 }
+
 post {
   url: {{base_url}}/api/v1/location/{{location_id}}/photo
   body: json
   auth: none
 }
+
 headers {
   Content-Type: application/json
 }
+
 body:json {
   {
-    "photoFilename": "jorhat_visit_01.jpg",
-    "fullpathUrl":   "https://myactivity.com/uploads/locations/jorhat_visit_01.jpg"
+    "photoFilename": "133873081429583745.jpg",
+    "fullpathUrl":   "C:/Users/manoj/OneDrive/Pictures/133873081429583745.jpg"
   }
 }
+
+vars:pre-request {
+  location_id: 1
+}
+
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("added", function() { expect(res.getBody().message).to.include("added"); });

@@ -3,14 +3,21 @@ meta {
   type: http
   seq: 1
 }
+
 get {
   url: {{base_url}}/api/v1/user-information
   body: none
   auth: none
 }
+
 headers {
   Content-Type: application/json
 }
+
+vars:pre-request {
+  base_url: http://192.168.1.128:5000
+}
+
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
