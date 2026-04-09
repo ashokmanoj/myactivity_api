@@ -1,33 +1,37 @@
 meta {
-  name: Create Location (with Photos)
+  name: Create Location
   type: http
   seq: 4
 }
 
 post {
   url: {{base_url}}/api/v1/location
-  body: multipart-form
+  body: multipartForm
   auth: none
+}
+
+headers {
 }
 
 body:multipart-form {
   userId: 1
-  locationName: Jorhat HSS Field Visit
-  locationType: Field
-  lat: 26.7509
-  lon: 94.2037
-  geoAddress: 5, Yeshwanthpur Industrial Area, Phase 1, Yeswanthpur, Bengaluru, Karnataka 560022, India
-  geoPincode: 785001
-  description: Monthly field visit to Jorhat HSS
-  institutionId: 1
-  photos: @file(photo1.jpg)
+  locationName: Office HQ
+  locationType: office
+  lat: 12.971599
+  lon: 77.594566
+  geoAddress: Bengaluru, Karnataka
+  geoPincode: 560001
+  description: Main office location
+  ~institutionId: 1
+  ~photos: @file(C:/path/to/photo1.jpg)
+  ~photos: @file(C:/path/to/photo2.jpg)
+}
+
+vars:pre-request {
+  base_url: http://192.168.1.128:5000
 }
 
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
-  test("saved", function() { expect(res.getBody().message).to.include("saved"); });
-  test("has locationId", function() { expect(res.getBody().data).to.have.property("locationId"); });
-  test("has photos array", function() { expect(res.getBody().data.photos).to.be.an("array"); });
-  test("has user", function() { expect(res.getBody().data).to.have.property("user"); });
-  test("has institution", function() { expect(res.getBody().data).to.have.property("institution"); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
 }

@@ -1,17 +1,24 @@
 meta {
-  name: Delete Photo (Soft)
+  name: Delete Photo
   type: http
-  seq: 9
+  seq: 7
 }
+
 delete {
-  url: {{base_url}}/api/v1/location/photo/{{location_photo_id}}
+  url: {{base_url}}/api/v1/location/photo/1
   body: none
   auth: none
 }
+
 headers {
   Content-Type: application/json
 }
+
+vars:pre-request {
+  base_url: http://192.168.1.128:5000
+}
+
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
-  test("deleted", function() { expect(res.getBody().message).to.include("deleted"); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
 }

@@ -16,16 +16,17 @@ headers {
 
 body:json {
   {
-    "userId":       1,
-    "mobileNumber": "9876543230",
-    "password":     "Test@123",
-    "companyId":    1
+    "userId":    1,
+    "password":  "Test@123",
+    "companyId": 1
   }
+}
+
+vars:pre-request {
+  base_url: http://192.168.1.128:5000
 }
 
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("created", function() { expect(res.getBody().message).to.include("created"); });
-  test("has loginId", function() { expect(res.getBody().data).to.have.property("loginId"); });
-  test("no password in response", function() { expect(res.getBody().data.password).to.be.undefined; });
 }

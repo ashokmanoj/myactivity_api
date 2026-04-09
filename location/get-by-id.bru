@@ -1,19 +1,24 @@
 meta {
-  name: Get Location By ID
+  name: Get Location by ID
   type: http
   seq: 2
 }
+
 get {
-  url: {{base_url}}/api/v1/location/{{location_id}}
+  url: {{base_url}}/api/v1/location/1
   body: none
   auth: none
 }
+
 headers {
   Content-Type: application/json
 }
+
+vars:pre-request {
+  base_url: http://192.168.1.128:5000
+}
+
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
-  test("has locationId", function() { expect(res.getBody().data).to.have.property("locationId"); });
-  test("has user", function() { expect(res.getBody().data).to.have.property("user"); });
-  test("has photos", function() { expect(res.getBody().data).to.have.property("photos"); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
 }

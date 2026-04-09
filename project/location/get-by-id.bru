@@ -1,0 +1,19 @@
+meta {
+  name: Get Location By ID
+  type: http
+  seq: 2
+}
+get {
+  url: {{base_url}}/api/v1/location/{{location_id}}
+  body: none
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("has locationId", function() { expect(res.getBody().data).to.have.property("locationId"); });
+  test("has user", function() { expect(res.getBody().data).to.have.property("user"); });
+  test("has photos", function() { expect(res.getBody().data).to.have.property("photos"); });
+}

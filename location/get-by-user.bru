@@ -1,11 +1,11 @@
 meta {
-  name: Delete Location
+  name: Get Locations by User ID
   type: http
-  seq: 6
+  seq: 3
 }
 
-delete {
-  url: {{base_url}}/api/v1/location/1
+get {
+  url: {{base_url}}/api/v1/location/user/1
   body: none
   auth: none
 }
@@ -21,4 +21,5 @@ vars:pre-request {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
 }

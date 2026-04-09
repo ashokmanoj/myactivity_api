@@ -1,0 +1,24 @@
+meta {
+  name: Update Location
+  type: http
+  seq: 5
+}
+put {
+  url: {{base_url}}/api/v1/location/{{location_id}}
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "locationName": "Jorhat HSS Field Visit Updated",
+    "description":  "Updated description for field visit",
+    "locationType": "Office"
+  }
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("updated", function() { expect(res.getBody().message).to.include("updated"); });
+}

@@ -3,22 +3,32 @@ meta {
   type: http
   seq: 5
 }
+
 put {
-  url: {{base_url}}/api/v1/location/{{location_id}}
-  body: json
+  url: {{base_url}}/api/v1/location/1
+  body: multipartForm
   auth: none
 }
+
 headers {
-  Content-Type: application/json
 }
-body:json {
-  {
-    "locationName": "Jorhat HSS Field Visit Updated",
-    "description":  "Updated description for field visit",
-    "locationType": "Office"
-  }
+
+body:multipart-form {
+  locationName: Updated Office
+  locationType: branch
+  lat: 12.971599
+  lon: 77.594566
+  geoAddress: Bengaluru Updated
+  geoPincode: 560002
+  description: Updated description
+  ~photos: @file(C:/path/to/new-photo.jpg)
 }
+
+vars:pre-request {
+  base_url: http://192.168.1.128:5000
+}
+
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
-  test("updated", function() { expect(res.getBody().message).to.include("updated"); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
 }
