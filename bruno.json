@@ -1,5 +1,5 @@
 {
   "version": "1",
-  "name": "MyActivity API v3 — Prisma + TypeScript",
+  "name": "MyActivity API v3 — Express + PostgreSQL",
   "type": "collection"
 }

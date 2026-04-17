@@ -1,10 +1,10 @@
 meta {
-  name: Get Instituation By ID
+  name: Get Map By ID
   type: http
   seq: 2
 }
 get {
-  url: {{base_url}}/api/v1/instituation/{{institute_id}}
+  url: {{base_url}}/api/v1/institution-map/{{map_id}}
   body: none
   auth: none
 }
@@ -13,6 +13,7 @@ headers {
 }
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
-  test("has instituteId", function() { expect(res.getBody().data).to.have.property("instituteId"); });
+  test("has mapId", function() { expect(res.getBody().data).to.have.property("instituteProjectMapId"); });
   test("has project", function() { expect(res.getBody().data).to.have.property("project"); });
+  test("has institution", function() { expect(res.getBody().data).to.have.property("institution"); });
 }

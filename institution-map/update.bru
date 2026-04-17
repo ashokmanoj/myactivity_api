@@ -1,10 +1,10 @@
 meta {
-  name: Update Instituation
+  name: Update Map
   type: http
   seq: 4
 }
 put {
-  url: {{base_url}}/api/v1/instituation/{{institute_id}}
+  url: {{base_url}}/api/v1/institution-map/{{map_id}}
   body: json
   auth: none
 }
@@ -13,8 +13,8 @@ headers {
 }
 body:json {
   {
-    "address": "NEW ADDRESS, JORHAT, ASSAM",
-    "pincode": 785002
+    "projectId": 2,
+    "instituteId": 1
   }
 }
 tests {

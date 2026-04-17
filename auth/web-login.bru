@@ -1,0 +1,41 @@
+meta {
+  name: WA-AUTH-01: Login (Web - Email)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/api/v1/auth/web-login
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "email":    "john.doe@example.com",
+    "password": "Test@123",
+    "company":  "AND"
+  }
+}
+
+vars:pre-request {
+  base_url: http://192.168.1.128:5000
+}
+
+script:post-response {
+  if (res.getBody().data?.token) {
+    bru.setVar("token", res.getBody().data.token);
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has token", function() { expect(res.getBody().data.token).to.be.a("string"); });
+  test("has user", function() { expect(res.getBody().data).to.have.property("user"); });
+  test("has email", function() { expect(res.getBody().data.user.email).to.equal("john.doe@example.com"); });
+}
