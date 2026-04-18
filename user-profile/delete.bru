@@ -1,0 +1,19 @@
+meta {
+  name: Delete User Profile (Unified)
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{base_url}}/api/v1/user-profile/1
+  body: none
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+}

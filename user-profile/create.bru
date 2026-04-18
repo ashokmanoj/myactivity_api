@@ -1,0 +1,72 @@
+meta {
+  name: Create User Profile (Unified)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/api/v1/user-profile
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "empCode": "EMP999",
+    "fullName": "Test User Bruno",
+    "dateOfBirth": "1995-01-01",
+    "gender": "Male",
+    "mobileNumber": "1234567890",
+    "email": "bruno@test.com",
+    "nationality": "Indian",
+    "title": "Mr",
+    "maritalStatus": "Single",
+    "photoAvailable": false,
+    "payrollGroup": "Karnataka",
+    "emergencyPhone": "0987654321",
+    "fatherName": "Father Name",
+    "motherName": "Mother Name",
+    "spouseName": "",
+    "aadharNo": "123412341234",
+    "panNo": "ABCDE1234F",
+    "permanentAddress": "Permanent Address Text",
+    "permanentBlock": "P-Block",
+    "permanentDistrict": "P-District",
+    "permanentState": "P-State",
+    "permanentCountry": "India",
+    "permanentPincode": "560001",
+    "currentAddress": "Current Address Text",
+    "currentBlock": "C-Block",
+    "currentDistrict": "C-District",
+    "currentState": "C-State",
+    "currentCountry": "India",
+    "currentPincode": "560001",
+    "sameAsPermanent": true,
+    "bankName": "Test Bank",
+    "branchName": "Test Branch",
+    "accountNumber": "1234567890",
+    "ifscCode": "TEST0001234",
+    "reportingRM": "John Manager",
+    "executiveName": "John Exec",
+    "districtOfPosting": "Bangalore",
+    "blockOfPosting": "North",
+    "experienceStatus": "Experienced",
+    "department": "IT",
+    "designation": "Software Engineer",
+    "dateOfJoining": "2023-01-01",
+    "qualification": "B.Tech",
+    "collegeName": "Example University",
+    "yearOfPassout": "2017",
+    "totalExperience": "5 years",
+    "lastCompanyName": "Previous Corp",
+    "lastDateOfLeaving": "2022-12-31"
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+}
