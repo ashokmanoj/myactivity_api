@@ -1,0 +1,32 @@
+meta {
+  name: MA-DIST-13: Bulk Payment (Accounts)
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{base_url}}/api/v1/distance/bulk-payment
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "tripIds":  [1, 2, 3],
+    "paidBy":   8
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

@@ -1,0 +1,36 @@
+meta {
+  name: MA-DIST-10: Forward Trip
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{base_url}}/api/v1/distance/forward
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "tripId":         1,
+    "senderUserId":   15,
+    "senderRole":     "verifier",
+    "toRole":         "rm",
+    "message":        "Please review and approve. Distance readings look correct."
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("message FORWARDED", function() { expect(res.getBody().data.message).to.equal("FORWARDED"); });
+  test("has message_id", function() { expect(res.getBody().data).to.have.property("message_id"); });
+}

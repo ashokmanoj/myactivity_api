@@ -1,0 +1,39 @@
+meta {
+  name: MA-DIST-04: Create GPS Point
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/api/v1/distance/gps
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "uuid":       "gps-uuid-001",
+    "tripId":     1,
+    "latitude":   26.1445,
+    "longitude":  91.7362,
+    "altitude":   55.4,
+    "timestamp":  1713862800000,
+    "userId":     1
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has latitude", function() { expect(res.getBody().data).to.have.property("latitude"); });
+  test("has longitude", function() { expect(res.getBody().data).to.have.property("longitude"); });
+  test("has trip_id", function() { expect(res.getBody().data).to.have.property("trip_id"); });
+}

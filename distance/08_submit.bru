@@ -1,0 +1,32 @@
+meta {
+  name: MA-DIST-08: Submit Trip (RM)
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{base_url}}/api/v1/distance/submit
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "tripId":       1,
+    "submittedBy":  2
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("message SUBMITTED", function() { expect(res.getBody().data.message).to.equal("SUBMITTED"); });
+}

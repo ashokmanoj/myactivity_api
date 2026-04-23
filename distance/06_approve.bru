@@ -1,0 +1,36 @@
+meta {
+  name: MA-DIST-06: Approve Trip
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/api/v1/distance/approve
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "tripId":      1,
+    "approverId":  15,
+    "role":        "verifier",
+    "action":      "Approved",
+    "comment":     "All details verified. Amount looks correct.",
+    "deduction":   0
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has trip_id", function() { expect(res.getBody().data).to.have.property("trip_id"); });
+}

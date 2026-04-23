@@ -1,0 +1,29 @@
+meta {
+  name: MA-DIST-03: Get Trips By User
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/v1/distance/user/{{dist_user_id}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+vars:pre-request {
+  dist_user_id: 1
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

@@ -1,0 +1,46 @@
+meta {
+  name: MA-DIST-01: Sync Trip (Start / End)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/v1/distance/sync
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "userId":                   1,
+    "vehicleType":              "Bike",
+    "startSelfiePic":           "https://example.com/selfie_start.jpg",
+    "startDistanceTimestamp":   1713859200000,
+    "rmUserId":                 2,
+    "uuid":                     "trip-uuid-001",
+
+    "endSelfiePic":             "https://example.com/selfie_end.jpg",
+    "endDistanceTimestamp":     1713870000000,
+    "totalDistance":            150,
+    "totalTime":                180
+  }
+}
+
+tests {
+  test("Status 200 or 201", function() {
+    expect([200, 201]).to.include(res.getStatus());
+  });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has trip_id", function() { expect(res.getBody().data).to.have.property("trip_id"); });
+  test("message is STARTED, ENDED, or EXISTS", function() {
+    expect(["STARTED","ENDED","EXISTS"]).to.include(res.getBody().data.message);
+  });
+}

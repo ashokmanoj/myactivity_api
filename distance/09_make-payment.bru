@@ -1,0 +1,34 @@
+meta {
+  name: MA-DIST-09: Make Payment (Accounts)
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{base_url}}/api/v1/distance/payment
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "tripId":  1,
+    "paidBy":  8,
+    "amount":  294.00
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("message PAID", function() { expect(res.getBody().data.message).to.equal("PAID"); });
+  test("has payment_at", function() { expect(res.getBody().data).to.have.property("payment_at"); });
+}
