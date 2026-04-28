@@ -4,9 +4,6 @@ meta {
   seq: 0
 }
 
-# Same endpoint as 01_sync-trip (start). Send the same UUID to end the trip.
-# startDistanceTimestamp is NOT required when ending by UUID.
-
 post {
   url: {{base_url}}/api/v1/distance/sync
   body: multipart-form

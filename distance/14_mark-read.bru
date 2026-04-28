@@ -4,17 +4,18 @@ meta {
   seq: 14
 }
 
-# Marks all forwarded messages sent to `role` for this trip as read.
-# Called automatically when the user opens the chat panel.
-
 put {
-  url: {{base_url}}/api/v1/distance/1/read
+  url: {{base_url}}/api/v1/distance/{{dist_trip_id}}/read
   body: json
   auth: bearer
 }
 
 auth:bearer {
   token: {{token}}
+}
+
+vars:pre-request {
+  dist_trip_id: 1
 }
 
 headers {
