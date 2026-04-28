@@ -1,0 +1,34 @@
+meta {
+  name: MA-DIST-00: Sync Trip — END (with end selfie)
+  type: http
+  seq: 0
+}
+
+# Same endpoint as 01_sync-trip (start). Send the same UUID to end the trip.
+# startDistanceTimestamp is NOT required when ending by UUID.
+
+post {
+  url: {{base_url}}/api/v1/distance/sync
+  body: multipart-form
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  userId: 1
+  uuid: trip-uuid-001
+  endDistanceTimestamp: 1713870000000
+  endSelfie: @file(/path/to/end_selfie.jpg)
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("message is ENDED", function() { expect(res.getBody().data.message).to.equal("ENDED"); });
+  test("has trip_id", function() { expect(res.getBody().data).to.have.property("trip_id"); });
+  test("has total_distance", function() { expect(res.getBody().data).to.have.property("total_distance"); });
+  test("has required_amount", function() { expect(res.getBody().data).to.have.property("required_amount"); });
+}

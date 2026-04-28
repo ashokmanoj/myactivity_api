@@ -1,12 +1,15 @@
 meta {
-  name: MA-DIST-01: Sync Trip (Start / End)
+  name: MA-DIST-01: Sync Trip — START (with start selfie)
   type: http
   seq: 1
 }
 
+# Starts a new trip. The returned trip_id / uuid is used in subsequent requests.
+# Send the same UUID again with endDistanceTimestamp to end the trip (see 00_upload-selfie.bru).
+
 post {
   url: {{base_url}}/api/v1/distance/sync
-  body: json
+  body: multipart-form
   auth: bearer
 }
 
@@ -14,31 +17,18 @@ auth:bearer {
   token: {{token}}
 }
 
-headers {
-  Content-Type: application/json
-}
-
-body:json {
-  {
-    "userId":                   1,
-    "vehicleType":              "Bike",
-    "startSelfiePic":           "https://example.com/selfie_start.jpg",
-    "startDistanceTimestamp":   1713859200000,
-    "rmUserId":                 2,
-    "uuid":                     "trip-uuid-001",
-
-    "endSelfiePic":             "https://example.com/selfie_end.jpg",
-    "endDistanceTimestamp":     1713870000000
-  }
+body:multipart-form {
+  userId: 1
+  vehicleType: Bike
+  startDistanceTimestamp: 1713859200000
+  rmUserId: 2
+  uuid: trip-uuid-001
+  startSelfie: @file(/path/to/start_selfie.jpg)
 }
 
 tests {
-  test("Status 200 or 201", function() {
-    expect([200, 201]).to.include(res.getStatus());
-  });
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("message is STARTED", function() { expect(res.getBody().data.message).to.equal("STARTED"); });
   test("has trip_id", function() { expect(res.getBody().data).to.have.property("trip_id"); });
-  test("message is STARTED, ENDED, or EXISTS", function() {
-    expect(["STARTED","ENDED","EXISTS"]).to.include(res.getBody().data.message);
-  });
 }

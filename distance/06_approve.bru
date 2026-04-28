@@ -4,6 +4,10 @@ meta {
   seq: 6
 }
 
+# role: "verifier" | "rm" | "ta"
+# action: "Approved"
+# amount: the ₹ amount this role approves (cascades to next role as their default)
+
 post {
   url: {{base_url}}/api/v1/distance/approve
   body: json
@@ -20,12 +24,12 @@ headers {
 
 body:json {
   {
-    "tripId":      1,
-    "approverId":  15,
-    "role":        "verifier",
-    "action":      "Approved",
-    "comment":     "All details verified. Amount looks correct.",
-    "deduction":   0
+    "tripId":     1,
+    "approverId": 7,
+    "role":       "verifier",
+    "action":     "Approved",
+    "comment":    "All details verified. Amount looks correct.",
+    "amount":     150.00
   }
 }
 
@@ -33,4 +37,5 @@ tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
   test("has trip_id", function() { expect(res.getBody().data).to.have.property("trip_id"); });
+  test("has approved_amount", function() { expect(res.getBody().data).to.have.property("approved_amount"); });
 }

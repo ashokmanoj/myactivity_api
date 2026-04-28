@@ -4,6 +4,10 @@ meta {
   seq: 7
 }
 
+# role: "verifier" | "rm" | "ta"
+# action: "Rejected"
+# comment is required when rejecting
+
 post {
   url: {{base_url}}/api/v1/distance/approve
   body: json
@@ -20,12 +24,11 @@ headers {
 
 body:json {
   {
-    "tripId":      1,
-    "approverId":  15,
-    "role":        "verifier",
-    "action":      "Rejected",
-    "comment":     "Distance claim does not match route. Please re-submit.",
-    "deduction":   0
+    "tripId":     1,
+    "approverId": 7,
+    "role":       "verifier",
+    "action":     "Rejected",
+    "comment":    "Distance claim does not match route. Please re-submit."
   }
 }
 

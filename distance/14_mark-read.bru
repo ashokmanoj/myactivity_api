@@ -1,0 +1,33 @@
+meta {
+  name: MA-DIST-14: Mark Messages as Read
+  type: http
+  seq: 14
+}
+
+# Marks all forwarded messages sent to `role` for this trip as read.
+# Called automatically when the user opens the chat panel.
+
+put {
+  url: {{base_url}}/api/v1/distance/1/read
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "role": "verifier"
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}

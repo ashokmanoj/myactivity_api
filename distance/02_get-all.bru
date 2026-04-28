@@ -14,13 +14,10 @@ auth:bearer {
   token: {{token}}
 }
 
-headers {
-  Content-Type: application/json
-}
-
 params:query {
   page: 1
   pageSize: 10
+  role: verifier
   ~userId:
   ~rmUserId:
   ~state:
