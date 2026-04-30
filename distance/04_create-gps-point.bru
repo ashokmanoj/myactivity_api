@@ -1,5 +1,5 @@
 meta {
-  name: MA-DIST-04: Create GPS Point
+  name: MA-DIST-04: Create GPS Point (Single or Batch)
   type: http
   seq: 4
 }
@@ -20,20 +20,30 @@ headers {
 
 body:json {
   {
-    "uuid":       "gps-uuid-001",
-    "tripId":     1,
-    "latitude":   26.1445,
-    "longitude":  91.7362,
-    "altitude":   55.4,
-    "timestamp":  1713862800000,
-    "userId":     1
+    "points": [
+      {
+        "uuid": "mixed-batch-001",
+        "tripId": 1,
+        "latitude": 26.1445,
+        "longitude": 91.7362,
+        "timestamp": 1713862800000,
+        "userId": 1
+      },
+      {
+        "uuid": "mixed-batch-002",
+        "tripId": 1,
+        "latitude": 26.1450,
+        "longitude": 91.7370,
+        "timestamp": 1713862805000,
+        "userId": 1
+      }
+    ]
   }
 }
 
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("has latitude", function() { expect(res.getBody().data).to.have.property("latitude"); });
-  test("has longitude", function() { expect(res.getBody().data).to.have.property("longitude"); });
-  test("has trip_id", function() { expect(res.getBody().data).to.have.property("trip_id"); });
+  test("has syncedCount", function() { expect(res.getBody().data).to.have.property("syncedCount"); });
+  test("syncedCount is number", function() { expect(res.getBody().data.syncedCount).to.be.a("number"); });
 }
