@@ -10,16 +10,16 @@ get {
   auth: bearer
 }
 
-auth:bearer {
-  token: {{token}}
-}
-
 headers {
   Content-Type: application/json
 }
 
+auth:bearer {
+  token: {{token}}
+}
+
 vars:pre-request {
-  dist_trip_id: 1
+  dist_trip_id: 3
 }
 
 tests {
