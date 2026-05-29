@@ -1,0 +1,55 @@
+meta {
+  name: PM-04: Submit PM Session (Web)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/api/v1/pm/submit
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "projectId": 1,
+    "institutionId": 10,
+    "answers": [
+      { "questionId": 1, "qId": "Q_PM_001", "answer": "YES" },
+      { "questionId": 2, "qId": "Q_PM_002", "answer": "NO" },
+      { "questionId": 3, "qId": "Q_PM_003", "answer": "YES" },
+      { "questionId": 4, "qId": "Q_PM_004", "answer": "N/A" },
+      { "questionId": 5, "qId": "Q_PM_005", "answer": "YES" },
+      { "questionId": 6, "qId": "Q_PM_006", "answer": "YES" },
+      { "questionId": 7, "qId": "Q_PM_007", "answer": "NO" },
+      { "questionId": 8, "qId": "Q_PM_008", "answer": "YES" },
+      { "questionId": 9, "qId": "Q_PM_009", "answer": "N/A" },
+      { "questionId": 10, "qId": "Q_PM_010", "answer": "YES" }
+    ]
+  }
+}
+
+docs {
+  Submits a full PM inspection session from the web.
+  The user_id is taken from the JWT token.
+
+  Required fields:
+    projectId     (int)   : project being inspected
+    institutionId (int)   : institution being inspected
+    answers       (array) : list of { questionId, qId, answer }
+      answer values: "YES" | "NO" | "N/A" | null (unanswered)
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has pm_id", function() { expect(res.getBody().data).to.have.property("pm_id"); });
+}

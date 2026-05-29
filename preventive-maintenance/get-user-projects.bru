@@ -1,0 +1,36 @@
+meta {
+  name: PM-02: Get User's Assigned Projects
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/pm/user-projects
+  body: none
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Returns distinct projects assigned to the logged-in user via their institution mapping.
+  The user_id is taken from the JWT token — no query params needed.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+  test("each item has project_id and project_name", function() {
+    res.getBody().data.forEach(p => {
+      expect(p).to.have.property("project_id");
+      expect(p).to.have.property("project_name");
+    });
+  });
+}

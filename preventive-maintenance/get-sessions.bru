@@ -1,0 +1,53 @@
+meta {
+  name: PM-05: Get All Sessions (Report)
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{base_url}}/api/v1/pm/sessions
+  body: none
+  auth: bearer
+}
+
+params:query {
+  ~projectId: 1
+  ~institutionId: 10
+  ~userId: 5
+  ~status: submitted
+  ~from: 2025-01-01T00:00:00Z
+  ~to: 2025-12-31T23:59:59Z
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Returns PM sessions for the report view. All filters are optional.
+
+  Query params (all optional):
+    projectId     : filter by project
+    institutionId : filter by institution
+    userId        : filter by field executive
+    status        : "submitted" | "pending"
+    from          : ISO date string (start of date range)
+    to            : ISO date string (end of date range)
+
+  Response fields per item:
+    pm_id, uuid, status, project_id, project_name,
+    institution_id, institution_name, institute_code,
+    user_id, full_name, emp_code,
+    total_questions, answered_count,
+    started_at, submitted_at, gps_lat, gps_lng, created_at
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

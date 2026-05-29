@@ -1,0 +1,45 @@
+meta {
+  name: PM-03: Get User's Assigned Institutions
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/v1/pm/user-institutions
+  body: none
+  auth: bearer
+}
+
+params:query {
+  projectId: 1
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Returns institutions assigned to the logged-in user, filtered by project.
+  - projectId (required): filter by project
+  The user_id is taken from the JWT token.
+
+  Response fields per item:
+    institute_id, institution_name, institute_code, project_id, project_name
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+  test("each item has institute_id and institute_code", function() {
+    res.getBody().data.forEach(i => {
+      expect(i).to.have.property("institute_id");
+      expect(i).to.have.property("institute_code");
+      expect(i).to.have.property("institution_name");
+    });
+  });
+}
