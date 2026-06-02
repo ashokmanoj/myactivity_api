@@ -1,0 +1,58 @@
+meta {
+  name: PM-08: Upload Answer Photo
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{base_url}}/api/v1/pm/sessions/1/answers/1/photo
+  body: multipart-form
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  photo: @file(/path/to/photo.jpg)
+}
+
+docs {
+  Upload a photo for a specific PM answer.
+  Replace "1/answers/1" in the URL with the real pm_id and question_id.
+
+  URL params:
+    :pmId       — the pm_id returned by /submit or /sync
+    :questionId — the question_id from /questions
+
+  Form field:
+    photo (file) — JPG, JPEG, PNG or WEBP, max 10 MB
+
+  Response:
+    {
+      "success": true,
+      "data": {
+        "photo_path": "/uploads/pm/uuid-filename.jpg",
+        "answer": { ...updated answer row }
+      }
+    }
+
+  Storage location on server:
+    myactivity_backend/uploads/pm/<uuid>.jpg
+
+  Accessible via:
+    http://<server-ip>:5001/uploads/pm/<uuid>.jpg
+
+  Notes:
+  - The answer row must already exist (created by /submit or /sync)
+  - Calling again replaces the previous photo_path in pm_answer table
+  - Mobile should call /sync first to create the session, then call this
+    endpoint once per question that has a photo
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has photo_path", function() { expect(res.getBody().data).to.have.property("photo_path"); });
+}
