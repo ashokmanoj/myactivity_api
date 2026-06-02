@@ -1,51 +1,47 @@
 meta {
-  name: PM-04: Submit PM Session (Web)
+  name: PM-04: Submit PM Session (with Photos)
   type: http
   seq: 4
 }
 
 post {
   url: {{base_url}}/api/v1/pm/submit
-  body: json
+  body: multipart-form
   auth: bearer
-}
-
-headers {
-  Content-Type: application/json
 }
 
 auth:bearer {
   token: {{token}}
 }
 
-body:json {
-  {
-    "projectId": 1,
-    "institutionId": 10,
-    "answers": [
-      { "questionId": 1, "qId": "Q_PM_001", "answer": "YES" },
-      { "questionId": 2, "qId": "Q_PM_002", "answer": "NO" },
-      { "questionId": 3, "qId": "Q_PM_003", "answer": "YES" },
-      { "questionId": 4, "qId": "Q_PM_004", "answer": "N/A" },
-      { "questionId": 5, "qId": "Q_PM_005", "answer": "YES" },
-      { "questionId": 6, "qId": "Q_PM_006", "answer": "YES" },
-      { "questionId": 7, "qId": "Q_PM_007", "answer": "NO" },
-      { "questionId": 8, "qId": "Q_PM_008", "answer": "YES" },
-      { "questionId": 9, "qId": "Q_PM_009", "answer": "N/A" },
-      { "questionId": 10, "qId": "Q_PM_010", "answer": "YES" }
-    ]
-  }
+body:multipart-form {
+  projectId: 1
+  institutionId: 10
+  answers: [{"questionId":1,"qId":"Q_PM_001","answer":"YES"},{"questionId":2,"qId":"Q_PM_002","answer":"NO"},{"questionId":3,"qId":"Q_PM_003","answer":"YES"},{"questionId":4,"qId":"Q_PM_004","answer":"N/A"},{"questionId":5,"qId":"Q_PM_005","answer":"YES"},{"questionId":6,"qId":"Q_PM_006","answer":"YES"},{"questionId":7,"qId":"Q_PM_007","answer":"NO"},{"questionId":8,"qId":"Q_PM_008","answer":"YES"},{"questionId":9,"qId":"Q_PM_009","answer":"N/A"},{"questionId":10,"qId":"Q_PM_010","answer":"YES"}]
+  photo_3: @file(/path/to/photo_for_question3.jpg)
+  photo_7: @file(/path/to/photo_for_question7.jpg)
 }
 
 docs {
-  Submits a full PM inspection session from the web.
-  The user_id is taken from the JWT token.
+  Submit a full PM inspection session. Photos are optional per question.
 
-  Required fields:
-    projectId     (int)   : project being inspected
-    institutionId (int)   : institution being inspected
-    answers       (array) : list of { questionId, qId, answer }
-      answer values: "YES" | "NO" | "N/A" | null (unanswered)
+  Content-Type: multipart/form-data
+
+  Text fields (required):
+    projectId     : project being inspected
+    institutionId : institution being inspected
+    answers       : JSON string — array of { questionId, qId, answer }
+                    answer values: "YES" | "NO" | "N/A"
+
+  File fields (optional — one per question that has a photo):
+    photo_<questionId> : image file (JPG/JPEG/PNG/WEBP, max 10 MB)
+    e.g. photo_1, photo_3, photo_7
+
+  The server matches photo_<questionId> to the answer with that questionId
+  and stores the file path in the pm_answer table automatically.
+
+  Response:
+    { "success": true, "data": { pm_id, uuid, status, ... } }
 }
 
 tests {
