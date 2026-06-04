@@ -6,7 +6,7 @@ meta {
 
 post {
   url: {{base_url}}/api/v1/pm/submit
-  body: multipart-form
+  body: multipartForm
   auth: bearer
 }
 
@@ -22,30 +22,30 @@ body:multipart-form {
   photo_7: @file(/path/to/photo_for_question7.jpg)
 }
 
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has pm_id", function() { expect(res.getBody().data).to.have.property("pm_id"); });
+}
+
 docs {
   Submit a full PM inspection session. Photos are optional per question.
-
+  
   Content-Type: multipart/form-data
-
+  
   Text fields (required):
     projectId     : project being inspected
     institutionId : institution being inspected
     answers       : JSON string — array of { questionId, qId, answer }
                     answer values: "YES" | "NO" | "N/A"
-
+  
   File fields (optional — one per question that has a photo):
     photo_<questionId> : image file (JPG/JPEG/PNG/WEBP, max 10 MB)
     e.g. photo_1, photo_3, photo_7
-
+  
   The server matches photo_<questionId> to the answer with that questionId
   and stores the file path in the pm_answer table automatically.
-
+  
   Response:
     { "success": true, "data": { pm_id, uuid, status, ... } }
-}
-
-tests {
-  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
-  test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("has pm_id", function() { expect(res.getBody().data).to.have.property("pm_id"); });
 }
