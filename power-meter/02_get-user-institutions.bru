@@ -1,0 +1,36 @@
+meta {
+  name: PWM-02: Get User Institutions
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/power-meter/user-institutions
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  ~projectId: 1
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an('array'); });
+}
+
+docs {
+  Returns institutions assigned to the logged-in user.
+  Optionally filter by projectId.
+
+  Query params (all optional):
+    projectId : filter by project
+
+  Response:
+    [{ institute_id, institution_name, institute_code, project_id, project_name }]
+}

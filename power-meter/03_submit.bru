@@ -1,0 +1,49 @@
+meta {
+  name: PWM-03: Submit Power Meter Reading
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/api/v1/power-meter/submit
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  projectId: 1
+  institutionId: 10
+  meterStatus: Working
+  comments: Meter is functioning normally. No issues observed.
+  ~photo: @file(/path/to/meter-photo.jpg)
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has meter_id", function() { expect(res.getBody().data).to.have.property("meter_id"); });
+}
+
+docs {
+  Submit a new power meter reading from the web or mobile.
+
+  Content-Type: multipart/form-data
+
+  Text fields (required):
+    projectId     : project ID
+    institutionId : institution ID
+    meterStatus   : "Working" | "Not Working"
+
+  Text fields (optional):
+    comments : free text comments about the meter condition
+
+  File fields (optional):
+    photo : single meter image (JPG/JPEG/PNG/WEBP, max 10 MB)
+
+  Response:
+    { "success": true, "data": { meter_id, uuid, meter_status, ... } }
+}

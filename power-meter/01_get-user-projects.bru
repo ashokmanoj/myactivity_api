@@ -1,0 +1,29 @@
+meta {
+  name: PWM-01: Get User Projects
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/power-meter/user-projects
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an('array'); });
+}
+
+docs {
+  Returns distinct projects assigned to the logged-in user via user_institution_map.
+  Uses JWT userId automatically — no params needed.
+
+  Response:
+    [{ project_id, project_name }]
+}

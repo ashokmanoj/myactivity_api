@@ -1,0 +1,39 @@
+meta {
+  name: DD-04: Get TE Institutions
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/api/v1/dropdown/te-institutions
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  ~projectId: 1
+  ~districtId: 2
+  ~blockId: 3
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an('array'); });
+}
+
+docs {
+  Returns institutions for TE Mapping filter dropdowns, optionally filtered.
+
+  Query params (all optional):
+    projectId  : filter by project
+    districtId : filter by district
+    blockId    : filter by block
+
+  Response:
+    [{ institute_id, institution_name, institute_code, project_name, ... }]
+}

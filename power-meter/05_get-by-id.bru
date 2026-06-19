@@ -1,0 +1,38 @@
+meta {
+  name: PWM-05: Get Power Meter Record By ID
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{base_url}}/api/v1/power-meter/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has meter_id", function() { expect(res.getBody().data).to.have.property("meter_id"); });
+  test("has meter_status", function() { expect(res.getBody().data).to.have.property("meter_status"); });
+}
+
+docs {
+  Returns a single power meter record by meter_id, with full project, institution and user details.
+
+  Path param:
+    :meterId — the meter_id of the record
+
+  Response:
+    {
+      meter_id, uuid, project_id, project_name,
+      institution_id, institution_name, institute_code,
+      user_id, full_name, emp_code,
+      meter_status, comments, image_path,
+      gps_lat, gps_lng, submitted_at, created_at
+    }
+}

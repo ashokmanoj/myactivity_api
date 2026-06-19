@@ -1,0 +1,52 @@
+meta {
+  name: PWM-04: Get All Power Meter Records
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/api/v1/power-meter
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  ~projectId:
+  ~institutionId:
+  ~userId:
+  ~meterStatus: Working
+  ~from: 2025-01-01T00:00:00Z
+  ~to: 2025-12-31T23:59:59Z
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an('array'); });
+}
+
+docs {
+  Returns all power meter records with joined project, institution and user details.
+  All filter params are optional.
+
+  Query params (all optional):
+    projectId     : filter by project ID
+    institutionId : filter by institution ID
+    userId        : filter by field executive user ID
+    meterStatus   : "Working" | "Not Working"
+    from          : ISO timestamp — filter created_at >= from
+    to            : ISO timestamp — filter created_at <= to
+
+  Response:
+    [{
+      meter_id, uuid, project_id, project_name,
+      institution_id, institution_name, institute_code,
+      user_id, full_name, emp_code,
+      meter_status, comments, image_path,
+      gps_lat, gps_lng, submitted_at, is_synced, created_at
+    }]
+}

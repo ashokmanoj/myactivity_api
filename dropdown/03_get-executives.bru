@@ -1,0 +1,42 @@
+meta {
+  name: DD-03: Get Executives (TE Mapping)
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/v1/dropdown/executives
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  ~projectId: 1
+  ~districtId: 2
+  ~blockId: 3
+  ~designationId: 4
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an('array'); });
+}
+
+docs {
+  Returns field executives, optionally filtered by project, district, block, designation.
+  Used for the TE Mapping executive filter dropdowns.
+
+  Query params (all optional):
+    projectId     : filter by project
+    districtId    : filter by district
+    blockId       : filter by block
+    designationId : filter by designation
+
+  Response:
+    [{ user_id, full_name, emp_code, designation_name, ... }]
+}

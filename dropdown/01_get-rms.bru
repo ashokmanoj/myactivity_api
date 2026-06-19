@@ -1,0 +1,28 @@
+meta {
+  name: DD-01: Get RMs (Reporting Managers)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/dropdown/rms
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an('array'); });
+}
+
+docs {
+  Returns all active Reporting Managers for the distance filter dropdown.
+
+  Response:
+    [{ id, full_name }]
+}
