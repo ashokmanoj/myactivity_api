@@ -1,0 +1,45 @@
+meta {
+  name: PWM-00: Get Power Meter Categories
+  type: http
+  seq: 0
+}
+
+get {
+  url: {{base_url}}/api/v1/power-meter/categories
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an('array'); });
+  test("has Working category", function() {
+    const names = res.getBody().data.map(c => c.category_name);
+    expect(names).to.include('Working');
+  });
+  test("has Not Working category", function() {
+    const names = res.getBody().data.map(c => c.category_name);
+    expect(names).to.include('Not Working');
+  });
+}
+
+docs {
+  Returns all active power meter status categories ordered by sort_order.
+  Use this to populate the meter status dropdown in the mobile app.
+
+  No query params needed.
+
+  Response:
+    [
+      { "category_id": 1, "category_name": "Working",     "sort_order": 1 },
+      { "category_id": 2, "category_name": "Not Working", "sort_order": 2 }
+    ]
+
+  To add more categories: INSERT INTO myactivity.power_meter_category (category_name, sort_order).
+  To disable a category: UPDATE myactivity.power_meter_category SET is_active = 0 WHERE category_id = ?;
+}
