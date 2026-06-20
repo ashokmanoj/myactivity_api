@@ -1,5 +1,5 @@
 meta {
-  name: PWM-03: Submit Power Meter Reading
+  name: PWM-03: Submit Reading (Web)
   type: http
   seq: 3
 }
@@ -15,35 +15,40 @@ auth:bearer {
 }
 
 body:multipart-form {
+  entryType: POWER_METER
   projectId: 1
   institutionId: 10
   meterStatus: Working
-  comments: Meter is functioning normally. No issues observed.
+  meterReading: 1234.56
+  ~receiptDurationId: 4
+  comments: Meter is functioning normally.
   ~photo: @file(/path/to/meter-photo.jpg)
 }
 
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("has meter_id", function() { expect(res.getBody().data).to.have.property("meter_id"); });
 }
 
 docs {
-  Submit a new power meter reading from the web or mobile.
-
+  Submit a new power meter reading (web form).
   Content-Type: multipart/form-data
 
-  Text fields (required):
+  Always required:
+    entryType     : "POWER_METER" | "RECEIPT"
     projectId     : project ID
     institutionId : institution ID
+
+  Required for POWER_METER:
     meterStatus   : "Working" | "Not Working"
 
-  Text fields (optional):
-    comments : free text comments about the meter condition
+  Optional for POWER_METER:
+    meterReading  : value shown on the meter display (e.g. "1234.56")
 
-  File fields (optional):
-    photo : single meter image (JPG/JPEG/PNG/WEBP, max 10 MB)
+  Required for RECEIPT:
+    receiptDurationId : ID from GET /power-meter/receipt-durations
 
-  Response:
-    { "success": true, "data": { meter_id, uuid, meter_status, ... } }
+  Always optional:
+    comments : free text
+    photo    : single image file (JPG/JPEG/PNG/WEBP, max 10 MB)
 }
