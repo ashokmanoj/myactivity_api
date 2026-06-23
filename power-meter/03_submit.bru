@@ -22,6 +22,8 @@ body:multipart-form {
   meterReading: 1234.56
   ~receiptDurationId: 4
   comments: Meter is functioning normally.
+  ~gpsLat: 12.9716
+  ~gpsLng: 77.5946
   ~photo: @file(/path/to/meter-photo.jpg)
 }
 
@@ -50,5 +52,7 @@ docs {
 
   Always optional:
     comments : free text
+    gpsLat   : GPS latitude at time of submission
+    gpsLng   : GPS longitude at time of submission
     photo    : single image file (JPG/JPEG/PNG/WEBP, max 10 MB)
 }
