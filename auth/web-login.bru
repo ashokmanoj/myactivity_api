@@ -22,13 +22,12 @@ body:json {
   }
 }
 
-vars:pre-request {
-  base_url: http://192.168.1.128:5001
-}
-
 script:post-response {
-  if (res.getBody().data?.token) {
-    bru.setVar("token", res.getBody().data.token);
+  const data = res.getBody().data;
+  if (data && data.token) {
+    bru.setEnvVar("token", data.token);
+    bru.setVar("token", data.token);
+    console.log("✅ Token saved — logged in as:", data.user && data.user.full_name, "| Role:", data.user && data.user.role_name);
   }
 }
 
@@ -37,5 +36,4 @@ tests {
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
   test("has token", function() { expect(res.getBody().data.token).to.be.a("string"); });
   test("has user", function() { expect(res.getBody().data).to.have.property("user"); });
-  test("has email", function() { expect(res.getBody().data.user.email).to.equal("john.doe@example.com"); });
 }

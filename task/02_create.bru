@@ -28,7 +28,9 @@ body:json {
     "startDate": "2026-06-01",
     "endDate": "2026-06-30",
     "intervalType": "Month",
-    "remarks": "Monthly routine check"
+    "remarks": "Monthly routine check",
+    "gpsLat": 26.1445,
+    "gpsLng": 91.7362
   }
 }
 
@@ -46,5 +48,6 @@ docs {
 
   Optional:
     projectId, designation, district, block, priority (default: Medium),
-    executiveId, institutionId, intervalType, intervalDays, remarks
+    executiveId, institutionId, intervalType, intervalDays, remarks,
+    gpsLat, gpsLng (decimal degrees — sent by mobile app at time of task creation)
 }
