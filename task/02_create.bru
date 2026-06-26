@@ -1,0 +1,50 @@
+meta {
+  name: TASK-02: Create Task
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/api/v1/task
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "categoryId": 1,
+    "subCategoryId": 1,
+    "projectId": 1,
+    "designation": "Technical Executive",
+    "district": "Kamrup",
+    "block": "Block A",
+    "priority": "Medium",
+    "executiveId": 5,
+    "institutionId": 10,
+    "startDate": "2026-06-01",
+    "endDate": "2026-06-30",
+    "intervalType": "Month",
+    "remarks": "Monthly routine check"
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has task_id", function() { expect(res.getBody().data).to.have.property('task_id'); });
+}
+
+docs {
+  Creates a new task and assigns it to an executive.
+
+  Required:
+    categoryId, subCategoryId, startDate, endDate
+
+  Optional:
+    projectId, designation, district, block, priority (default: Medium),
+    executiveId, institutionId, intervalType, intervalDays, remarks
+}

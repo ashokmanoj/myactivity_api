@@ -1,0 +1,40 @@
+meta {
+  name: TASK-03: Get All Tasks
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/api/v1/task
+  body: none
+  auth: bearer
+}
+
+params:query {
+  ~projectId: 1
+  ~categoryId: 1
+  ~subCategoryId: 1
+  ~priority: High
+  ~status: Pending
+  ~executiveId: 5
+  ~from: 2026-01-01
+  ~to: 2026-12-31
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an('array'); });
+}
+
+docs {
+  Returns all tasks with optional filters.
+
+  Query params (all optional):
+    projectId, categoryId, subCategoryId, priority (High/Medium/Low),
+    status (Pending/InProgress/Completed), executiveId, from, to (ISO dates)
+}

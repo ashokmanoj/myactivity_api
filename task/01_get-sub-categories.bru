@@ -1,0 +1,38 @@
+meta {
+  name: TASK-01: Get Sub-Categories
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/task/sub-categories
+  body: none
+  auth: bearer
+}
+
+params:query {
+  ~categoryId: 1
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an('array'); });
+}
+
+docs {
+  Returns sub-categories. Pass categoryId to filter by category.
+
+  Query params:
+    categoryId (optional) — filter by category
+
+  Response:
+    [
+      { "sub_category_id": 1, "category_id": 1, "sub_category_name": "New Installation", "sort_order": 1 },
+      ...
+    ]
+}

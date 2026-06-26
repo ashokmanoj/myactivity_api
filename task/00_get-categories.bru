@@ -1,0 +1,32 @@
+meta {
+  name: TASK-00: Get Categories
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/task/categories
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an('array'); });
+  test("has categories", function() { expect(res.getBody().data.length).to.be.above(0); });
+}
+
+docs {
+  Returns all active task categories ordered by sort_order.
+
+  Response:
+    [
+      { "category_id": 1, "category_name": "Installation", "sort_order": 1 },
+      ...
+    ]
+}
