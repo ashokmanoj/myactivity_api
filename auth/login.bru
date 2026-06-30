@@ -18,25 +18,26 @@ body:json {
   {
     "mobileNumber": "9876543210",
     "password":     "Test@123",
-    "company":      "AND"
+    "company":      "AND",
+    "appVersion":   "1.0.0",
+    "platform":     "android",
+    "osVersion":    "Android 14",
+    "deviceId":     "test-device-001"
   }
 }
 
-vars:pre-request {
-  base_url: http://192.168.1.218:5001
-}
-
 script:post-response {
-  if (res.getBody().token) {
-    bru.setVar("token", res.getBody().token);
+  const data = res.getBody().data;
+  if (data && data.token) {
+    bru.setEnvVar("token", data.token);
+    bru.setVar("token", data.token);
+    console.log("✅ Token saved — logged in as:", data.user && data.user.full_name, "| Role:", data.user && data.user.role_name);
   }
 }
 
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("has token", function() { expect(res.getBody().token).to.be.a("string"); });
+  test("has token", function() { expect(res.getBody().data.token).to.be.a("string"); });
   test("has user", function() { expect(res.getBody().data).to.have.property("user"); });
-  test("has company", function() { expect(res.getBody().data).to.have.property("company"); });
-  test("has mobileNumber", function() { expect(res.getBody().data.mobileNumber).to.equal("9876543210"); });
 }

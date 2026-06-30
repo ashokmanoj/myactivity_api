@@ -1,0 +1,36 @@
+meta {
+  name: ADMIN-01: App Version Tracker
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/admin/app-info
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Returns app version, platform, and last-seen info for all mobile users.
+
+  Requires: Manager role (Regional Manager Head or above)
+
+  Response fields:
+  - user_id, full_name, emp_code, mobile_number
+  - role_name
+  - platform      — 'android' | 'ios' | null
+  - app_version   — e.g. '1.0.0'
+  - device_id
+  - last_seen_at  — updated on every API call from mobile
+  - first_seen_at — when mobile user first logged in
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has data array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
