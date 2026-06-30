@@ -1,0 +1,39 @@
+meta {
+  name: LEAVE-03: Approve / Reject Leave
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{base_url}}/api/v1/leave/1/review
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "status":  "approved",
+    "remarks": ""
+  }
+}
+
+docs {
+  Approve or reject a leave request.
+  Only managers (RM, RMH) can call this.
+
+  Replace "1" in URL with the actual leave request id.
+
+  status:  "approved" | "rejected"  (required)
+  remarks: string (optional, useful for rejection reason)
+
+  Once reviewed, the status cannot be changed again.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}

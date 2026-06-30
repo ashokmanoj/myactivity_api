@@ -1,0 +1,41 @@
+meta {
+  name: LEAVE-02: Get Leave Requests
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/leave
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  ~status: pending
+  ~from: 2026-06-01
+  ~to: 2026-06-30
+  ~userId: 5
+}
+
+docs {
+  Get leave requests.
+
+  Managers (RM, RMH): see all requests for the company
+  Field Executive: sees only their own requests
+
+  Query params (all optional):
+  - status:  pending | approved | rejected
+  - from:    YYYY-MM-DD
+  - to:      YYYY-MM-DD
+  - userId:  filter by specific user (managers only)
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

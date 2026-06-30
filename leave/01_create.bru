@@ -1,0 +1,40 @@
+meta {
+  name: LEAVE-01: Submit Leave Request (Mobile)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/v1/leave
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "leaveType": "leave",
+    "leaveDate": "2026-07-01",
+    "reason":    "Personal work"
+  }
+}
+
+docs {
+  Submit a leave request from mobile.
+
+  leaveType: "leave" | "local_holiday"
+  leaveDate: YYYY-MM-DD (required)
+  reason:    string (optional)
+
+  Rules:
+  - Cannot have two active (pending/approved) leaves on the same date
+  - Status starts as "pending"
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}
