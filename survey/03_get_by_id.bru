@@ -1,0 +1,38 @@
+meta {
+  name: SURVEY-03: Get Survey by ID
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/v1/survey/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Get full detail of a single survey submission by ID.
+
+  URL param:
+  - :id — survey submission ID (integer)
+
+  Response includes all data:
+  - Main school info (school_name, udise_code, district, etc.)
+  - studentDetails[]:  class_number, section_a, section_b
+  - teacherCounts[]:   subject, count
+  - mobileNetworks[]:  service_provider, has_5g, has_4g, has_3g, signal_strength
+  - classrooms[]:      all equipment fields for each virtual/digital classroom
+  - submitted_by_name: name of the user who submitted
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has school_name", function() { expect(res.getBody().data.school_name).to.be.a("string"); });
+  test("has studentDetails", function() { expect(res.getBody().data.studentDetails).to.be.an("array"); });
+  test("has classrooms", function() { expect(res.getBody().data.classrooms).to.be.an("array"); });
+}

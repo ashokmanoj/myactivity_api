@@ -1,0 +1,129 @@
+meta {
+  name: SURVEY-01: Submit School Survey
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/v1/survey
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "schoolName": "Government High School Biramitrapur",
+    "mediumOfInstruction": "Odia",
+    "udiseCode": "21190101101",
+    "village": "Biramitrapur",
+    "block": "Biramitrapur",
+    "district": "Sundergarh",
+    "pin": "770014",
+    "distanceFromBlock": "0",
+    "distanceFromDistrictHq": "85",
+    "hmName": "Ramesh Kumar",
+    "hmContact": "9437000001",
+    "hmEmail": "hm@school.in",
+    "supportingStaffContact": "9437000002",
+    "numVirtualClassrooms": 1,
+    "numSmartClassrooms": 1,
+    "powerAvailable": true,
+    "powerDuration": "8 Hours",
+    "earthFacility": "Available",
+    "internetAvailable": true,
+    "internetStatus": true,
+    "speedUl": "10",
+    "speedDl": "20",
+    "studentDetails": [
+      { "classNumber": 6, "sectionA": 35, "sectionB": 30 },
+      { "classNumber": 7, "sectionA": 32, "sectionB": 28 },
+      { "classNumber": 8, "sectionA": 30, "sectionB": 25 },
+      { "classNumber": 9, "sectionA": 28, "sectionB": 22 },
+      { "classNumber": 10, "sectionA": 25, "sectionB": 20 }
+    ],
+    "teacherCounts": [
+      { "subject": "Mathematics", "count": 2 },
+      { "subject": "Science", "count": 2 },
+      { "subject": "English", "count": 1 },
+      { "subject": "Social Science", "count": 1 },
+      { "subject": "Odia", "count": 1 }
+    ],
+    "mobileNetworks": [
+      { "serviceProvider": "Jio", "has5g": false, "has4g": true, "has3g": true, "signalStrength": "Good" },
+      { "serviceProvider": "Airtel", "has5g": false, "has4g": true, "has3g": true, "signalStrength": "Average" }
+    ],
+    "virtualClassrooms": [
+      {
+        "ifpDisplay": "OK", "ifpSound": "OK", "ifpPowerAdaptor": "OK",
+        "ifpRemote": "OK", "ifpTouch": "OK", "ifpHdmi": "OK",
+        "ifpWifi": "OK", "ifpUsb": "OK", "ifpOs": "Windows 10",
+        "ifpBuiltinPc": "Yes", "ifpBuiltinPcStatus": "OK",
+        "ifpOsBuiltin": "Windows 10", "ifpOsVersion": "22H2",
+        "ifpRam": "8GB", "ifpProcessor": "Intel Core i5",
+        "ifpProcessorGen": "10th Gen", "ifpHddCapacity": "256GB", "ifpHddType": "SSD",
+        "ifpFinalStatus": "OK", "ifpRemarks": "",
+        "webcamDisplay": "OK", "webcamPhysical": "OK", "webcamCable": "OK",
+        "webcamFinalStatus": "OK", "webcamRemarks": "",
+        "micBaseStation": "OK", "micPowerAdaptor": "OK", "micPcCable": "OK",
+        "micStatus": "OK", "micAudio": "OK", "micFinalStatus": "OK", "micRemarks": "",
+        "upsInputSocket": "OK", "upsSwitching": "OK", "upsPowerChord": "OK",
+        "upsBatteryHarness": "OK", "upsPhysical": "OK",
+        "upsBatterySeries": "12V 7Ah x2", "upsBatteryIndividual": "12V 7Ah",
+        "upsBatteryPhysical": "OK", "upsFinalStatus": "OK", "upsRemarks": "",
+        "vsatReflector": "OK", "vsatRxCable": "OK", "vsatTxCable": "OK",
+        "vsatFeedhorn": "OK", "vsatLnb": "OK", "vsatBuc": "OK",
+        "vsatModem": "OK", "vsatModemAdaptor": "OK", "vsatLanCable": "OK",
+        "vsatFinalStatus": "OK", "vsatRemarks": ""
+      }
+    ],
+    "digitalClassrooms": [
+      {
+        "ifpDisplay": "OK", "ifpSound": "Faulty", "ifpPowerAdaptor": "OK",
+        "ifpRemote": "Missing", "ifpTouch": "OK", "ifpHdmi": "OK",
+        "ifpWifi": "OK", "ifpUsb": "OK", "ifpOs": "Windows 11",
+        "ifpBuiltinPc": "Yes", "ifpBuiltinPcStatus": "OK",
+        "ifpOsBuiltin": "Windows 11", "ifpOsVersion": "23H2",
+        "ifpRam": "8GB", "ifpProcessor": "Intel Core i5",
+        "ifpProcessorGen": "11th Gen", "ifpHddCapacity": "512GB", "ifpHddType": "SSD",
+        "ifpFinalStatus": "Faulty", "ifpRemarks": "Sound not working",
+        "webcamDisplay": "OK", "webcamPhysical": "OK", "webcamCable": "OK",
+        "webcamFinalStatus": "OK", "webcamRemarks": "",
+        "micBaseStation": "OK", "micPowerAdaptor": "OK", "micPcCable": "OK",
+        "micStatus": "OK", "micAudio": "OK", "micFinalStatus": "OK", "micRemarks": "",
+        "upsInputSocket": "OK", "upsSwitching": "OK", "upsPowerChord": "OK",
+        "upsBatteryHarness": "OK", "upsPhysical": "OK",
+        "upsBatterySeries": "12V 7Ah x2", "upsBatteryIndividual": "12V 7Ah",
+        "upsBatteryPhysical": "OK", "upsFinalStatus": "OK", "upsRemarks": ""
+      }
+    ]
+  }
+}
+
+docs {
+  Submit a complete school survey.
+
+  Required:
+  - schoolName (string)
+
+  Optional arrays:
+  - studentDetails[]: classNumber (6-10), sectionA, sectionB
+  - teacherCounts[]:  subject, count
+  - mobileNetworks[]: serviceProvider, has5g, has4g, has3g, signalStrength
+  - virtualClassrooms[]: full equipment object (IFP, webcam, mic, UPS, VSAT)
+  - digitalClassrooms[]: full equipment object (IFP, webcam, mic, UPS — no VSAT)
+
+  Equipment status values: "OK" | "Faulty" | "Missing" | "N/A"
+  powerDuration: "24 Hours" | "12 Hours" | "8 Hours" | "Irregular"
+  earthFacility: "Available" | "Not Available" | "Partial"
+  signalStrength: "Excellent" | "Good" | "Average" | "Poor"
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has id", function() { expect(res.getBody().data.id).to.be.a("number"); });
+}

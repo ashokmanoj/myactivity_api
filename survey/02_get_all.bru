@@ -1,0 +1,43 @@
+meta {
+  name: SURVEY-02: Get All Surveys
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/survey
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  ~page: 1
+  ~pageSize: 20
+  ~search: Biramitrapur
+}
+
+docs {
+  Get all school survey submissions with pagination and search.
+
+  Query params (all optional):
+  - page:     page number (default: 1)
+  - pageSize: records per page (default: 20)
+  - search:   filter by school name, UDISE code, or district (case-insensitive)
+
+  Response includes:
+  - rows[]: id, school_name, udise_code, block, district, village,
+            hm_name, hm_contact, num_virtual_classrooms, num_smart_classrooms, created_at
+  - total: total matching records
+  - page, pageSize
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has rows", function() { expect(res.getBody().data.rows).to.be.an("array"); });
+  test("has total", function() { expect(res.getBody().data.total).to.be.a("number"); });
+}
