@@ -38,12 +38,12 @@ body:json {
     "internetStatus": true,
     "speedUl": "10",
     "speedDl": "20",
-    "studentDetails": [
-      { "classNumber": 6, "sectionA": 35, "sectionB": 30 },
-      { "classNumber": 7, "sectionA": 32, "sectionB": 28 },
-      { "classNumber": 8, "sectionA": 30, "sectionB": 25 },
-      { "classNumber": 9, "sectionA": 28, "sectionB": 22 },
-      { "classNumber": 10, "sectionA": 25, "sectionB": 20 }
+    "studentSections": [
+      { "classNumber": 6, "sections": [{ "name": "A", "count": 35 }, { "name": "B", "count": 30 }] },
+      { "classNumber": 7, "sections": [{ "name": "A", "count": 32 }, { "name": "B", "count": 28 }] },
+      { "classNumber": 8, "sections": [{ "name": "A", "count": 30 }] },
+      { "classNumber": 9, "sections": [{ "name": "A", "count": 28 }, { "name": "B", "count": 22 }, { "name": "C", "count": 20 }] },
+      { "classNumber": 10, "sections": [{ "name": "A", "count": 25 }] }
     ],
     "teacherCounts": [
       { "subject": "Mathematics", "count": 2 },
@@ -110,7 +110,7 @@ docs {
   - schoolName (string)
 
   Optional arrays:
-  - studentDetails[]: classNumber (6-10), sectionA, sectionB
+  - studentSections[]: classNumber, sections[{name, count}]  — dynamic N sections per class
   - teacherCounts[]:  subject, count
   - mobileNetworks[]: serviceProvider, has5g, has4g, has3g, signalStrength
   - virtualClassrooms[]: full equipment object (IFP, webcam, mic, UPS, VSAT)

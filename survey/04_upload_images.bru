@@ -1,0 +1,28 @@
+meta {
+  name: Upload Survey Images
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/api/v1/survey/1/images
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  virtual_0_ifp: @file(/path/to/ifp-photo.jpg)
+  virtual_0_webcam: @file(/path/to/webcam-photo.jpg)
+  virtual_0_mic: @file(/path/to/mic-photo.jpg)
+  virtual_0_ups: @file(/path/to/ups-photo.jpg)
+  virtual_0_vsat: @file(/path/to/vsat-photo.jpg)
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("Images uploaded", function() { expect(res.getBody().data.count).to.be.above(0); });
+}
