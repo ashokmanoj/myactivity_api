@@ -1,5 +1,5 @@
 meta {
-  name: Lookup School by Institute Code
+  name: Lookup School by UDISE
   type: http
   seq: 5
 }
@@ -10,22 +10,12 @@ get {
   auth: bearer
 }
 
-auth:bearer {
-  token: {{token}}
+params:query {
+  institute_code: INST004
 }
 
-docs {
-  Auto-fill school details by institute_code from the institution master table.
-  Used by mobile: user types institute code → form auto-fills school name, district, block, pin.
-
-  Query param:
-    code  (required) — value of institute_code column in institution table
-
-  Response fields:
-    instituteId, instituteCode, schoolName,
-    district, block, pin, address, latitude, longitude
-
-  Returns 404 if code not found or institution is inactive.
+auth:bearer {
+  token: {{token}}
 }
 
 tests {
@@ -37,4 +27,17 @@ tests {
       expect(res.getBody().data).to.have.property("schoolName");
     }
   });
+}
+
+docs {
+  Auto-fill school details by UDISE code.
+  Used by mobile app — when user types a UDISE code, call this API.
+  If the school was surveyed before, returns pre-filled details.
+  Returns 404 if UDISE code is not found in any previous survey.
+  
+  Response fields (camelCase, ready to use in form):
+    schoolName, mediumOfInstruction, udiseCode,
+    village, block, district, pin,
+    distanceFromBlock, distanceFromDistrictHq,
+    hmName, hmContact, hmEmail, supportingStaffContact
 }
