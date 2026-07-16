@@ -1,0 +1,28 @@
+meta {
+  name: SETTINGS-01: Get Companies
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/settings/companies
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Returns all active companies for the module settings dropdown.
+
+  Response:
+  - data[]: id, name
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

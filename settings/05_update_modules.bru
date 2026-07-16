@@ -1,0 +1,58 @@
+meta {
+  name: SETTINGS-05: Update Module Settings
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{base_url}}/api/v1/settings/modules
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "scopeType": "company",
+    "scopeId": 1,
+    "modules": {
+      "distance": true,
+      "expense": true,
+      "task": true,
+      "task_activity": true,
+      "class_run": true,
+      "add_location": true,
+      "leave": true,
+      "activity": true,
+      "pm_inspection": false,
+      "survey": false
+    }
+  }
+}
+
+docs {
+  Enable or disable mobile app modules for a company, project, or user.
+
+  Body:
+  - scopeType (required): "company" | "project" | "user"
+  - scopeId   (required): ID of the company / project / user
+  - modules   (required): object with module_key → true/false
+
+  You can pass a partial modules object — only the listed keys are updated.
+
+  Priority order (highest wins):
+    User → Project → Company → default (true)
+
+  scopeType examples:
+  - "company" + scopeId=1  → applies to all users in company 1
+  - "project" + scopeId=3  → overrides company settings for project 3
+  - "user"    + scopeId=42 → overrides project/company settings for user 42
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}

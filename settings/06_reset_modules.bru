@@ -1,0 +1,38 @@
+meta {
+  name: SETTINGS-06: Reset Module Settings (Remove Override)
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{base_url}}/api/v1/settings/modules
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  scopeType: user
+  scopeId: 42
+}
+
+docs {
+  Remove all custom module settings for a specific scope.
+
+  After reset, the scope inherits settings from the level above:
+  - User  → inherits from Project (or Company if no project setting)
+  - Project → inherits from Company
+  - Company → falls back to default (all enabled)
+
+  Query params (required):
+  - scopeType: "company" | "project" | "user"
+  - scopeId:   the ID to reset
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}

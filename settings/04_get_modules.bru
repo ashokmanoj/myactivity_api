@@ -1,0 +1,53 @@
+meta {
+  name: SETTINGS-04: Get Module Settings
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/api/v1/settings/modules
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  scopeType: company
+  scopeId: 1
+}
+
+docs {
+  Get module enable/disable settings for a specific scope.
+
+  Auto-seeds all modules as enabled if they don't exist yet for the given scope.
+
+  Query params (required):
+  - scopeType: "company" | "project" | "user"
+  - scopeId:   the ID of the company / project / user
+
+  Response:
+  - data[]: module_key, is_enabled, updated_at
+
+  Module keys:
+  - distance       → Distance tab
+  - expense        → Expense tab
+  - task           → Task List tab
+  - task_activity  → Task Activity tab
+  - class_run      → Class Run tab
+  - add_location   → Add Location tab
+  - leave          → Leave tab
+  - activity       → Activity tab
+  - pm_inspection  → PM Inspection tab
+  - survey         → Survey tab
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has array", function() { expect(res.getBody().data).to.be.an("array"); });
+  test("has module_key", function() { expect(res.getBody().data[0]).to.have.property("module_key"); });
+  test("has is_enabled", function() { expect(res.getBody().data[0]).to.have.property("is_enabled"); });
+}

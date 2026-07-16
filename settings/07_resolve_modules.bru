@@ -1,0 +1,64 @@
+meta {
+  name: SETTINGS-07: Resolve Modules (Mobile App)
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{base_url}}/api/v1/settings/resolve
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  companyId: 1
+  ~projectId: 2
+  ~userId: 45
+}
+
+docs {
+  ★ PRIMARY ENDPOINT FOR THE MOBILE APP ★
+
+  Call this on app startup (after login) to get the final resolved
+  module visibility for the logged-in user.
+
+  The backend automatically cascades:
+    User setting → Project setting → Company setting → default (true)
+
+  Query params:
+  - companyId  (required): from login response
+  - projectId  (optional): from login response, if user belongs to a project
+  - userId     (optional): from login response, for user-specific overrides
+
+  Response:
+  - data[]: module_key, is_enabled
+
+  Mobile app logic:
+    if is_enabled == false  →  HIDE the tab
+    if is_enabled == true   →  SHOW the tab
+
+  Module key → Tab mapping:
+  - distance       → Distance
+  - expense        → Expense
+  - task           → Task List
+  - task_activity  → Task Activity
+  - class_run      → Class Run
+  - add_location   → Add Location
+  - leave          → Leave
+  - activity       → Activity
+  - pm_inspection  → PM Inspection
+  - survey         → Survey
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has array", function() { expect(res.getBody().data).to.be.an("array"); });
+  test("has 10 modules", function() { expect(res.getBody().data).to.have.lengthOf(10); });
+  test("each has module_key", function() { expect(res.getBody().data[0]).to.have.property("module_key"); });
+  test("each has is_enabled", function() { expect(res.getBody().data[0]).to.have.property("is_enabled"); });
+}

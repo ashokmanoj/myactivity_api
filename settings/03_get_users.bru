@@ -1,0 +1,37 @@
+meta {
+  name: SETTINGS-03: Get Users (Search)
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/v1/settings/users
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  ~search: Ramesh
+}
+
+docs {
+  Search active users for the module settings user dropdown.
+
+  Query params (all optional):
+  - search: filter by full_name, emp_code, or mobile_number (case-insensitive)
+
+  Returns max 50 results.
+
+  Response:
+  - data[]: id, name, emp_code, mobile_number
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

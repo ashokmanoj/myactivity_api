@@ -1,0 +1,29 @@
+meta {
+  name: SURVEY-06: Get Survey Districts
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{base_url}}/api/v1/survey/districts
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Returns distinct list of districts from survey submissions.
+  Used to populate the district filter dropdown in the Survey admin screen.
+
+  Response:
+  - data[]: { district }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
