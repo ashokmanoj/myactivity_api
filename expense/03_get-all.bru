@@ -1,0 +1,39 @@
+meta {
+  name: MA-EXP-03: Get All Expenses
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/v1/expense?companyId=2
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  companyId: 2
+}
+
+docs {
+  ## Get All Expenses (Web — Approvers)
+
+  Returns all expense bills for a company, joined with user name, project name.
+  Used by Verifier / RM / TA / Accounts to view and act on pending bills.
+
+  Each row contains all 4 approval stages:
+  - `verifier_status`, `verifier_amount`, `verifier_comment`, `verifier_at`
+  - `rm_status`, `rm_amount`, `rm_comment`, `rm_at`
+  - `ta_status`, `ta_amount`, `ta_comment`, `ta_at`
+  - `accounts_status`, `accounts_amount`, `accounts_comment`, `accounts_at`
+  - `payment_status`, `overall_status`
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

@@ -1,0 +1,38 @@
+meta {
+  name: MA-EXP-09: Send Message (Chat — text only)
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{base_url}}/api/v1/expense/1/messages
+  body: multipart-form
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  message: Please check the revised bill amount I discussed with the RM.
+  toRole: rm
+}
+
+docs {
+  ## Send a Chat Message on an Expense Bill (text only)
+
+  Replace `1` in the URL with the actual `expense_id`.
+
+  Use multipart/form-data so you can optionally attach a file.
+  - `message` — text (required unless `attachment` is provided)
+  - `toRole`  — optional target role (verifier / rm / ta / accounts)
+
+  The sender identity (name, role) is read from the JWT token.
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has message_id", function() { expect(res.getBody().data).to.have.property("message_id"); });
+}

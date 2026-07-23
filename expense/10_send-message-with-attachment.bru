@@ -1,0 +1,39 @@
+meta {
+  name: MA-EXP-10: Send Message (Chat — with attachment)
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{base_url}}/api/v1/expense/1/messages
+  body: multipart-form
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  message: Attaching the corrected bill scan for your review.
+  toRole: rm
+  attachment: @file(/path/to/corrected_bill.jpg)
+}
+
+docs {
+  ## Send a Chat Message with File Attachment
+
+  Same as `09_send-message` but includes a file in `attachment`.
+
+  Supported file types: image/jpeg, image/png, image/webp, application/pdf.
+  Max file size: 10 MB.
+
+  The `attachment_path` in the response (and in future message fetches)
+  can be resolved to a full URL using the frontend `getImageUrl()` helper.
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has message_id", function() { expect(res.getBody().data).to.have.property("message_id"); });
+}

@@ -1,0 +1,35 @@
+meta {
+  name: MA-EXP-08: Get Bill Messages (Chat)
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{base_url}}/api/v1/expense/1/messages
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  ## Get Chat Messages for an Expense Bill
+
+  Replace `1` in the URL with the actual `expense_id`.
+
+  Returns all messages in chronological order. Each message includes:
+  - `message_id`, `expense_id`
+  - `sender_user_id`, `sender_name`, `sender_role`
+  - `to_role` — if this was a forward message
+  - `message` — text content
+  - `attachment_path` — file URL if a file was attached
+  - `created_at`
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

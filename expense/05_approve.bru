@@ -1,0 +1,53 @@
+meta {
+  name: MA-EXP-05: Approve Expense
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/api/v1/expense/1/approve
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "role":    "verifier",
+    "action":  "Approved",
+    "amount":  500.00,
+    "comment": "Bill verified. Amount looks correct."
+  }
+}
+
+docs {
+  ## Approve or Reject an Expense Bill
+
+  Replace `1` in the URL with the actual `expense_id`.
+
+  **role** — must match the caller's role:
+  | role        | Who uses it                              |
+  |-------------|------------------------------------------|
+  | `verifier`  | Verifier role                            |
+  | `rm`        | Regional Manager / Regional Manager Head |
+  | `ta`        | TA Team                                  |
+  | `accounts`  | Accounts                                 |
+
+  **action** — `Approved` or `Rejected`
+
+  **amount** — the approved amount (can differ from submitted amount)
+
+  **comment** — required when rejecting; optional when approving
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}

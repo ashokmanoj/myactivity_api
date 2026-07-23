@@ -1,0 +1,44 @@
+meta {
+  name: MA-EXP-07: Forward Expense
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{base_url}}/api/v1/expense/1/forward
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "fromRole": "verifier",
+    "toRole":   "rm",
+    "message":  "Forwarding to RM for review. Bill amount matches receipt."
+  }
+}
+
+docs {
+  ## Forward Expense to Next Role
+
+  Replace `1` in the URL with the actual `expense_id`.
+
+  **fromRole** — the current stage forwarding (verifier / rm / ta)
+  **toRole**   — the target stage (rm / ta / accounts)
+  **message**  — forwarding note (shown in the bill's chat)
+
+  This marks the current stage as `Forwarded` and logs a chat message.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}

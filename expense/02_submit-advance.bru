@@ -1,0 +1,40 @@
+meta {
+  name: MA-EXP-02: Submit Advance (Mobile)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/api/v1/expense/submit
+  body: multipart-form
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  userId: 1
+  companyId: 2
+  projectId: 3
+  type: advance
+  purpose: Travel Advance
+  hasBill: false
+  amount: 2000
+  billDate: 2026-07-20
+  remarks: Advance required for 3-day field trip to Guwahati
+}
+
+docs {
+  ## Submit Advance (Mobile — no bill image)
+
+  Same endpoint as expense submit, with `type: advance` and `hasBill: false`.
+  No file attachment needed.
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has expense_id", function() { expect(res.getBody().data).to.have.property("expense_id"); });
+}

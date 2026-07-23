@@ -1,0 +1,40 @@
+meta {
+  name: MA-EXP-06: Reject Expense
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/api/v1/expense/1/approve
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "role":    "verifier",
+    "action":  "Rejected",
+    "amount":  500.00,
+    "comment": "Bill image is unclear. Please resubmit with a valid bill."
+  }
+}
+
+docs {
+  ## Reject an Expense Bill
+
+  Same endpoint as Approve — same URL `POST /expense/:id/approve`.
+  Set `action` to `"Rejected"` and provide a `comment` explaining the reason.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}

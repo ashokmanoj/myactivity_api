@@ -1,0 +1,31 @@
+meta {
+  name: MA-EXP-04: Get Expenses By User
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/api/v1/expense/user/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  ## Get Expenses By User
+
+  Returns all expense bills submitted by a specific user (identified by user_id).
+  Used by the mobile app to show the user's own submission history,
+  or by the web to view a particular executive's bills.
+
+  Replace `1` in the URL with the actual `user_id`.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
