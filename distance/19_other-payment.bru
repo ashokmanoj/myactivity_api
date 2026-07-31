@@ -1,0 +1,45 @@
+meta {
+  name: MA-DIST-19: Mark Other Trip Paid (Accounts)
+  type: http
+  seq: 19
+}
+
+post {
+  url: {{base_url}}/api/v1/distance/other/payment
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "tripId": 1,
+    "paidBy": 9
+  }
+}
+
+docs {
+  ## Mark Other Trip as Paid
+
+  Called by Accounts role after physically making the payment.
+  Sets `payment_status = 'Paid'`.
+
+  ### Fields
+  | Field  | Required | Description            |
+  |--------|----------|------------------------|
+  | tripId | Yes      | ID of the other trip   |
+  | paidBy | Yes      | user_id of accounts user |
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("payment_status Paid", function() { expect(res.getBody().data.payment_status).to.equal("Paid"); });
+}

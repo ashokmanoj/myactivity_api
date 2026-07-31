@@ -1,0 +1,74 @@
+meta {
+  name: MA-DIST-15: Get All Other Trips (Bus/Auto/Mixed)
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{base_url}}/api/v1/distance/other
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  page: 1
+  pageSize: 10
+  ~userId:
+  ~startDate: 2025-07-01
+  ~endDate: 2025-07-31
+  ~paymentStatus:
+}
+
+docs {
+  ## Get All Other Trips
+
+  Returns paginated list of Bus/Auto/mixed-vehicle trips with their legs.
+
+  ### Query Params
+  | Param         | Description                                |
+  |---------------|--------------------------------------------|
+  | page          | Page number (default 1)                    |
+  | pageSize      | Records per page (default 10)              |
+  | userId        | Filter by executive user_id                |
+  | startDate     | Filter from date (YYYY-MM-DD)              |
+  | endDate       | Filter to date (YYYY-MM-DD)                |
+  | paymentStatus | Processing / Pending Payment / Paid        |
+
+  ### Response
+  Each row includes a `legs` array with individual vehicle legs.
+  ```json
+  {
+    "data": {
+      "rows": [
+        {
+          "id": 1,
+          "executive_name": "John Doe",
+          "trip_date": "2025-07-15",
+          "payment_method": "Online",
+          "amount": "350.00",
+          "verifier_status": "Pending",
+          "rm_status": "Pending",
+          "ta_status": "Pending",
+          "payment_status": "Processing",
+          "legs": [
+            { "mode": "Bus", "from_location": "Guwahati", "to_location": "Jorhat", "distance": 300 },
+            { "mode": "Auto", "from_location": "Jorhat Bus Stand", "to_location": "Office", "distance": 5 }
+          ]
+        }
+      ],
+      "total": 1
+    }
+  }
+  ```
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has rows", function() { expect(res.getBody().data).to.have.property("rows"); });
+  test("has total", function() { expect(res.getBody().data).to.have.property("total"); });
+}

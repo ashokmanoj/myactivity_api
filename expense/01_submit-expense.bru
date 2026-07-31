@@ -6,7 +6,7 @@ meta {
 
 post {
   url: {{base_url}}/api/v1/expense/submit
-  body: multipart-form
+  body: multipartForm
   auth: bearer
 }
 
@@ -24,14 +24,20 @@ body:multipart-form {
   amount: 500
   billDate: 2026-07-20
   remarks: Breakfast at hotel during field visit
-  billImage: @file(/path/to/bill_photo.jpg)
+  ~billImage: 
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has expense_id", function() { expect(res.getBody().data).to.have.property("expense_id"); });
 }
 
 docs {
   ## Submit Expense (Mobile)
-
+  
   Called by the **mobile app** when a user submits an expense bill.
-
+  
   | Field       | Type    | Required | Notes                        |
   |-------------|---------|----------|------------------------------|
   | userId      | int     | yes      | user_id from user_tbl        |
@@ -44,10 +50,4 @@ docs {
   | billDate    | date    | no       | YYYY-MM-DD                   |
   | remarks     | string  | no       |                              |
   | billImage   | file    | no       | image/pdf — only if hasBill=true |
-}
-
-tests {
-  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
-  test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("has expense_id", function() { expect(res.getBody().data).to.have.property("expense_id"); });
 }

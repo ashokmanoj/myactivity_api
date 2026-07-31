@@ -1,0 +1,66 @@
+meta {
+  name: MA-APP-03: Upload APK (Superuser)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/api/v1/app/version/upload-apk
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  apk: @file(C:\Users\manoj\Downloads\MyActivity.apk) @contentType(application/vnd.android.package-archive)
+  version: 1.0.12
+  minVersion: 1.0.15
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has downloadUrl", function() { expect(res.getBody().data).to.have.property("downloadUrl"); });
+}
+
+docs {
+  ## Upload New APK (Superuser only)
+  
+  Upload a new APK file to the server. The server automatically:
+  1. Saves it as `uploads/apk/myactivity-v{version}.apk`
+  2. Sets `store_url` to the direct download link
+  3. Updates `latest_version` and `min_version` in the version config
+  4. Enables `is_force_update = true` automatically
+  
+  ### Fields
+  | Field      | Required | Description                                      |
+  |------------|----------|--------------------------------------------------|
+  | apk        | Yes      | The .apk file                                    |
+  | version    | Yes      | New version string e.g. `1.5.0`                  |
+  | minVersion | No       | Min required version — defaults to `version`     |
+  
+  ### Response
+  ```json
+  {
+    "success": true,
+    "message": "APK v1.5.0 uploaded. Download: https://myactivity.stucle.in/uploads/apk/myactivity-v1.5.0.apk",
+    "data": {
+      "platform": "android",
+      "min_version": "1.5.0",
+      "latest_version": "1.5.0",
+      "store_url": "https://myactivity.stucle.in/uploads/apk/myactivity-v1.5.0.apk",
+      "is_force_update": true
+    }
+  }
+  ```
+  
+  ### Flutter integration
+  When user gets HTTP 426, show ForceUpdateScreen with a button:
+  ```dart
+  launchUrl(Uri.parse(response['storeUrl']));
+  // Opens download link in browser → user downloads & installs APK manually
+  ```
+}

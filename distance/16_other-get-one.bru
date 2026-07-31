@@ -1,0 +1,29 @@
+meta {
+  name: MA-DIST-16: Get Other Trip by ID
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{base_url}}/api/v1/distance/other/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  ## Get Single Other Trip
+
+  Returns one trip with all its legs.
+
+  Replace `1` in the URL with the actual trip `id`.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has legs array", function() { expect(res.getBody().data).to.have.property("legs"); });
+}

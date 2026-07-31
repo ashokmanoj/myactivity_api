@@ -1,0 +1,51 @@
+meta {
+  name: MA-APP-02: Update Version Config (Superuser)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/api/v1/app/version
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "platform": "android",
+    "minVersion": "1.2.0",
+    "latestVersion": "1.5.0",
+    "storeUrl": "https://play.google.com/store/apps/details?id=in.appsndevices.myactivity",
+    "updateMessage": "A new version is available with important updates. Please update to continue.",
+    "isForceUpdate": true
+  }
+}
+
+docs {
+  ## Update App Version Config (Superuser only)
+
+  Sets the minimum required version for a platform. Any mobile user running
+  a version below `minVersion` will receive HTTP 426 on every API call,
+  blocking the app until they update.
+
+  ### Fields
+  | Field         | Required | Description                              |
+  |---------------|----------|------------------------------------------|
+  | platform      | Yes      | `android` or `ios`                       |
+  | minVersion    | Yes      | Minimum supported version e.g. `1.2.0`  |
+  | latestVersion | Yes      | Current latest version e.g. `1.5.0`     |
+  | storeUrl      | No       | Play Store / App Store deep link         |
+  | updateMessage | No       | Custom message shown to user             |
+  | isForceUpdate | No       | Default `true` — set `false` to disable  |
+
+  > Setting `isForceUpdate: false` disables the block without deleting config.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}

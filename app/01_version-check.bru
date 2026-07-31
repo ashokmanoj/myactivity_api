@@ -1,0 +1,66 @@
+meta {
+  name: MA-APP-01: Version Check (Public)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/app/version?platform=android
+  body: none
+  auth: none
+}
+
+docs {
+  ## Get App Version Config
+
+  Public endpoint — no auth required. Flutter calls this on app start.
+
+  ### Query params
+  | Param    | Description                        |
+  |----------|------------------------------------|
+  | platform | `android` or `ios` (optional)      |
+
+  ### Response
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "id": 1,
+        "platform": "android",
+        "min_version": "1.2.0",
+        "latest_version": "1.5.0",
+        "store_url": "https://play.google.com/store/apps/details?id=...",
+        "update_message": "A new version is available. Please update to continue.",
+        "is_force_update": true,
+        "updated_at": "2026-07-28T10:00:00Z"
+      }
+    ]
+  }
+  ```
+
+  ### Blocked response (HTTP 426) — sent by auth middleware when version is too old
+  ```json
+  {
+    "success": false,
+    "updateRequired": true,
+    "message": "Your app version (1.1.0) is no longer supported. Please update to version 1.2.0 or above.",
+    "latestVersion": "1.5.0",
+    "storeUrl": "https://play.google.com/store/apps/details?id=..."
+  }
+  ```
+
+  ### Flutter integration
+  Send these headers with every API request:
+  ```
+  x-app-version: 1.1.0
+  x-platform: android
+  ```
+  Intercept HTTP 426 in your Dio interceptor and navigate to the ForceUpdateScreen.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

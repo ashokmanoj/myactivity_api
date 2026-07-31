@@ -1,0 +1,51 @@
+meta {
+  name: MA-DIST-18: Approve Other Trip
+  type: http
+  seq: 18
+}
+
+post {
+  url: {{base_url}}/api/v1/distance/other/approve
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "tripId":     1,
+    "approverId": 7,
+    "role":       "verifier",
+    "action":     "Approved",
+    "comment":    "Receipts verified. Amount correct.",
+    "amount":     350.00
+  }
+}
+
+docs {
+  ## Approve / Reject an Other Trip
+
+  Same approval flow as regular distance trips — verifier → rm → ta.
+
+  ### Fields
+  | Field      | Required | Description                              |
+  |------------|----------|------------------------------------------|
+  | tripId     | Yes      | ID of the other trip                     |
+  | approverId | Yes      | user_id of the approver                  |
+  | role       | Yes      | verifier / rm / ta                       |
+  | action     | Yes      | Approved / Rejected                      |
+  | comment    | No       | Remarks from approver                    |
+  | amount     | No       | Approved amount (required for verifier)  |
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}
