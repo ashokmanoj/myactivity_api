@@ -1,7 +1,7 @@
 meta {
   name: MA-EXP-01: Submit Generic Expense (Mobile)
   type: http
-  seq: 1
+  seq: 3
 }
 
 post {
@@ -31,27 +31,74 @@ body:multipart-form {
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("has expense_id", function() { expect(res.getBody().data).to.have.property("expense_id"); });
+
+  var data = res.getBody().data;
+
+  test("has expense_id",    function() { expect(data).to.have.property("expense_id"); });
+  test("has purpose",       function() { expect(data).to.have.property("purpose"); });
+  test("has expense_date",  function() { expect(data).to.have.property("expense_date"); });
+  test("has amount",        function() { expect(data).to.have.property("amount"); });
+  test("has payment_method",function() { expect(data).to.have.property("payment_method"); });
+  test("has remarks",       function() { expect(data).to.have.property("remarks"); });
+  test("has full_name",     function() { expect(data).to.have.property("full_name"); });
+  test("has emp_code",      function() { expect(data).to.have.property("emp_code"); });
+  test("has project_name",  function() { expect(data).to.have.property("project_name"); });
+  test("has overall_status",function() { expect(data).to.have.property("overall_status"); });
+  test("has images array",  function() { expect(data.images).to.be.an("array"); });
+  test("has created_at",    function() { expect(data).to.have.property("created_at"); });
 }
 
 docs {
-  ## Submit Generic Expense (Mobile)
+  ## Submit Generic Expense (Mobile) — POST /expense/submit
 
-  Use 01_submit-food-expense for Food, 01b_submit-stay-expense for Stay.
+  Use `/expense/food-submit` for Food, `/expense/stay-submit` for Stay.
+  This endpoint accepts any `purpose` value from the `/expense/purposes` list.
 
-  **Image upload**: send photos as multipart field `images` (array, up to 10 files).
-  Old field name `billImage` is no longer used.
+  ### Request Fields
 
-  | Field       | Type    | Required | Notes                          |
-  |-------------|---------|----------|--------------------------------|
-  | userId      | int     | yes      | executive's user_id            |
-  | companyId   | int     | yes      |                                |
-  | projectId   | int     | no       |                                |
-  | type        | string  | no       | `expense` (default)            |
-  | purpose     | string  | no       | from /expense/purposes list    |
-  | hasBill     | boolean | no       | true if bill image attached    |
-  | amount      | number  | yes      |                                |
-  | expenseDate | date    | no       | YYYY-MM-DD                     |
-  | remarks     | string  | no       |                                |
-  | images      | file[]  | no       | up to 10 photos                |
+  | Field         | Type    | Required | Notes                                      |
+  |---------------|---------|----------|--------------------------------------------|
+  | userId        | int     | yes      | executive's user_id                        |
+  | companyId     | int     | yes      |                                            |
+  | projectId     | int     | no       |                                            |
+  | type          | string  | no       | `expense` (default)                        |
+  | purpose       | string  | no       | from /expense/purposes list                |
+  | hasBill       | boolean | no       | true if bill image attached                |
+  | amount        | number  | yes      |                                            |
+  | expenseDate   | date    | no       | YYYY-MM-DD                                 |
+  | paymentMethod | string  | no       | Cash / Online / UPI / Card (default: Cash) |
+  | remarks       | string  | no       |                                            |
+  | images        | file[]  | no       | up to 10 photos (field name: `images`)     |
+
+  ### Response (201) — `data` object
+
+  | Field          | Type     | Notes                              |
+  |----------------|----------|------------------------------------|
+  | expense_id     | int      | generated primary key              |
+  | user_id        | int      |                                    |
+  | company_id     | int      |                                    |
+  | project_id     | int      |                                    |
+  | type           | string   | `expense`                          |
+  | purpose        | string   | as submitted                       |
+  | has_bill       | boolean  |                                    |
+  | amount         | number   |                                    |
+  | bill_date      | string   | YYYY-MM-DD or null                 |
+  | expense_date   | string   | YYYY-MM-DD or null                 |
+  | payment_method | string   | Cash / Online / UPI / Card         |
+  | remarks        | string   |                                    |
+  | bill_image_path| string   | path of first uploaded image       |
+  | state_type     | string   | null unless Food purpose           |
+  | food_sub_type  | string   | null unless Food purpose           |
+  | hotel_name     | string   | null unless Stay purpose           |
+  | stay_location  | string   | null unless Stay purpose           |
+  | stay_lat       | number   | null unless Stay purpose           |
+  | stay_lng       | number   | null unless Stay purpose           |
+  | stay_days      | int      | null unless Stay purpose           |
+  | overall_status | string   | `Pending` (default)                |
+  | payment_status | string   | null until paid                    |
+  | created_at     | datetime | ISO 8601                           |
+  | full_name      | string   | executive's name                   |
+  | emp_code       | string   |                                    |
+  | project_name   | string   |                                    |
+  | images         | string[] | array of all uploaded image paths  |
 }

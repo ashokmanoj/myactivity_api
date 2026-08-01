@@ -1,7 +1,7 @@
 meta {
   name: MA-EXP-01b: Submit Stay Expense (Mobile)
   type: http
-  seq: 1
+  seq: 2
 }
 
 post {
@@ -19,10 +19,9 @@ body:multipart-form {
   companyId: 2
   projectId: 3
   type: expense
-  purpose: Stay
   hasBill: true
   amount: 580
-  expenseDate: 2026-07-31
+  expenseDate: 2026-08-01
   hotelName: Hotel Prakash Lodge
   stayLocation: Yeswanthpur, Bengaluru, Karnataka
   stayLat: 13.0210
@@ -36,28 +35,81 @@ body:multipart-form {
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("has expense_id", function() { expect(res.getBody().data).to.have.property("expense_id"); });
+
+  var data = res.getBody().data;
+
+  test("has expense_id",    function() { expect(data).to.have.property("expense_id"); });
+  test("purpose is Stay",   function() { expect(data.purpose).to.equal("Stay"); });
+  test("has expense_date",  function() { expect(data).to.have.property("expense_date"); });
+  test("has amount",        function() { expect(data).to.have.property("amount"); });
+  test("has payment_method",function() { expect(data).to.have.property("payment_method"); });
+  test("has hotel_name",    function() { expect(data).to.have.property("hotel_name"); });
+  test("has stay_location", function() { expect(data).to.have.property("stay_location"); });
+  test("has stay_lat",      function() { expect(data).to.have.property("stay_lat"); });
+  test("has stay_lng",      function() { expect(data).to.have.property("stay_lng"); });
+  test("has stay_days",     function() { expect(data).to.have.property("stay_days"); });
+  test("has full_name",     function() { expect(data).to.have.property("full_name"); });
+  test("has emp_code",      function() { expect(data).to.have.property("emp_code"); });
+  test("has project_name",  function() { expect(data).to.have.property("project_name"); });
+  test("has overall_status",function() { expect(data).to.have.property("overall_status"); });
+  test("has images array",  function() { expect(data.images).to.be.an("array"); });
+  test("has created_at",    function() { expect(data).to.have.property("created_at"); });
 }
 
 docs {
   ## Submit Stay Expense (Mobile) — POST /expense/stay-submit
 
-  | Field        | Type    | Required | Notes                                    |
-  |--------------|---------|----------|------------------------------------------|
-  | userId       | int     | yes      | executive's user_id                      |
-  | companyId    | int     | yes      |                                          |
-  | projectId    | int     | no       |                                          |
-  | type         | string  | no       | `expense` (default)                      |
-  | purpose      | string  | yes      | `Stay` or `Hotel`                        |
-  | hasBill      | boolean | no       | true = receipt image attached            |
-  | amount       | number  | yes      | total amount paid                        |
-  | expenseDate  | date    | yes      | YYYY-MM-DD — check-in date               |
-  | hotelName    | string  | no       | hotel / lodge name                       |
-  | stayLocation | string  | no       | auto-detected GPS address                |
-  | stayLat      | number  | no       | GPS latitude                             |
-  | stayLng      | number  | no       | GPS longitude                            |
-  | stayDays      | int     | no       | number of nights / days                  |
+  `purpose` is automatically set to `Stay` by the server — no need to send it.
+
+  ### Request Fields
+
+  | Field         | Type    | Required | Notes                                      |
+  |---------------|---------|----------|--------------------------------------------|
+  | userId        | int     | yes      | executive's user_id                        |
+  | companyId     | int     | yes      |                                            |
+  | projectId     | int     | no       |                                            |
+  | type          | string  | no       | `expense` (default)                        |
+  | hasBill       | boolean | no       | true = receipt image attached              |
+  | amount        | number  | yes      | total amount paid                          |
+  | expenseDate   | date    | yes      | YYYY-MM-DD — check-in date                 |
+  | hotelName     | string  | no       | hotel / lodge name                         |
+  | stayLocation  | string  | no       | GPS address or manual entry                |
+  | stayLat       | number  | no       | GPS latitude                               |
+  | stayLng       | number  | no       | GPS longitude                              |
+  | stayDays      | int     | no       | number of nights / days                    |
   | paymentMethod | string  | no       | Cash / Online / UPI / Card (default: Cash) |
-  | remarks       | string  | no       |                                          |
-  | images        | file[]  | no       | up to 10 photos (field name: `images`)   |
+  | remarks       | string  | no       |                                            |
+  | images        | file[]  | no       | up to 10 photos (field name: `images`)     |
+
+  ### Response (201) — `data` object
+
+  | Field          | Type     | Notes                              |
+  |----------------|----------|------------------------------------|
+  | expense_id     | int      | generated primary key              |
+  | user_id        | int      |                                    |
+  | company_id     | int      |                                    |
+  | project_id     | int      |                                    |
+  | type           | string   | `expense`                          |
+  | purpose        | string   | `Stay`                             |
+  | has_bill       | boolean  |                                    |
+  | amount         | number   |                                    |
+  | bill_date      | string   | YYYY-MM-DD or null                 |
+  | expense_date   | string   | YYYY-MM-DD — check-in date         |
+  | payment_method | string   | Cash / Online / UPI / Card         |
+  | remarks        | string   |                                    |
+  | bill_image_path| string   | path of first uploaded image       |
+  | state_type     | null     |                                    |
+  | food_sub_type  | null     |                                    |
+  | hotel_name     | string   | hotel / lodge name                 |
+  | stay_location  | string   | GPS or manual address              |
+  | stay_lat       | number   |                                    |
+  | stay_lng       | number   |                                    |
+  | stay_days      | int      | number of nights                   |
+  | overall_status | string   | `Pending` (default)                |
+  | payment_status | string   | null until paid                    |
+  | created_at     | datetime | ISO 8601                           |
+  | full_name      | string   | executive's name                   |
+  | emp_code       | string   |                                    |
+  | project_name   | string   |                                    |
+  | images         | string[] | array of all uploaded image paths  |
 }

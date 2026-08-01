@@ -19,7 +19,6 @@ body:multipart-form {
   companyId: 2
   projectId: 3
   type: expense
-  purpose: Food
   hasBill: true
   amount: 65
   expenseDate: 2026-08-01
@@ -33,25 +32,75 @@ body:multipart-form {
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("has expense_id", function() { expect(res.getBody().data).to.have.property("expense_id"); });
+
+  var data = res.getBody().data;
+
+  test("has expense_id",    function() { expect(data).to.have.property("expense_id"); });
+  test("purpose is Food",   function() { expect(data.purpose).to.equal("Food"); });
+  test("has expense_date",  function() { expect(data).to.have.property("expense_date"); });
+  test("has amount",        function() { expect(data).to.have.property("amount"); });
+  test("has payment_method",function() { expect(data).to.have.property("payment_method"); });
+  test("has state_type",    function() { expect(data).to.have.property("state_type"); });
+  test("has food_sub_type", function() { expect(data).to.have.property("food_sub_type"); });
+  test("has full_name",     function() { expect(data).to.have.property("full_name"); });
+  test("has emp_code",      function() { expect(data).to.have.property("emp_code"); });
+  test("has project_name",  function() { expect(data).to.have.property("project_name"); });
+  test("has overall_status",function() { expect(data).to.have.property("overall_status"); });
+  test("has images array",  function() { expect(data.images).to.be.an("array"); });
+  test("has created_at",    function() { expect(data).to.have.property("created_at"); });
 }
 
 docs {
   ## Submit Food Expense (Mobile) — POST /expense/food-submit
 
-  | Field       | Type    | Required | Notes                                    |
-  |-------------|---------|----------|------------------------------------------|
-  | userId      | int     | yes      | executive's user_id                      |
-  | companyId   | int     | yes      |                                          |
-  | projectId   | int     | no       |                                          |
-  | type        | string  | no       | `expense` (default)                      |
-  | purpose     | string  | yes      | `Food`                                   |
-  | hasBill     | boolean | no       | true = bill image attached               |
-  | amount      | number  | yes      | total amount                             |
-  | expenseDate | date    | yes      | YYYY-MM-DD — date of the meal            |
-  | stateType   | string  | no       | `Within State` or `Other State`          |
-  | foodSubType   | string  | no       | Breakfast / Lunch / Dinner / Snacks      |
+  `purpose` is automatically set to `Food` by the server — no need to send it.
+
+  ### Request Fields
+
+  | Field         | Type    | Required | Notes                                      |
+  |---------------|---------|----------|--------------------------------------------|
+  | userId        | int     | yes      | executive's user_id                        |
+  | companyId     | int     | yes      |                                            |
+  | projectId     | int     | no       |                                            |
+  | type          | string  | no       | `expense` (default)                        |
+  | hasBill       | boolean | no       | true = bill image attached                 |
+  | amount        | number  | yes      | total amount                               |
+  | expenseDate   | date    | yes      | YYYY-MM-DD — date of the meal              |
+  | stateType     | string  | no       | `Within State` or `Other State`            |
+  | foodSubType   | string  | no       | Breakfast / Lunch / Dinner / Snacks        |
   | paymentMethod | string  | no       | Cash / Online / UPI / Card (default: Cash) |
-  | remarks       | string  | no       |                                          |
-  | images        | file[]  | no       | up to 10 photos (field name: `images`)   |
+  | remarks       | string  | no       |                                            |
+  | images        | file[]  | no       | up to 10 photos (field name: `images`)     |
+
+  ### Response (201) — `data` object
+
+  | Field          | Type     | Notes                              |
+  |----------------|----------|------------------------------------|
+  | expense_id     | int      | generated primary key              |
+  | user_id        | int      |                                    |
+  | company_id     | int      |                                    |
+  | project_id     | int      |                                    |
+  | type           | string   | `expense`                          |
+  | purpose        | string   | `Food`                             |
+  | has_bill       | boolean  |                                    |
+  | amount         | number   |                                    |
+  | bill_date      | string   | YYYY-MM-DD or null                 |
+  | expense_date   | string   | YYYY-MM-DD                         |
+  | payment_method | string   | Cash / Online / UPI / Card         |
+  | remarks        | string   |                                    |
+  | bill_image_path| string   | path of first uploaded image       |
+  | state_type     | string   | Within State / Other State         |
+  | food_sub_type  | string   | Breakfast / Lunch / Dinner / Snacks|
+  | hotel_name     | null     |                                    |
+  | stay_location  | null     |                                    |
+  | stay_lat       | null     |                                    |
+  | stay_lng       | null     |                                    |
+  | stay_days      | null     |                                    |
+  | overall_status | string   | `Pending` (default)                |
+  | payment_status | string   | null until paid                    |
+  | created_at     | datetime | ISO 8601                           |
+  | full_name      | string   | executive's name                   |
+  | emp_code       | string   |                                    |
+  | project_name   | string   |                                    |
+  | images         | string[] | array of all uploaded image paths  |
 }
