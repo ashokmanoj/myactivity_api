@@ -6,7 +6,7 @@ meta {
 
 post {
   url: {{base_url}}/api/v1/distance/other
-  body: multipart-form
+  body: multipartForm
   auth: bearer
 }
 
@@ -22,15 +22,21 @@ body:multipart-form {
   amount: 350.00
   remarks: Travelled to field visit
   legs: [{"mode":"Bus","fromLocation":"Guwahati","toLocation":"Jorhat","distance":300},{"mode":"Auto","fromLocation":"Jorhat Bus Stand","toLocation":"Office","distance":5}]
-  ~paymentScreenshot: @file(/path/to/screenshot.jpg)
+  paymentScreenshot: @file(C:\Users\manoj\OneDrive\Pictures\133873081429583745.jpg) @contentType(image/jpeg)
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has id", function() { expect(res.getBody().data).to.have.property("id"); });
 }
 
 docs {
   ## Create Other Trip (from mobile)
-
+  
   Submits a new Bus/Auto/mixed-vehicle trip. Called by the mobile app when
   the user selects "Other" vehicle type.
-
+  
   ### Fields
   | Field             | Required | Description                                        |
   |-------------------|----------|----------------------------------------------------|
@@ -42,7 +48,7 @@ docs {
   | remarks           | No       | Any notes                                          |
   | legs              | Yes      | JSON array of legs — see format below              |
   | paymentScreenshot | No       | Image file (payment proof)                         |
-
+  
   ### Legs JSON format
   ```json
   [
@@ -50,15 +56,9 @@ docs {
     { "mode": "Auto", "fromLocation": "Jorhat Bus Stand", "toLocation": "Office", "distance": 5 }
   ]
   ```
-
+  
   ### Response
   ```json
   { "success": true, "data": { "id": 1 } }
   ```
-}
-
-tests {
-  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
-  test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("has id", function() { expect(res.getBody().data).to.have.property("id"); });
 }

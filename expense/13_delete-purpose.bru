@@ -1,0 +1,28 @@
+meta {
+  name: MA-EXP-13: Delete Expense Purpose (Superuser)
+  type: http
+  seq: 13
+}
+
+delete {
+  url: {{base_url}}/api/v1/expense/purposes/8
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}
+
+docs {
+  ## Delete Expense Purpose (Superuser only)
+
+  Hard-deletes the purpose from the database.
+  Replace `8` in the URL with the actual `purpose_id`.
+  Active expenses referencing this purpose are NOT affected (purpose stored as text).
+}

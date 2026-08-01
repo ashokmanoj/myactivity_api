@@ -1,0 +1,57 @@
+meta {
+  name: MA-EXP-01: Submit Food Expense (Mobile)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/v1/expense/submit
+  body: multipart-form
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  userId: 5
+  companyId: 2
+  projectId: 3
+  type: expense
+  purpose: Food
+  hasBill: true
+  amount: 65
+  expenseDate: 2026-08-01
+  stateType: Within State
+  foodSubType: Breakfast
+  paymentMethod: Cash
+  remarks: Breakfast during field visit
+  ~images: @file(/path/to/receipt1.jpg)
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has expense_id", function() { expect(res.getBody().data).to.have.property("expense_id"); });
+}
+
+docs {
+  ## Submit Food Expense (Mobile)
+
+  | Field       | Type    | Required | Notes                                    |
+  |-------------|---------|----------|------------------------------------------|
+  | userId      | int     | yes      | executive's user_id                      |
+  | companyId   | int     | yes      |                                          |
+  | projectId   | int     | no       |                                          |
+  | type        | string  | no       | `expense` (default)                      |
+  | purpose     | string  | yes      | `Food`                                   |
+  | hasBill     | boolean | no       | true = bill image attached               |
+  | amount      | number  | yes      | total amount                             |
+  | expenseDate | date    | yes      | YYYY-MM-DD — date of the meal            |
+  | stateType   | string  | no       | `Within State` or `Other State`          |
+  | foodSubType   | string  | no       | Breakfast / Lunch / Dinner / Snacks      |
+  | paymentMethod | string  | no       | Cash / Online / UPI / Card (default: Cash) |
+  | remarks       | string  | no       |                                          |
+  | images        | file[]  | no       | up to 10 photos (field name: `images`)   |
+}

@@ -1,0 +1,63 @@
+meta {
+  name: MA-EXP-01b: Submit Stay Expense (Mobile)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/v1/expense/submit
+  body: multipart-form
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  userId: 5
+  companyId: 2
+  projectId: 3
+  type: expense
+  purpose: Stay
+  hasBill: true
+  amount: 580
+  expenseDate: 2026-07-31
+  hotelName: Hotel Prakash Lodge
+  stayLocation: Yeswanthpur, Bengaluru, Karnataka
+  stayLat: 13.0210
+  stayLng: 77.5520
+  stayDays: 2
+  paymentMethod: Online
+  remarks: Field visit accommodation
+  ~images: @file(/path/to/receipt1.jpg)
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has expense_id", function() { expect(res.getBody().data).to.have.property("expense_id"); });
+}
+
+docs {
+  ## Submit Stay Expense (Mobile)
+
+  | Field        | Type    | Required | Notes                                    |
+  |--------------|---------|----------|------------------------------------------|
+  | userId       | int     | yes      | executive's user_id                      |
+  | companyId    | int     | yes      |                                          |
+  | projectId    | int     | no       |                                          |
+  | type         | string  | no       | `expense` (default)                      |
+  | purpose      | string  | yes      | `Stay` or `Hotel`                        |
+  | hasBill      | boolean | no       | true = receipt image attached            |
+  | amount       | number  | yes      | total amount paid                        |
+  | expenseDate  | date    | yes      | YYYY-MM-DD — check-in date               |
+  | hotelName    | string  | no       | hotel / lodge name                       |
+  | stayLocation | string  | no       | auto-detected GPS address                |
+  | stayLat      | number  | no       | GPS latitude                             |
+  | stayLng      | number  | no       | GPS longitude                            |
+  | stayDays      | int     | no       | number of nights / days                  |
+  | paymentMethod | string  | no       | Cash / Online / UPI / Card (default: Cash) |
+  | remarks       | string  | no       |                                          |
+  | images        | file[]  | no       | up to 10 photos (field name: `images`)   |
+}

@@ -1,0 +1,43 @@
+meta {
+  name: MA-EXP-12: Create Expense Purpose (Superuser)
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{base_url}}/api/v1/expense/purposes
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Fuel",
+    "appliesTo": "expense",
+    "companyId": null
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has purpose_id", function() { expect(res.getBody().data).to.have.property("purpose_id"); });
+}
+
+docs {
+  ## Create Expense Purpose (Superuser only)
+
+  | Field     | Type   | Required | Notes                              |
+  |-----------|--------|----------|------------------------------------|
+  | name      | string | yes      | purpose label shown in mobile app  |
+  | appliesTo | string | no       | `expense` / `advance` / `both`     |
+  | companyId | int    | no       | null = available to all companies  |
+}

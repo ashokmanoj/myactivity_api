@@ -1,12 +1,12 @@
 meta {
-  name: MA-EXP-01: Submit Expense (Mobile)
+  name: MA-EXP-01: Submit Generic Expense (Mobile)
   type: http
   seq: 1
 }
 
 post {
   url: {{base_url}}/api/v1/expense/submit
-  body: multipartForm
+  body: multipart-form
   auth: bearer
 }
 
@@ -15,16 +15,17 @@ auth:bearer {
 }
 
 body:multipart-form {
-  userId: 1
+  userId: 5
   companyId: 2
   projectId: 3
   type: expense
-  purpose: Food & Beverages
+  purpose: Others
   hasBill: true
   amount: 500
-  billDate: 2026-07-20
-  remarks: Breakfast at hotel during field visit
-  ~billImage: 
+  expenseDate: 2026-08-01
+  paymentMethod: Cash
+  remarks: Miscellaneous expense during field visit
+  ~images: @file(/path/to/receipt.jpg)
 }
 
 tests {
@@ -34,20 +35,23 @@ tests {
 }
 
 docs {
-  ## Submit Expense (Mobile)
-  
-  Called by the **mobile app** when a user submits an expense bill.
-  
-  | Field       | Type    | Required | Notes                        |
-  |-------------|---------|----------|------------------------------|
-  | userId      | int     | yes      | user_id from user_tbl        |
-  | companyId   | int     | yes      |                              |
-  | projectId   | int     | no       |                              |
-  | type        | string  | no       | `expense` (default) or `advance` |
-  | purpose     | string  | no       | e.g. Food, Travel, MISC      |
-  | hasBill     | boolean | no       | true = bill image attached   |
-  | amount      | number  | yes      |                              |
-  | billDate    | date    | no       | YYYY-MM-DD                   |
-  | remarks     | string  | no       |                              |
-  | billImage   | file    | no       | image/pdf — only if hasBill=true |
+  ## Submit Generic Expense (Mobile)
+
+  Use 01_submit-food-expense for Food, 01b_submit-stay-expense for Stay.
+
+  **Image upload**: send photos as multipart field `images` (array, up to 10 files).
+  Old field name `billImage` is no longer used.
+
+  | Field       | Type    | Required | Notes                          |
+  |-------------|---------|----------|--------------------------------|
+  | userId      | int     | yes      | executive's user_id            |
+  | companyId   | int     | yes      |                                |
+  | projectId   | int     | no       |                                |
+  | type        | string  | no       | `expense` (default)            |
+  | purpose     | string  | no       | from /expense/purposes list    |
+  | hasBill     | boolean | no       | true if bill image attached    |
+  | amount      | number  | yes      |                                |
+  | expenseDate | date    | no       | YYYY-MM-DD                     |
+  | remarks     | string  | no       |                                |
+  | images      | file[]  | no       | up to 10 photos                |
 }
