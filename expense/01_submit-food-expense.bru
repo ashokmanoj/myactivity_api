@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{base_url}}/api/v1/expense/submit
+  url: {{base_url}}/api/v1/expense/food-submit
   body: multipart-form
   auth: bearer
 }
@@ -37,7 +37,7 @@ tests {
 }
 
 docs {
-  ## Submit Food Expense (Mobile)
+  ## Submit Food Expense (Mobile) — POST /expense/food-submit
 
   | Field       | Type    | Required | Notes                                    |
   |-------------|---------|----------|------------------------------------------|
