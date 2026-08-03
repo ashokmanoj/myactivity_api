@@ -6,7 +6,7 @@ meta {
 
 post {
   url: {{base_url}}/api/v1/expense/food-submit
-  body: multipart-form
+  body: multipartForm
   auth: bearer
 }
 
@@ -32,9 +32,9 @@ body:multipart-form {
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-
+  
   var data = res.getBody().data;
-
+  
   test("has expense_id",    function() { expect(data).to.have.property("expense_id"); });
   test("purpose is Food",   function() { expect(data.purpose).to.equal("Food"); });
   test("has expense_date",  function() { expect(data).to.have.property("expense_date"); });
@@ -52,11 +52,11 @@ tests {
 
 docs {
   ## Submit Food Expense (Mobile) — POST /expense/food-submit
-
+  
   `purpose` is automatically set to `Food` by the server — no need to send it.
-
+  
   ### Request Fields
-
+  
   | Field         | Type    | Required | Notes                                      |
   |---------------|---------|----------|--------------------------------------------|
   | userId        | int     | yes      | executive's user_id                        |
@@ -71,9 +71,9 @@ docs {
   | paymentMethod | string  | no       | Cash / Online / UPI / Card (default: Cash) |
   | remarks       | string  | no       |                                            |
   | images        | file[]  | no       | up to 10 photos (field name: `images`)     |
-
+  
   ### Response (201) — `data` object
-
+  
   | Field          | Type     | Notes                              |
   |----------------|----------|------------------------------------|
   | expense_id     | int      | generated primary key              |
