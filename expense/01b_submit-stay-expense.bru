@@ -22,6 +22,7 @@ body:multipart-form {
   hasBill: true
   amount: 580
   expenseDate: 2026-08-01
+  checkoutDate: 2026-08-03
   hotelName: Hotel Prakash Lodge
   stayLocation: Yeswanthpur, Bengaluru, Karnataka
   stayLat: 13.0210
@@ -31,6 +32,7 @@ body:multipart-form {
   receptionistPhone: 9876543210
   paymentMethod: Online
   remarks: Field visit accommodation
+  imagesMeta: [{"type":"bill","lat":13.0211,"lng":77.5521,"location":"Yeswanthpur, Bengaluru"},{"type":"bill","lat":13.0211,"lng":77.5521,"location":"Yeswanthpur, Bengaluru"},{"type":"hotel","lat":13.0210,"lng":77.5520,"location":"Yeswanthpur, Bengaluru"}]
   ~images: @file(/path/to/receipt1.jpg)
 }
 
@@ -50,6 +52,7 @@ tests {
   test("has stay_lat",      function() { expect(data).to.have.property("stay_lat"); });
   test("has stay_lng",      function() { expect(data).to.have.property("stay_lng"); });
   test("has stay_days",          function() { expect(data).to.have.property("stay_days"); });
+  test("has checkout_date",      function() { expect(data).to.have.property("checkout_date"); });
   test("has receptionist_name",  function() { expect(data).to.have.property("receptionist_name"); });
   test("has receptionist_phone", function() { expect(data).to.have.property("receptionist_phone"); });
   test("has full_name",          function() { expect(data).to.have.property("full_name"); });
@@ -64,9 +67,9 @@ docs {
   ## Submit Stay Expense (Mobile) — POST /expense/stay-submit
   
   `purpose` is automatically set to `Stay` by the server — no need to send it.
-  
+
   ### Request Fields
-  
+
   | Field         | Type    | Required | Notes                                      |
   |---------------|---------|----------|--------------------------------------------|
   | userId        | int     | yes      | executive's user_id                        |
@@ -76,19 +79,21 @@ docs {
   | hasBill       | boolean | no       | true = receipt image attached              |
   | amount        | number  | yes      | total amount paid                          |
   | expenseDate   | date    | yes      | YYYY-MM-DD — check-in date                 |
+  | checkoutDate  | date    | no       | YYYY-MM-DD — check-out date. Send this for a date-range stay; when present, the server computes `stay_days` itself (`checkoutDate - expenseDate`, min 1) and ignores any `stayDays` sent. Omit for a single-date stay and send `stayDays` manually instead. |
   | hotelName     | string  | no       | hotel / lodge name                         |
-  | stayLocation  | string  | no       | GPS address or manual entry                |
-  | stayLat       | number  | no       | GPS latitude                               |
-  | stayLng       | number  | no       | GPS longitude                              |
-  | stayDays           | int     | no       | number of nights / days                    |
+  | stayLocation  | string  | no       | GPS address or manual entry (whole-stay location) |
+  | stayLat       | number  | no       | GPS latitude (whole-stay location)         |
+  | stayLng       | number  | no       | GPS longitude (whole-stay location)        |
+  | stayDays           | int     | no       | number of nights — only used when `checkoutDate` is not sent |
   | receptionistName   | string  | no       | hotel receptionist's name                  |
   | receptionistPhone  | string  | no       | hotel receptionist's phone number          |
   | paymentMethod      | string  | no       | Cash / Online / UPI / Card (default: Cash) |
   | remarks       | string  | no       |                                            |
   | images        | file[]  | no       | up to 10 photos (field name: `images`)     |
-  
+  | imagesMeta    | string  | no       | JSON-stringified array, positionally aligned with `images` (`imagesMeta[i]` describes `images[i]`) — each entry: `{ type: 'bill'\|'hotel', lat: number, lng: number, location: string }`. Missing/short arrays default to `type: 'bill'` with null lat/lng/location. |
+
   ### Response (201) — `data` object
-  
+
   | Field          | Type     | Notes                              |
   |----------------|----------|------------------------------------|
   | expense_id     | int      | generated primary key              |
@@ -101,6 +106,7 @@ docs {
   | amount         | number   |                                    |
   | bill_date      | string   | YYYY-MM-DD or null                 |
   | expense_date   | string   | YYYY-MM-DD — check-in date         |
+  | checkout_date  | string   | YYYY-MM-DD or null — check-out date, if a date-range stay was submitted |
   | payment_method | string   | Cash / Online / UPI / Card         |
   | remarks        | string   |                                    |
   | bill_image_path| string   | path of first uploaded image       |
@@ -110,7 +116,7 @@ docs {
   | stay_location  | string   | GPS or manual address              |
   | stay_lat       | number   |                                    |
   | stay_lng       | number   |                                    |
-  | stay_days           | int      | number of nights                   |
+  | stay_days           | int      | number of nights — server-computed when `checkoutDate` was sent |
   | receptionist_name   | string   | receptionist name or null          |
   | receptionist_phone  | string   | receptionist phone or null         |
   | overall_status      | string   | `Pending` (default)                |
@@ -119,5 +125,5 @@ docs {
   | full_name      | string   | executive's name                   |
   | emp_code       | string   |                                    |
   | project_name   | string   |                                    |
-  | images         | string[] | array of all uploaded image paths  |
+  | images         | object[] | one entry per uploaded photo: `{ image_path, image_type, photo_lat, photo_lng, photo_location }` |
 }
