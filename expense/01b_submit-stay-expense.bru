@@ -32,8 +32,12 @@ body:multipart-form {
   receptionistPhone: 9876543210
   paymentMethod: Online
   remarks: Field visit accommodation
-  imagesMeta: [{"type":"bill","lat":13.0211,"lng":77.5521,"location":"Yeswanthpur, Bengaluru"},{"type":"bill","lat":13.0211,"lng":77.5521,"location":"Yeswanthpur, Bengaluru"},{"type":"hotel","lat":13.0210,"lng":77.5520,"location":"Yeswanthpur, Bengaluru"}]
-  ~images: @file(/path/to/receipt1.jpg)
+  billImage1: @file(/path/to/receipt1.jpg)
+  billImage2: @file(/path/to/receipt2.jpg)
+  hotelImage: @file(/path/to/hotel-front.jpg)
+  hotelImageLat: 13.0210
+  hotelImageLng: 77.5520
+  hotelImageLocation: Yeswanthpur, Bengaluru
 }
 
 tests {
@@ -68,6 +72,8 @@ docs {
   
   `purpose` is automatically set to `Stay` by the server — no need to send it.
 
+  Photos use named per-slot fields, not a generic array: up to 5 bill photos (`billImage1`..`billImage5`, file only — no location needed) plus 1 hotel photo (`hotelImage`, paired with `hotelImageLat`/`hotelImageLng`/`hotelImageLocation`).
+
   ### Request Fields
 
   | Field         | Type    | Required | Notes                                      |
@@ -89,8 +95,11 @@ docs {
   | receptionistPhone  | string  | no       | hotel receptionist's phone number          |
   | paymentMethod      | string  | no       | Cash / Online / UPI / Card (default: Cash) |
   | remarks       | string  | no       |                                            |
-  | images        | file[]  | no       | up to 10 photos (field name: `images`)     |
-  | imagesMeta    | string  | no       | JSON-stringified array, positionally aligned with `images` (`imagesMeta[i]` describes `images[i]`) — each entry: `{ type: 'bill'\|'hotel', lat: number, lng: number, location: string }`. Missing/short arrays default to `type: 'bill'` with null lat/lng/location. |
+  | billImage1 … billImage5 | file | no  | up to 5 separate bill-photo fields (`billImage1`, `billImage2`, … `billImage5`) — send only as many as you have, in any subset of the 5 slots. No location fields — bill photos don't carry GPS. |
+  | hotelImage           | file   | no | the one hotel photo (separate field from the bill photos) |
+  | hotelImageLat        | number | no | GPS latitude `hotelImage` was taken at |
+  | hotelImageLng        | number | no | GPS longitude `hotelImage` was taken at |
+  | hotelImageLocation   | string | no | address/location text for `hotelImage` |
 
   ### Response (201) — `data` object
 
@@ -109,7 +118,7 @@ docs {
   | checkout_date  | string   | YYYY-MM-DD or null — check-out date, if a date-range stay was submitted |
   | payment_method | string   | Cash / Online / UPI / Card         |
   | remarks        | string   |                                    |
-  | bill_image_path| string   | path of first uploaded image       |
+  | bill_image_path| string   | path of the first uploaded photo (first filled `billImage{n}` slot, or `hotelImage` if no bill photos were sent) |
   | state_type     | null     |                                    |
   | food_sub_type  | null     |                                    |
   | hotel_name     | string   | hotel / lodge name                 |
