@@ -32,9 +32,9 @@ body:multipart-form {
   receptionistPhone: 9876543210
   paymentMethod: Online
   remarks: Field visit accommodation
-  billImage1: @file(/path/to/receipt1.jpg)
-  billImage2: @file(/path/to/receipt2.jpg)
-  hotelImage: @file(/path/to/hotel-front.jpg)
+  billImage1: @file(C:\Users\manoj\OneDrive\Pictures\133886079486205543.jpg) @contentType(image/jpeg)
+  billImage2: @file(C:\Users\manoj\OneDrive\Pictures\133873081349287261.jpg) @contentType(image/jpeg)
+  hotelImage: @file(C:\Users\manoj\OneDrive\Pictures\133886079486205543.jpg) @contentType(image/jpeg)
   hotelImageLat: 13.0210
   hotelImageLng: 77.5520
   hotelImageLocation: Yeswanthpur, Bengaluru
@@ -71,11 +71,11 @@ docs {
   ## Submit Stay Expense (Mobile) — POST /expense/stay-submit
   
   `purpose` is automatically set to `Stay` by the server — no need to send it.
-
+  
   Photos use named per-slot fields, not a generic array: up to 5 bill photos (`billImage1`..`billImage5`, file only — no location needed) plus 1 hotel photo (`hotelImage`, paired with `hotelImageLat`/`hotelImageLng`/`hotelImageLocation`).
-
+  
   ### Request Fields
-
+  
   | Field         | Type    | Required | Notes                                      |
   |---------------|---------|----------|--------------------------------------------|
   | userId        | int     | yes      | executive's user_id                        |
@@ -100,9 +100,9 @@ docs {
   | hotelImageLat        | number | no | GPS latitude `hotelImage` was taken at |
   | hotelImageLng        | number | no | GPS longitude `hotelImage` was taken at |
   | hotelImageLocation   | string | no | address/location text for `hotelImage` |
-
+  
   ### Response (201) — `data` object
-
+  
   | Field          | Type     | Notes                              |
   |----------------|----------|------------------------------------|
   | expense_id     | int      | generated primary key              |
