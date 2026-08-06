@@ -107,6 +107,11 @@ body:json {
 docs {
   Submit a complete school survey.
 
+  Response (201) `data` is the full saved submission — every base field plus
+  studentDetails[], studentSections[], teacherCounts[], mobileNetworks[],
+  classrooms[] (virtual + digital equipment, tagged classroom_type/classroom_num),
+  and images[] — i.e. exactly what GET /survey/:id returns.
+
   Required:
   - schoolName (string)
 
@@ -126,5 +131,23 @@ docs {
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("has id", function() { expect(res.getBody().data.id).to.be.a("number"); });
+
+  var data = res.getBody().data;
+
+  test("has id",          function() { expect(data.id).to.be.a("number"); });
+  test("has school_name", function() { expect(data.school_name).to.equal("Government High School Biramitrapur"); });
+  test("has village",     function() { expect(data.village).to.equal("Biramitrapur"); });
+  test("has created_at",  function() { expect(data).to.have.property("created_at"); });
+
+  test("studentSections echoed",  function() { expect(data.studentSections).to.be.an("array").with.length.above(0); });
+  test("teacherCounts echoed",    function() { expect(data.teacherCounts).to.be.an("array").with.length(5); });
+  test("mobileNetworks echoed",   function() { expect(data.mobileNetworks).to.be.an("array").with.length(2); });
+  test("classrooms echoed",       function() {
+    expect(data.classrooms).to.be.an("array").with.length(2);
+    var virtual = data.classrooms.find(function(c) { return c.classroom_type === "virtual"; });
+    var digital = data.classrooms.find(function(c) { return c.classroom_type === "digital"; });
+    expect(virtual).to.exist;
+    expect(digital).to.exist;
+  });
+  test("images array present", function() { expect(data.images).to.be.an("array"); });
 }
