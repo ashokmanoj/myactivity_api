@@ -1,0 +1,96 @@
+meta {
+  name: MA-EXP-01d: Submit Courier Expense (Mobile)
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/api/v1/expense/courier-submit
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  userId: 5
+  companyId: 2
+  projectId: 3
+  type: expense
+  hasBill: true
+  amount: 65
+  expenseDate: 2026-08-18
+  docketNumber: CC123456789
+  paymentMethod: Cash
+  remarks: Courier of documents to head office
+  images: @file(/path/to/bill1.jpg)
+  images: @file(/path/to/payment-screenshot.jpg)
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+
+  var data = res.getBody().data;
+
+  test("has expense_id",     function() { expect(data).to.have.property("expense_id"); });
+  test("purpose is Courier", function() { expect(data.purpose).to.equal("Courier"); });
+  test("has docket_number",  function() { expect(data).to.have.property("docket_number"); });
+  test("has amount",         function() { expect(data).to.have.property("amount"); });
+  test("has payment_method", function() { expect(data).to.have.property("payment_method"); });
+  test("has full_name",      function() { expect(data).to.have.property("full_name"); });
+  test("has overall_status", function() { expect(data).to.have.property("overall_status"); });
+  test("images array has 2", function() { expect(data.images).to.be.an("array").with.length(2); });
+  test("has created_at",     function() { expect(data).to.have.property("created_at"); });
+}
+
+docs {
+  ## Submit Courier Expense (Mobile) — POST /expense/courier-submit
+
+  `purpose` is automatically set to `Courier` by the server — no need to send it.
+
+  Multiple photos (bill / payment screenshot): send several files under the same
+  `images` field (up to 10) — a plain array, no per-photo metadata needed.
+
+  ### Request Fields
+
+  | Field         | Type    | Required | Notes                                      |
+  |---------------|---------|----------|--------------------------------------------|
+  | userId        | int     | yes      | executive's user_id                        |
+  | companyId     | int     | yes      |                                            |
+  | projectId     | int     | no       |                                            |
+  | type          | string  | no       | `expense` (default)                        |
+  | hasBill       | boolean | no       | true = receipt/screenshot attached         |
+  | amount        | number  | yes      | total amount paid                          |
+  | expenseDate   | date    | yes      | YYYY-MM-DD                                 |
+  | docketNumber  | string  | no       | courier docket / tracking number           |
+  | paymentMethod | string  | no       | Cash / Online / UPI / Card (default: Cash) |
+  | remarks       | string  | no       |                                            |
+  | images        | file[]  | no       | up to 10 photos (field name: `images`)     |
+
+  ### Response (201) — `data` object
+
+  | Field          | Type     | Notes                              |
+  |----------------|----------|------------------------------------|
+  | expense_id     | int      | generated primary key              |
+  | user_id        | int      |                                    |
+  | company_id     | int      |                                    |
+  | project_id     | int      |                                    |
+  | type           | string   | `expense`                          |
+  | purpose        | string   | `Courier`                          |
+  | has_bill       | boolean  |                                    |
+  | amount         | number   |                                    |
+  | expense_date   | string   | YYYY-MM-DD                         |
+  | payment_method | string   | Cash / Online / UPI / Card         |
+  | remarks        | string   |                                    |
+  | docket_number  | string   |                                    |
+  | overall_status | string   | `Pending` (default)                |
+  | payment_status | string   | null until paid                    |
+  | created_at     | datetime | ISO 8601                           |
+  | full_name      | string   | executive's name                   |
+  | emp_code       | string   |                                    |
+  | project_name   | string   |                                    |
+  | images         | object[] | one entry per uploaded photo: `{ image_path, image_type, photo_lat, photo_lng, photo_location }` (type/lat/lng/location all null unless sent) |
+}

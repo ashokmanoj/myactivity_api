@@ -46,7 +46,13 @@ docs {
   }
   ```
 
-  ### Superuser management
+  ### Auto-registration from "Other"
+  New purposes don't need to be created via this API before use — submitting an
+  expense (`POST /expense/submit` etc.) with a `purpose` that doesn't already exist
+  automatically adds it here (scoped to that company + type), so a user picking
+  "Other" and typing a custom name just works on the next submit.
+
+  ### Manual management (any authenticated user, not just superusers)
   - **Add purpose**: `POST /api/v1/expense/purposes` with `{ name, appliesTo, companyId }`
   - **Remove purpose**: `DELETE /api/v1/expense/purposes/:purposeId`
 }
