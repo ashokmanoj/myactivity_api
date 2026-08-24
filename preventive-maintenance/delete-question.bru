@@ -1,0 +1,26 @@
+meta {
+  name: PM-10: Delete Question
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{base_url}}/api/v1/pm/questions/{{question_id}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("deleted", function() { expect(res.getBody().message).to.include("deleted"); });
+}
+
+docs {
+  Soft delete — sets is_active = false. Deactivated questions no longer appear in
+  the mobile PM form (GET /pm/questions) but still show in the admin view
+  (GET /pm/questions?all=true).
+}

@@ -1,0 +1,23 @@
+meta {
+  name: Create State
+  type: http
+  seq: 3
+}
+post {
+  url: {{base_url}}/api/v1/state
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "stateName": "Assam"
+  }
+}
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("created", function() { expect(res.getBody().message).to.include("created"); });
+  test("has state_name", function() { expect(res.getBody().data.state_name).to.equal("Assam"); });
+}

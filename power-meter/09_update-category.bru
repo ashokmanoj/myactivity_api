@@ -1,0 +1,28 @@
+meta {
+  name: PWM-09: Update Power Meter Category
+  type: http
+  seq: 9
+}
+
+put {
+  url: {{base_url}}/api/v1/power-meter/categories/{{category_id}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "categoryName": "Under Repair (Updated)",
+    "sortOrder": 4
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("updated", function() { expect(res.getBody().message).to.include("updated"); });
+  test("name actually changed", function() { expect(res.getBody().data.category_name).to.equal("Under Repair (Updated)"); });
+}

@@ -6,7 +6,7 @@ meta {
 
 post {
   url: {{base_url}}/api/v1/expense/submit
-  body: multipart-form
+  body: multipartForm
   auth: bearer
 }
 
@@ -31,9 +31,9 @@ body:multipart-form {
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-
+  
   var data = res.getBody().data;
-
+  
   test("has expense_id",    function() { expect(data).to.have.property("expense_id"); });
   test("has purpose",       function() { expect(data).to.have.property("purpose"); });
   test("has expense_date",  function() { expect(data).to.have.property("expense_date"); });
@@ -50,20 +50,12 @@ tests {
 
 docs {
   ## Submit Generic Expense (Mobile) — POST /expense/submit
-
+  
   Use `/expense/food-submit` for Food, `/expense/stay-submit` for Stay.
   This endpoint accepts any `purpose` value from the `/expense/purposes` list.
-
-  **"Other" purpose**: if the dropdown's selected value is "Other"/"Others" and the
-  user types a custom purpose name, just send that typed text directly as `purpose`
-  — no separate API call needed. The backend automatically adds it to
-  `GET /expense/purposes` (scoped to this `companyId` + `type`) if it isn't already
-  there, so it shows up as a selectable option on future submissions. Matching is
-  case-insensitive, so retyping "team lunch" after "Team Lunch" already exists
-  reuses the same entry instead of creating a duplicate.
-
+  
   ### Request Fields
-
+  
   | Field         | Type    | Required | Notes                                      |
   |---------------|---------|----------|--------------------------------------------|
   | userId        | int     | yes      | executive's user_id                        |
@@ -77,9 +69,9 @@ docs {
   | paymentMethod | string  | no       | Cash / Online / UPI / Card (default: Cash) |
   | remarks       | string  | no       |                                            |
   | images        | file[]  | no       | up to 10 photos (field name: `images`)     |
-
+  
   ### Response (201) — `data` object
-
+  
   | Field          | Type     | Notes                              |
   |----------------|----------|------------------------------------|
   | expense_id     | int      | generated primary key              |

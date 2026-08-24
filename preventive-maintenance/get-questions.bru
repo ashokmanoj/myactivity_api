@@ -18,6 +18,10 @@ auth:bearer {
   token: {{token}}
 }
 
+params:query {
+  ~all: true
+}
+
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
@@ -25,4 +29,15 @@ tests {
   test("each question has q_id", function() {
     res.getBody().data.forEach(q => expect(q).to.have.property("q_id"));
   });
+}
+
+docs {
+  By default (no query param, what the mobile PM form uses) only active questions
+  are returned, without an is_active field.
+
+  `?all=true` (used by the web Admin Dashboard) returns every row, including
+  deactivated ones, each with is_active — for management, not the mobile form.
+
+  Manage questions via the write endpoints — see create-question.bru,
+  update-question.bru, delete-question.bru.
 }

@@ -1,0 +1,28 @@
+meta {
+  name: PWM-08: Create Power Meter Category
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{base_url}}/api/v1/power-meter/categories
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "categoryName": "Under Repair",
+    "sortOrder": 3
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("created", function() { expect(res.getBody().message).to.include("created"); });
+  test("has category_name", function() { expect(res.getBody().data.category_name).to.equal("Under Repair"); });
+}

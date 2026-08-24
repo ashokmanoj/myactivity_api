@@ -1,0 +1,28 @@
+meta {
+  name: PWM-11: Create Receipt Duration
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{base_url}}/api/v1/power-meter/receipt-durations
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "durationLabel": "Feb 2025 to April 2025",
+    "sortOrder": 7
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("created", function() { expect(res.getBody().message).to.include("created"); });
+  test("has duration_label", function() { expect(res.getBody().data.duration_label).to.equal("Feb 2025 to April 2025"); });
+}

@@ -1,0 +1,18 @@
+meta {
+  name: Get State By ID
+  type: http
+  seq: 2
+}
+get {
+  url: {{base_url}}/api/v1/state/{{state_id}}
+  body: none
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("has state_id", function() { expect(res.getBody().data).to.have.property("state_id"); });
+  test("has state_name", function() { expect(res.getBody().data).to.have.property("state_name"); });
+}

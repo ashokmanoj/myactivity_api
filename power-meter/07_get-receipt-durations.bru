@@ -14,6 +14,10 @@ auth:bearer {
   token: {{token}}
 }
 
+params:query {
+  ~all: true
+}
+
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
@@ -25,21 +29,18 @@ tests {
 }
 
 docs {
-  Returns all active receipt duration options ordered by sort_order.
-  Use this to populate the Receipt Duration dropdown in the mobile app.
+  Returns receipt duration options ordered by sort_order.
 
-  No query params needed.
-
-  Response:
+  By default (no query param, what the mobile app uses to populate the Receipt
+  Duration dropdown) only active durations are returned, without an is_active field:
     [
-      { "duration_id": 1, "duration_label": "Jan 2023 to Sep 2023",   "sort_order": 1 },
-      { "duration_id": 2, "duration_label": "Aug 2023 to Dec 2023",   "sort_order": 2 },
-      { "duration_id": 3, "duration_label": "Oct 2023 to Dec 2023",   "sort_order": 3 },
-      { "duration_id": 4, "duration_label": "Nov 2023 to Dec 2023",   "sort_order": 4 },
-      { "duration_id": 5, "duration_label": "April 2024 to May 2024", "sort_order": 5 },
-      { "duration_id": 6, "duration_label": "Jan 2024 to March 2024", "sort_order": 6 }
+      { "duration_id": 1, "duration_label": "Jan 2023 to Sep 2023", "sort_order": 1 },
+      ...
     ]
 
-  To add a new duration: INSERT INTO myactivity.power_meter_receipt_duration (duration_label, sort_order).
-  To disable: UPDATE myactivity.power_meter_receipt_duration SET is_active = 0 WHERE duration_id = ?;
+  `?all=true` (used by the web Admin Dashboard) returns every row, including
+  deactivated ones, each with is_active — for management, not the mobile dropdown.
+
+  Manage durations via the write endpoints instead of raw SQL now:
+  see 08_create-duration.bru, 09_update-duration.bru, 10_delete-duration.bru.
 }

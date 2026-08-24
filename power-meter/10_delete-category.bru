@@ -1,0 +1,26 @@
+meta {
+  name: PWM-10: Delete Power Meter Category
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{base_url}}/api/v1/power-meter/categories/{{category_id}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("deleted", function() { expect(res.getBody().message).to.include("deleted"); });
+}
+
+docs {
+  Soft delete — sets is_active = 0. Deactivated categories no longer appear in the
+  mobile dropdown (GET /power-meter/categories) but still show in the admin view
+  (GET /power-meter/categories?all=true).
+}

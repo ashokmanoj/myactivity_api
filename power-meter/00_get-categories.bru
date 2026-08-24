@@ -14,6 +14,10 @@ auth:bearer {
   token: {{token}}
 }
 
+params:query {
+  ~all: true
+}
+
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
@@ -29,17 +33,22 @@ tests {
 }
 
 docs {
-  Returns all active power meter status categories ordered by sort_order.
-  Use this to populate the meter status dropdown in the mobile app.
+  Returns power meter status categories ordered by sort_order.
 
-  No query params needed.
-
-  Response:
+  By default (no query param, what the mobile app uses to populate the meter
+  status dropdown) only active categories are returned, without an is_active field:
     [
       { "category_id": 1, "category_name": "Working",     "sort_order": 1 },
       { "category_id": 2, "category_name": "Not Working", "sort_order": 2 }
     ]
 
-  To add more categories: INSERT INTO myactivity.power_meter_category (category_name, sort_order).
-  To disable a category: UPDATE myactivity.power_meter_category SET is_active = 0 WHERE category_id = ?;
+  `?all=true` (used by the web Admin Dashboard) returns every row, including
+  deactivated ones, each with is_active — for management, not the mobile dropdown:
+    [
+      { "category_id": 1, "category_name": "Working", "sort_order": 1, "is_active": 1 },
+      ...
+    ]
+
+  Manage categories via the write endpoints instead of raw SQL now:
+  see 08_create-category.bru, 09_update-category.bru, 10_delete-category.bru.
 }

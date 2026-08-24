@@ -1,0 +1,35 @@
+meta {
+  name: PM-08: Create Question
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{base_url}}/api/v1/pm/questions
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "qId": "Q_PM_011",
+    "question": "Is the school library functional?",
+    "qType": "yesNo",
+    "sortOrder": 11
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("created", function() { expect(res.getBody().message).to.include("created"); });
+  test("has q_id", function() { expect(res.getBody().data.q_id).to.equal("Q_PM_011"); });
+}
+
+docs {
+  qId must be unique (e.g. Q_PM_011). qType defaults to 'yesNo' if omitted — that is
+  the only value used anywhere in the app today.
+}

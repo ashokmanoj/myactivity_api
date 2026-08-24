@@ -1,0 +1,28 @@
+meta {
+  name: PWM-12: Update Receipt Duration
+  type: http
+  seq: 12
+}
+
+put {
+  url: {{base_url}}/api/v1/power-meter/receipt-durations/{{duration_id}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "durationLabel": "Feb 2025 to April 2025 (Updated)",
+    "sortOrder": 8
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("updated", function() { expect(res.getBody().message).to.include("updated"); });
+  test("label actually changed", function() { expect(res.getBody().data.duration_label).to.equal("Feb 2025 to April 2025 (Updated)"); });
+}

@@ -1,10 +1,10 @@
 meta {
-  name: Update Project
+  name: Update State
   type: http
   seq: 4
 }
 put {
-  url: {{base_url}}/api/v1/project/{{project_id}}
+  url: {{base_url}}/api/v1/state/{{state_id}}
   body: json
   auth: none
 }
@@ -13,12 +13,11 @@ headers {
 }
 body:json {
   {
-    "projectName": "ICT Program 2025 Updated",
-    "endDate": "2026-12-31"
+    "stateName": "Assam Updated"
   }
 }
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("updated", function() { expect(res.getBody().message).to.include("updated"); });
-  test("name actually changed", function() { expect(res.getBody().data.project_name).to.equal("ICT Program 2025 Updated"); });
+  test("name actually changed", function() { expect(res.getBody().data.state_name).to.equal("Assam Updated"); });
 }
