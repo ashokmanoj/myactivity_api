@@ -24,6 +24,7 @@ params:query {
   ~status:
   ~startDate: 2025-06-19
   ~endDate: 2025-06-19
+  ~vehicleType: Bike,Car
 }
 
 tests {
@@ -32,4 +33,15 @@ tests {
   test("has rows array", function() { expect(res.getBody().data).to.have.property("rows"); });
   test("has total count", function() { expect(res.getBody().data).to.have.property("total"); });
   test("has page", function() { expect(res.getBody().data).to.have.property("page"); });
+}
+
+docs {
+  ## Get All Distance Records
+
+  `vehicleType` accepts a single value (`Others`) or a comma-separated list
+  (`Bike,Car`) to filter by vehicle type — e.g. the web admin's "Others" tab
+  passes `vehicleType=Others`, and the main travel tab passes
+  `vehicleType=Bike,Car` so the two don't overlap. Omit it to see every
+  vehicle type. Every row includes a `legs[]` array (populated only for
+  `Others` trips — see 16_end-trip.bru).
 }

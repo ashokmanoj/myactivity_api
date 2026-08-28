@@ -1,0 +1,74 @@
+meta {
+  name: MA-DIST-16: End Trip (Others — Bus/Auto/Taxi)
+  type: http
+  seq: 16
+}
+
+post {
+  url: {{base_url}}/api/v1/distance/end
+  body: multipart-form
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  id: 1
+  legs: [{"mode":"Bus","paymentMethod":"Cash","amount":50,"remarks":"Morning bus to depot"},{"mode":"Taxi","paymentMethod":"Online","amount":220,"remarks":"Client site taxi"}]
+  endSelfie: @file(/path/to/end_selfie.jpg)
+  legPhoto1: @file(/path/to/bus-receipt.jpg)
+  legPhoto2: @file(/path/to/taxi-receipt.jpg)
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has 2 legs", function() { expect(res.getBody().data.legs).to.have.length(2); });
+  test("end_distance_timestamp set", function() { expect(res.getBody().data.end_distance_timestamp).to.not.equal(null); });
+}
+
+docs {
+  ## End Trip (Others — Bus/Auto/Taxi/mixed-vehicle only)
+
+  `POST /distance/end` now only ends `vehicle_type: 'Others'` trips — Bike/Car
+  trips are started **and** ended exclusively through the idempotent
+  `POST /distance/sync` endpoint (01_sync-trip.bru), so this endpoint rejects
+  them with `400 "Bike/Car trips are started and ended via /distance/sync, not
+  /distance/end"`.
+
+  This is where the modes of travel taken during an Others trip get recorded —
+  replaces the old separate `/distance/other/end` API.
+
+  **`legs` is required** — omitting it returns
+  `400 "At least one leg is required for an Others trip"`.
+
+  ### Fields
+  | Field         | Required | Description                                              |
+  |---------------|----------|-----------------------------------------------------------|
+  | id            | Yes      | Trip id returned by Start Trip (must be `vehicleType: 'Others'`) |
+  | legs          | Yes      | JSON array of legs — see format below                      |
+  | endSelfie     | No       | Selfie/photo taken at the end of the trip                  |
+  | paymentScreenshot | No   | Image file — one overall/general receipt for the whole trip |
+  | legPhoto1 … legPhoto5 | No | Image file per leg, positionally aligned with `legs[]` |
+
+  ### Legs JSON format
+  ```json
+  [
+    { "mode": "Bus",  "paymentMethod": "Cash",   "amount": 50,  "remarks": "Morning bus to depot" },
+    { "mode": "Taxi", "paymentMethod": "Online", "amount": 220, "remarks": "Client site taxi" }
+  ]
+  ```
+  The trip's fare (`required_amount`/`approved_amount`) is computed
+  server-side as the sum of every leg's `amount` — there is no separate
+  trip-level amount field to send.
+
+  Ending an already-ended trip is a no-op — it just returns the current state
+  rather than erroring or duplicating legs.
+
+  ### Response
+  Returns the full trip record (same shape as Get Trip By ID) with the
+  submitted `legs[]` (each with its own `mode`/`payment_method`/`amount`/
+  `photo_path`/`remarks`) and `end_distance_timestamp` now set.
+}
