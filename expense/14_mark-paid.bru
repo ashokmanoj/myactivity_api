@@ -19,7 +19,9 @@ docs {
 
   Replace `1` in the URL with the actual `expense_id`.
 
-  Sets `payment_status = 'Paid'` on the expense.
+  Sets `payment_status = 'Paid'` on the expense, and records `payment_by`
+  (the authenticated caller) / `payment_at` (now) — surfaced by
+  `GET /expense/:id/status` (16_get-status.bru) as the `payment` block.
 
   ### Response
   Returns the full joined expense row (same shape as `GET /expense`'s list

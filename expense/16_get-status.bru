@@ -1,0 +1,57 @@
+meta {
+  name: MA-EXP-16: Get Expense Approval Status
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{base_url}}/api/v1/expense/1/status
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  ## Get Expense Approval Status (single mobile call)
+
+  Replace `1` in the URL with the actual `expense_id`.
+
+  Returns the full approval trail for one expense in a single response —
+  who acted at each stage (Verifier / RM / TA / Accounts) and the last
+  payment — instead of the mobile app having to piece this together from
+  `GET /expense/:id` fields plus a separate messages/history lookup.
+
+  ### Response shape
+  ```json
+  {
+    "expenseId": 65,
+    "amount": "100.00",
+    "overallStatus": "Approved",
+    "paymentStatus": "Paid",
+    "stages": {
+      "verifier": { "status": "Approved", "amount": "100.00", "comment": "ok", "at": "...", "by": { "userId": 7, "name": "Manoj H A" } },
+      "rm":       { "status": "Approved", "amount": "100.00", "comment": "ok", "at": "...", "by": { "userId": 7, "name": "Manoj H A" } },
+      "ta":       { "status": "Pending",  "amount": null,     "comment": null, "at": null, "by": null },
+      "accounts": { "status": "Pending",  "amount": null,     "comment": null, "at": null, "by": null }
+    },
+    "payment": { "status": "Pending", "at": null, "by": null }
+  }
+  ```
+  `by` is `null` until that stage has actually acted. `stages` always contains
+  all four keys regardless of how far the expense has progressed, so the
+  mobile client can render a fixed 4-step tracker and just check each stage's
+  `status`/`by`.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has all 4 stages", function() {
+    const stages = res.getBody().data.stages;
+    expect(stages).to.have.all.keys('verifier', 'rm', 'ta', 'accounts');
+  });
+  test("has payment block", function() { expect(res.getBody().data).to.have.property('payment'); });
+}
