@@ -45,9 +45,16 @@ docs {
   **amount** — the approved amount (can differ from submitted amount)
 
   **comment** — required when rejecting; optional when approving
+
+  ### Response
+  Returns the full joined expense row (same shape as `GET /expense`'s list
+  items — includes `full_name`, `emp_code`, `project_name`, `hotel_photo_*`,
+  all four approval-stage columns, etc.) — not `null`.
 }
 
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has full_name", function() { expect(res.getBody().data).to.have.property("full_name"); });
+  test("verifier_status set", function() { expect(res.getBody().data.verifier_status).to.equal("Approved"); });
 }

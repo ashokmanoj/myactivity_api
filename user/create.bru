@@ -26,6 +26,14 @@ body:json {
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("created", function() { expect(res.getBody().message).to.include("created"); });
-  test("has userId", function() { expect(res.getBody().data).to.have.property("userId"); });
-  test("has empCode", function() { expect(res.getBody().data.empCode).to.equal("EMP001"); });
+  test("has user_id", function() { expect(res.getBody().data).to.have.property("user_id"); });
+  test("has emp_code", function() { expect(res.getBody().data.emp_code).to.equal("EMP001"); });
+}
+docs {
+  ## Create User (user_tbl)
+
+  Returns the full joined user record (same shape as Get User By ID), including
+  `user_info_id`, `designation_id`, `department`, `company_id`, `perm_address`,
+  `curr_address` from the linked `user_information` row — not just the bare
+  `user_tbl` row.
 }

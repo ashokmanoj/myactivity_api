@@ -31,4 +31,11 @@ tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("all 10 synced", function() { expect(res.getBody().results.synced.length).to.equal(10); });
   test("0 failed", function() { expect(res.getBody().results.failed.length).to.equal(0); });
+  test("synced rows have project_name", function() { expect(res.getBody().results.synced[0]).to.have.property("project_name"); });
+}
+docs {
+  ## Sync Designations (Bulk)
+
+  Each synced row is now the full joined designation record (including `project_name`),
+  not just the bare synced row.
 }

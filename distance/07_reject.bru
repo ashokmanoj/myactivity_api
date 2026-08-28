@@ -31,5 +31,12 @@ body:json {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("has trip_id", function() { expect(res.getBody().data).to.have.property("trip_id"); });
+  test("has id", function() { expect(res.getBody().data).to.have.property("id"); });
+  test("verifier_status Rejected", function() { expect(res.getBody().data.verifier_status).to.equal("Rejected"); });
+}
+docs {
+  ## Reject Trip
+
+  Same endpoint as Approve. Returns the full joined trip record (same shape as
+  Get Trip By ID) — not the old minimal `{ trip_id, approved_amount, message }`.
 }

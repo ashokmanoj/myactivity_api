@@ -29,10 +29,16 @@ docs {
   - `toRole`  — optional target role (verifier / rm / ta / accounts)
 
   The sender identity (name, role) is read from the JWT token.
+
+  ### Response
+  Returns the full saved message row (`sender_name`, `sender_role`, `to_role`,
+  `message`, `attachment_path`, `created_at`) — not just `{ message_id }`.
 }
 
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
   test("has message_id", function() { expect(res.getBody().data).to.have.property("message_id"); });
+  test("has sender_name", function() { expect(res.getBody().data).to.have.property("sender_name"); });
+  test("has created_at", function() { expect(res.getBody().data).to.have.property("created_at"); });
 }

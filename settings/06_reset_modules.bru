@@ -30,9 +30,14 @@ docs {
   Query params (required):
   - scopeType: "company" | "project" | "user"
   - scopeId:   the ID to reset
+
+  ### Response
+  Returns the (now empty) module list for that scope — `[]`, confirming no
+  overrides remain — not `null`.
 }
 
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is empty array", function() { expect(res.getBody().data).to.deep.equal([]); });
 }

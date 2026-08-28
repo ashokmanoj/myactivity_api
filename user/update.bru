@@ -21,4 +21,11 @@ body:json {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("updated", function() { expect(res.getBody().message).to.include("updated"); });
+  test("has user_info_id", function() { expect(res.getBody().data).to.have.property("user_info_id"); });
+}
+docs {
+  ## Update User (user_tbl)
+
+  Returns the full joined user record (same shape as Get User By ID) — not just
+  the bare updated `user_tbl` row.
 }

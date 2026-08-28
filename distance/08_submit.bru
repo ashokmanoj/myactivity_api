@@ -28,5 +28,12 @@ body:json {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("message SUBMITTED", function() { expect(res.getBody().data.message).to.equal("SUBMITTED"); });
+  test("is_submitted 1", function() { expect(res.getBody().data.is_submitted).to.equal(1); });
+}
+docs {
+  ## Submit Trip (RM)
+
+  Requires the trip's `rm_status` to already be `Approved`. Returns the full
+  joined trip record (same shape as Get Trip By ID) — not the old minimal
+  `{ trip_id, message }`.
 }

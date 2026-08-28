@@ -20,4 +20,12 @@ body:json {
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("created", function() { expect(res.getBody().message).to.include("created"); });
+  test("has institution_name", function() { expect(res.getBody().data).to.have.property("institution_name"); });
+}
+docs {
+  ## Create Map
+
+  Returns the full joined mapping record (same shape as Get Map By ID), including
+  `project_name`, `project_code`, `institution_name`, `institute_code` — not just
+  the bare inserted row.
 }

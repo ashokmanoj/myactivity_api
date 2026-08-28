@@ -31,6 +31,13 @@ body:json {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("message FORWARDED", function() { expect(res.getBody().data.message).to.equal("FORWARDED"); });
-  test("has message_id", function() { expect(res.getBody().data).to.have.property("message_id"); });
+  test("has id", function() { expect(res.getBody().data).to.have.property("id"); });
+  test("has unread_count", function() { expect(res.getBody().data).to.have.property("unread_count"); });
+}
+docs {
+  ## Forward Trip
+
+  Returns the full joined trip record (same shape as Get Trip By ID), with
+  `unread_count` computed for `senderRole` — not the old minimal
+  `{ message_id, message }`.
 }

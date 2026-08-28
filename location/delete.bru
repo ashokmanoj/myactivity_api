@@ -21,4 +21,12 @@ vars:pre-request {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("is_active flagged 0", function() { expect(res.getBody().data.is_active).to.equal(0); });
+}
+docs {
+  ## Delete Location
+
+  Returns the full joined location record (same shape as Get Location By ID,
+  including `photos[]`) as it existed just before deletion, with `is_active`
+  set to `0` — not just `{ locationId }`.
 }

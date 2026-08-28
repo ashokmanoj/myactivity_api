@@ -55,8 +55,15 @@ body:json {
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("created", function() { expect(res.getBody().message).to.include("created"); });
-  test("has userInfoId", function() { expect(res.getBody().data).to.have.property("userInfoId"); });
-  test("has user JOIN data", function() { expect(res.getBody().data).to.have.property("user"); });
-  test("user has empCode", function() { expect(res.getBody().data.user).to.have.property("empCode"); });
-  test("user has fullName", function() { expect(res.getBody().data.user).to.have.property("fullName"); });
+  test("has user_info_id", function() { expect(res.getBody().data).to.have.property("user_info_id"); });
+  test("has emp_code", function() { expect(res.getBody().data).to.have.property("emp_code"); });
+  test("has full_name", function() { expect(res.getBody().data).to.have.property("full_name"); });
+}
+docs {
+  ## Create User Information
+
+  Returns the full joined record (same shape as Get User Information By ID),
+  including `emp_code`, `full_name`, `company_name`, `designation` from the
+  linked `user_tbl`/`company`/`designation` rows — not just the bare inserted
+  `user_information` row.
 }

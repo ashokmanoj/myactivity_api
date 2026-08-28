@@ -50,9 +50,14 @@ docs {
   - "company" + scopeId=1  → applies to all users in company 1
   - "project" + scopeId=3  → overrides company settings for project 3
   - "user"    + scopeId=42 → overrides project/company settings for user 42
+
+  ### Response
+  Returns the full resulting module list for that scope (same shape as
+  GET /settings/modules) — not `null`.
 }
 
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
 }

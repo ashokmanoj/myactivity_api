@@ -20,4 +20,11 @@ body:json {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("updated", function() { expect(res.getBody().message).to.include("updated"); });
+  test("has blocks", function() { expect(res.getBody().data).to.have.property("blocks"); });
+}
+docs {
+  ## Update District
+
+  Returns the full joined district record (same shape as Get District By ID),
+  including the `blocks` array — not just the bare updated row.
 }

@@ -14,5 +14,12 @@ headers {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("deleted", function() { expect(res.getBody().message).to.include("deleted"); });
-  test("isActive is 0", function() { expect(res.getBody().data.isActive).to.equal(0); });
+  test("is_active is 0", function() { expect(res.getBody().data.is_active).to.equal(0); });
+}
+docs {
+  ## Delete User - Soft (user_tbl)
+
+  Returns the full joined user record as it existed just before deactivation,
+  with `is_active` set to `0` to reflect the new state (not just the bare
+  updated row).
 }

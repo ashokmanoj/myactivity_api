@@ -16,4 +16,12 @@ headers {
 
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("has full_name", function() { expect(res.getBody().data).to.have.property("full_name"); });
+  test("is_active flagged 0", function() { expect(res.getBody().data.is_active).to.equal(0); });
+}
+docs {
+  ## Delete User Profile (Unified)
+
+  Returns the full joined profile record (same shape as Get User Profile By ID)
+  as it existed just before deactivation, with `is_active` set to `0` — not `null`.
 }

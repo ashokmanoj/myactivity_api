@@ -1,0 +1,30 @@
+meta {
+  name: LEAVE-04: Delete Leave Request
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{base_url}}/api/v1/leave/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Hard-deletes a leave request. Replace "1" in the URL with the actual
+  leave request id.
+
+  Response:
+    Full joined leave request (full_name, emp_code, reviewer_name, etc.) as it
+    existed just before deletion — not just `{ id }`.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has full_name", function() { expect(res.getBody().data).to.have.property("full_name"); });
+}

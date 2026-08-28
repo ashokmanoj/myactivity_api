@@ -21,4 +21,11 @@ vars:pre-request {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has photos array", function() { expect(res.getBody().data).to.have.property("photos"); });
+}
+docs {
+  ## Delete Photo
+
+  Returns the full parent location record (same shape as Get Location By ID,
+  including the remaining `photos[]`) — not just the deleted photo row.
 }

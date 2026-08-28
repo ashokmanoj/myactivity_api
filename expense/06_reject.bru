@@ -32,9 +32,13 @@ docs {
 
   Same endpoint as Approve — same URL `POST /expense/:id/approve`.
   Set `action` to `"Rejected"` and provide a `comment` explaining the reason.
+
+  ### Response
+  Returns the full joined expense row (same as Approve) — not `null`.
 }
 
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("verifier_status set", function() { expect(res.getBody().data.verifier_status).to.equal("Rejected"); });
 }

@@ -14,4 +14,11 @@ headers {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("deleted", function() { expect(res.getBody().message).to.include("deleted"); });
+  test("is_active flagged 0", function() { expect(res.getBody().data.is_active).to.equal(0); });
+}
+docs {
+  ## Delete User Information (Soft)
+
+  Returns the full joined record as it existed just before deactivation, with
+  `is_active` set to `0` to reflect the new state (not just the bare updated row).
 }

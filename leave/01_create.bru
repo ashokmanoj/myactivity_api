@@ -32,9 +32,14 @@ docs {
   Rules:
   - Cannot have two active (pending/approved) leaves on the same date
   - Status starts as "pending"
+
+  Response:
+    Full joined leave request (full_name, emp_code, mobile_number, role_name)
+    — not just the bare inserted leave_requests row.
 }
 
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has full_name", function() { expect(res.getBody().data).to.have.property("full_name"); });
 }

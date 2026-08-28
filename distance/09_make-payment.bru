@@ -29,6 +29,12 @@ body:json {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("message PAID", function() { expect(res.getBody().data.message).to.equal("PAID"); });
+  test("payment_status Paid", function() { expect(res.getBody().data.payment_status).to.equal("Paid"); });
   test("has payment_at", function() { expect(res.getBody().data).to.have.property("payment_at"); });
+}
+docs {
+  ## Make Payment (Accounts)
+
+  Returns the full joined trip record (same shape as Get Trip By ID) — not the
+  old minimal `{ trip_id, payment_at, message }`.
 }

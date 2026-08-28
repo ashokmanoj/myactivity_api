@@ -16,14 +16,18 @@ headers {
 
 body:json {
   {
-    "userId": 1,
-    "locationName": "Synced Location",
-    "locationType": "field",
-    "lat": 12.971599,
-    "lon": 77.594566,
-    "geoAddress": "Bengaluru, Karnataka",
-    "geoPincode": "560001",
-    "description": "Synced from mobile"
+    "locations": [
+      {
+        "userId": 1,
+        "locationName": "Synced Location",
+        "locationType": "field",
+        "lat": 12.971599,
+        "lon": 77.594566,
+        "geoAddress": "Bengaluru, Karnataka",
+        "geoPincode": "560001",
+        "description": "Synced from mobile"
+      }
+    ]
   }
 }
 
@@ -32,6 +36,15 @@ vars:pre-request {
 }
 
 tests {
-  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("synced rows have photos array", function() { expect(res.getBody().results.synced[0]).to.have.property("photos"); });
+}
+docs {
+  ## Sync Location (Bulk)
+
+  Body is a `locations` array (not a single object) — each entry is one
+  location to sync. Each synced row is now the full joined location record
+  (same shape as Get Location By ID, including `photos[]`), not just the bare
+  synced row.
 }

@@ -38,6 +38,7 @@ tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
   test("has task_id", function() { expect(res.getBody().data).to.have.property('task_id'); });
+  test("has category_name", function() { expect(res.getBody().data).to.have.property('category_name'); });
 }
 
 docs {
@@ -50,4 +51,10 @@ docs {
     projectId, designation, district, block, priority (default: Medium),
     executiveId, institutionId, intervalType, intervalDays, remarks,
     gpsLat, gpsLng (decimal degrees — sent by mobile app at time of task creation)
+
+  Response:
+    Full joined task record (same shape as GET /task's list items — includes
+    project_name, category_name, sub_category_name, executive_name, emp_code,
+    institution_name, institute_code, institution_latitude/longitude) — not
+    just the bare inserted task_list row.
 }

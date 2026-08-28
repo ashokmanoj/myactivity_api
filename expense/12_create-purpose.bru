@@ -30,6 +30,7 @@ tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
   test("has purpose_id", function() { expect(res.getBody().data).to.have.property("purpose_id"); });
+  test("has created_at", function() { expect(res.getBody().data).to.have.property("created_at"); });
 }
 
 docs {
@@ -40,4 +41,8 @@ docs {
   | name      | string | yes      | purpose label shown in mobile app  |
   | appliesTo | string | no       | `expense` / `advance` / `both`     |
   | companyId | int    | no       | null = available to all companies  |
+
+  ### Response
+  Returns every column (`RETURNING *`), including `created_at` — previously a
+  fixed 5-column subset.
 }

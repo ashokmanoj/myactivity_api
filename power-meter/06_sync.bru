@@ -34,6 +34,7 @@ tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
   test("has meter_id", function() { expect(res.getBody().data).to.have.property("meter_id"); });
+  test("has project_name", function() { expect(res.getBody().data).to.have.property("project_name"); });
 }
 
 docs {
@@ -66,7 +67,9 @@ docs {
     photo       : single image file (JPG/JPEG/PNG/WEBP, max 10 MB)
 
   Response:
-    { "success": true, "data": { "meter_id": 12 }, "message": "Sync successful" }
+    Full joined record (same shape as Get By ID, including project_name,
+    institution_name, institute_code) — not just { "meter_id": 12 }.
+    { "success": true, "data": { "meter_id": 12, "project_name": "...", ... }, "message": "Sync successful" }
 
   Notes:
   - Same uuid is upserted — safe to call multiple times on retry

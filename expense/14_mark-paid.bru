@@ -1,0 +1,33 @@
+meta {
+  name: MA-EXP-14: Mark Expense as Paid
+  type: http
+  seq: 14
+}
+
+patch {
+  url: {{base_url}}/api/v1/expense/1/paid
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  ## Mark Expense as Paid (Accounts)
+
+  Replace `1` in the URL with the actual `expense_id`.
+
+  Sets `payment_status = 'Paid'` on the expense.
+
+  ### Response
+  Returns the full joined expense row (same shape as `GET /expense`'s list
+  items) — not `null`.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("payment_status Paid", function() { expect(res.getBody().data.payment_status).to.equal("Paid"); });
+}

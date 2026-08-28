@@ -30,6 +30,7 @@ body:multipart-form {
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has project_name", function() { expect(res.getBody().data).to.have.property("project_name"); });
 }
 
 docs {
@@ -55,4 +56,8 @@ docs {
     gpsLat   : GPS latitude at time of submission
     gpsLng   : GPS longitude at time of submission
     photo    : single image file (JPG/JPEG/PNG/WEBP, max 10 MB)
+
+  Response:
+    Full joined record (same shape as Get By ID — includes `project_name`,
+    `institution_name`, `institute_code`) — not just the bare inserted row.
 }

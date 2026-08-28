@@ -30,13 +30,10 @@ docs {
     photo (file) — JPG, JPEG, PNG or WEBP, max 10 MB
 
   Response:
-    {
-      "success": true,
-      "data": {
-        "photo_path": "/uploads/pm/uuid-filename.jpg",
-        "answer": { ...updated answer row }
-      }
-    }
+    Full joined session (same shape as Get Session By ID) — an array with one
+    row per answer, the updated one now carrying the new `photo_path` — not
+    just { photo_path, answer }.
+    { "success": true, "data": [ { "pm_id": 1, "question_id": 1, "photo_path": "/uploads/pm/uuid-filename.jpg", ... }, ... ] }
 
   Storage location on server:
     myactivity_backend/uploads/pm/<uuid>.jpg
@@ -54,5 +51,5 @@ docs {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("has photo_path", function() { expect(res.getBody().data).to.have.property("photo_path"); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
 }

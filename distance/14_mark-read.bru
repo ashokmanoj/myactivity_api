@@ -31,4 +31,11 @@ body:json {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("unread_count is 0", function() { expect(res.getBody().data.unread_count).to.equal("0"); });
+}
+docs {
+  ## Mark Messages as Read
+
+  Returns the full joined trip record (same shape as Get Trip By ID), with
+  `unread_count` now `0` for the given `role` — not `null`.
 }

@@ -1,7 +1,7 @@
 meta {
-  name: MA-DIST-19: Mark Other Trip Paid (Accounts)
+  name: MA-DIST-20: Mark Other Trip Paid (Accounts)
   type: http
-  seq: 19
+  seq: 20
 }
 
 post {
@@ -36,10 +36,15 @@ docs {
   |--------|----------|------------------------|
   | tripId | Yes      | ID of the other trip   |
   | paidBy | Yes      | user_id of accounts user |
+
+  ### Response
+  Returns the full trip (same shape as `GET /distance/other/:id`, including
+  `legs[]` and `executive_name`) — not just the bare updated row.
 }
 
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
   test("payment_status Paid", function() { expect(res.getBody().data.payment_status).to.equal("Paid"); });
+  test("has legs array", function() { expect(res.getBody().data).to.have.property("legs"); });
 }

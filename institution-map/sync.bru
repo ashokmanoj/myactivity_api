@@ -23,4 +23,11 @@ body:json {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("synced array", function() { expect(res.getBody().results.synced).to.be.an("array"); });
+  test("synced rows have institution_name", function() { expect(res.getBody().results.synced[0]).to.have.property("institution_name"); });
+}
+docs {
+  ## Sync Maps (Bulk)
+
+  Each synced row is now the full joined mapping record (including
+  `institution_name`, `project_name`), not just the bare synced row.
 }

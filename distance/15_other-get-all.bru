@@ -39,24 +39,31 @@ docs {
   | paymentStatus | Processing / Pending Payment / Paid        |
 
   ### Response
-  Each row includes a `legs` array with individual vehicle legs.
+  Each row includes a `legs` array with individual vehicle legs — `mode`,
+  `payment_method`, `amount`, `photo_path`, `remarks` per leg (no from/to
+  location or distance — that concept was removed). The trip itself has no
+  `remarks`/`payment_method`/`amount` of its own anymore — those live only on
+  each leg. `end_timestamp` is `null` while the trip is still in progress
+  (started but not yet ended). `gps_distance_km` is computed from GPS points
+  recorded during the trip (see 21_other-gps-point.bru).
   ```json
   {
     "data": {
       "rows": [
         {
           "id": 1,
+          "uuid": "MOBILE-UUID-abc123",
           "executive_name": "John Doe",
-          "trip_date": "2025-07-15",
-          "payment_method": "Online",
-          "amount": "350.00",
+          "start_timestamp": 1752562800000,
+          "end_timestamp": 1752570000000,
+          "gps_distance_km": 8.42,
           "verifier_status": "Pending",
           "rm_status": "Pending",
           "ta_status": "Pending",
           "payment_status": "Processing",
           "legs": [
-            { "mode": "Bus", "from_location": "Guwahati", "to_location": "Jorhat", "distance": 300 },
-            { "mode": "Auto", "from_location": "Jorhat Bus Stand", "to_location": "Office", "distance": 5 }
+            { "mode": "Bus", "payment_method": "Cash", "amount": "50.00", "photo_path": "uploads/distance-other/bike-receipt.jpg", "remarks": "Morning bus to depot" },
+            { "mode": "Taxi", "payment_method": "Online", "amount": "220.00", "photo_path": "uploads/distance-other/taxi-receipt.jpg", "remarks": "Client site taxi" }
           ]
         }
       ],

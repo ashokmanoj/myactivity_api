@@ -1,0 +1,43 @@
+meta {
+  name: MA-EXP-15: Update Expense Purpose
+  type: http
+  seq: 15
+}
+
+patch {
+  url: {{base_url}}/api/v1/expense/1/purpose
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "purpose": "Client Visit"
+  }
+}
+
+docs {
+  ## Update Expense Purpose (Verifier / RM / TA)
+
+  Replace `1` in the URL with the actual `expense_id`.
+
+  Lets an approver correct/relabel the purpose text on an existing bill.
+
+  ### Response
+  Returns the full joined expense row (same shape as `GET /expense`'s list
+  items) — not `null`.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("purpose updated", function() { expect(res.getBody().data.purpose).to.equal("Client Visit"); });
+}

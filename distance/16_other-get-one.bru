@@ -17,7 +17,14 @@ auth:bearer {
 docs {
   ## Get Single Other Trip
 
-  Returns one trip with all its legs.
+  Returns one trip with all its legs — see 17_other-start.bru /
+  18_other-end.bru for how a trip is started and ended, and
+  21_other-gps-point.bru / 22_other-get-gps.bru for GPS tracking. Each leg
+  carries `mode`, `payment_method`, `amount`, `photo_path`, `remarks` — no
+  from/to location or distance (that concept was removed). The trip itself
+  has no `remarks`/`payment_method`/`amount` — those live only per leg.
+  `end_timestamp` is `null` while the trip is still in progress.
+  `gps_distance_km` reflects the recorded GPS trace.
 
   Replace `1` in the URL with the actual trip `id`.
 }

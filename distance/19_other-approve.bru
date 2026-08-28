@@ -1,7 +1,7 @@
 meta {
-  name: MA-DIST-18: Approve Other Trip
+  name: MA-DIST-19: Approve Other Trip
   type: http
-  seq: 18
+  seq: 19
 }
 
 post {
@@ -43,9 +43,14 @@ docs {
   | action     | Yes      | Approved / Rejected                      |
   | comment    | No       | Remarks from approver                    |
   | amount     | No       | Approved amount (required for verifier)  |
+
+  ### Response
+  Returns the full trip (same shape as `GET /distance/other/:id`, including
+  `legs[]` and `executive_name`) — not just the bare updated row.
 }
 
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has legs array", function() { expect(res.getBody().data).to.have.property("legs"); });
 }

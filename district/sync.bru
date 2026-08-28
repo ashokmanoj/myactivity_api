@@ -23,4 +23,11 @@ body:json {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("3 synced", function() { expect(res.getBody().results.synced.length).to.equal(3); });
+  test("synced rows have blocks", function() { expect(res.getBody().results.synced[0]).to.have.property("blocks"); });
+}
+docs {
+  ## Sync Districts (Bulk)
+
+  Each synced row is now the full joined district record (including `blocks`),
+  not just the bare synced row.
 }

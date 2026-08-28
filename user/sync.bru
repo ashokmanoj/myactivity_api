@@ -39,4 +39,11 @@ tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("2 synced", function() { expect(res.getBody().results.synced.length).to.equal(2); });
   test("0 failed", function() { expect(res.getBody().results.failed.length).to.equal(0); });
+  test("synced rows have user_info_id", function() { expect(res.getBody().results.synced[0]).to.have.property("user_info_id"); });
+}
+docs {
+  ## Sync Users Bulk (user_tbl)
+
+  Each synced row is now the full joined user record (same shape as Get User By ID),
+  not just the bare synced row.
 }

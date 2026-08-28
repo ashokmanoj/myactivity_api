@@ -1,0 +1,27 @@
+meta {
+  name: Force Logout User (Superuser only)
+  type: http
+  seq: 8
+}
+post {
+  url: {{base_url}}/api/v1/user/{{user_id}}/force-logout
+  body: none
+  auth: bearer
+}
+auth:bearer {
+  token: {{token}}
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("has force_logout_at", function() { expect(res.getBody().data.force_logout_at).to.not.equal(null); });
+  test("has user_info_id", function() { expect(res.getBody().data).to.have.property("user_info_id"); });
+}
+docs {
+  ## Force Logout User (Superuser only)
+
+  Sets `force_logout_at = NOW()` on the target user, invalidating their existing
+  sessions on next request. Requires the caller to have the `Superuser` role.
+
+  Returns the full joined user record (same shape as Get User By ID) plus
+  `force_logout_at` — not just `{ user_id, full_name, force_logout_at }`.
+}

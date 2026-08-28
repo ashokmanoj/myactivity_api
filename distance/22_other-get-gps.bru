@@ -1,0 +1,46 @@
+meta {
+  name: MA-DIST-22: Get Other-Trip GPS Points By Trip
+  type: http
+  seq: 22
+}
+
+get {
+  url: {{base_url}}/api/v1/distance/other/{{dist_other_trip_id}}/gps
+  body: none
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+vars:pre-request {
+  dist_other_trip_id: 1
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+  test("points have latitude", function() {
+    if (res.getBody().data.length > 0) {
+      expect(res.getBody().data[0]).to.have.property("latitude");
+    }
+  });
+}
+
+docs {
+  ## Get Other-Trip GPS Points By Trip
+
+  Returns all GPS points recorded for an "Other" trip, ordered by timestamp —
+  same shape/contract as the regular flow's `GET /distance/:tripId/gps`, just
+  scoped to `distance_other_gps` (a table separate from the regular flow's
+  `gps_location`, since the two trip tables are separate id sequences).
+
+  Replace `1` in the URL (or the `dist_other_trip_id` variable) with the
+  actual "Other" trip `id`.
+}

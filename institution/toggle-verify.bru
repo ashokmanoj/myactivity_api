@@ -1,10 +1,10 @@
 meta {
-  name: Update institution
+  name: Toggle institution Verification
   type: http
-  seq: 4
+  seq: 7
 }
 put {
-  url: {{base_url}}/api/v1/institution/{{institute_id}}
+  url: {{base_url}}/api/v1/institution/{{institute_id}}/verify
   body: json
   auth: none
 }
@@ -13,19 +13,18 @@ headers {
 }
 body:json {
   {
-    "village": "Titabor",
-    "address": "NEW ADDRESS, JORHAT, ASSAM",
-    "pincode": 785002
+    "userId": 1
   }
 }
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
-  test("updated", function() { expect(res.getBody().message).to.include("updated"); });
   test("has project_name", function() { expect(res.getBody().data).to.have.property("project_name"); });
 }
 docs {
-  ## Update institution
+  ## Toggle institution Verification
 
+  Flips `is_verified` for the institution and records who verified it / when.
   Returns the full joined institution record (same shape as Get institution By ID),
-  including `project_name`, `district_name`, `block_name` — not just the bare updated row.
+  including `project_name`, `district_name`, `block_name` — not just the 3-column
+  `{ institute_id, is_verified, verified_at }` it used to return.
 }

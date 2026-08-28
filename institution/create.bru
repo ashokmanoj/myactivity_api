@@ -28,4 +28,11 @@ body:json {
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("created", function() { expect(res.getBody().message).to.include("created"); });
+  test("has project_name", function() { expect(res.getBody().data).to.have.property("project_name"); });
+}
+docs {
+  ## Create institution
+
+  Returns the full joined institution record (same shape as Get institution By ID),
+  including `project_name`, `district_name`, `block_name` — not just the bare inserted row.
 }

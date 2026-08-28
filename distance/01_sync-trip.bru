@@ -26,6 +26,16 @@ body:multipart-form {
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
-  test("message is STARTED", function() { expect(res.getBody().data.message).to.equal("STARTED"); });
-  test("has trip_id", function() { expect(res.getBody().data).to.have.property("trip_id"); });
+  test("message is Trip started", function() { expect(res.getBody().message).to.equal("Trip started"); });
+  test("has id", function() { expect(res.getBody().data).to.have.property("id"); });
+  test("has executive_name", function() { expect(res.getBody().data).to.have.property("executive_name"); });
+}
+docs {
+  ## Sync Trip — START / END (idempotent, keyed by uuid)
+
+  Returns the full joined trip record (same shape as Get Trip By ID — includes
+  `executive_name`, `rm_name`, `gps_distance_km`, `unread_count`, etc.), not
+  the old minimal `{ trip_id, total_distance, required_amount, message }` —
+  the top-level `message` ("Trip started" / "Trip ended" / "Trip already
+  exists") still tells you which branch fired.
 }

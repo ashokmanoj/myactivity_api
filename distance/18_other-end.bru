@@ -1,0 +1,68 @@
+meta {
+  name: MA-DIST-18: End Other Trip (Mobile)
+  type: http
+  seq: 18
+}
+
+post {
+  url: {{base_url}}/api/v1/distance/other/end
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  tripId: 1
+  legs: [{"mode":"Bus","paymentMethod":"Cash","amount":50,"remarks":"Morning bus to depot"},{"mode":"Taxi","paymentMethod":"Online","amount":220,"remarks":"Client site taxi"}]
+  legPhoto1: @file(C:\Users\manoj\OneDrive\Pictures\bus-receipt.jpg) @contentType(image/jpeg)
+  legPhoto2: @file(C:\Users\manoj\OneDrive\Pictures\taxi-receipt.jpg) @contentType(image/jpeg)
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has 2 legs", function() { expect(res.getBody().data.legs).to.have.length(2); });
+  test("end_timestamp set", function() { expect(res.getBody().data.end_timestamp).to.not.equal(null); });
+}
+
+docs {
+  ## End Other Trip (from mobile)
+
+  Closes a trip opened with `POST /distance/other/start` and submits the legs
+  (modes of travel — bus, taxi, etc.) taken during it, all at once. Calling
+  this again on an already-ended trip (same `tripId`/`uuid`) is a no-op that
+  just returns the current state — it won't insert duplicate legs.
+
+  ### Fields
+  | Field         | Required | Description                                              |
+  |---------------|----------|-----------------------------------------------------------|
+  | tripId        | Yes*     | ID of the trip returned by Start                           |
+  | uuid          | Yes*     | Alternatively, the same uuid passed to Start (*either tripId or uuid is required) |
+  | legs          | Yes      | JSON array of legs — see format below                      |
+  | paymentScreenshot | No   | Image file — one overall/general receipt for the whole trip |
+  | legPhoto1 … legPhoto5 | No | Image file per leg, positionally aligned with `legs[]` |
+
+  There is no trip-level `remarks`/`paymentMethod`/`amount` field — every leg
+  carries its own `paymentMethod`, `amount`, and `remarks`.
+
+  ### Legs JSON format
+  Each leg is the mode of travel plus its own payment details and an optional
+  note — no from/to location or distance:
+  ```json
+  [
+    { "mode": "Bus",   "paymentMethod": "Cash",   "amount": 50,  "remarks": "Morning bus to depot" },
+    { "mode": "Taxi",  "paymentMethod": "Online", "amount": 220, "remarks": "Client site taxi" }
+  ]
+  ```
+  The trip's overall amount (used internally for approval/payment reference)
+  is computed server-side as the sum of every leg's amount — it is not
+  returned in the API response.
+
+  ### Response
+  Returns the full trip record (same shape as `GET /distance/other/:id`) with
+  the submitted `legs[]` (each with its own `remarks`) and `end_timestamp` now
+  set.
+}

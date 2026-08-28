@@ -36,9 +36,14 @@ docs {
   **message**  — forwarding note (shown in the bill's chat)
 
   This marks the current stage as `Forwarded` and logs a chat message.
+
+  ### Response
+  Returns the full joined expense row (same shape as `GET /expense`'s list
+  items) — not `null`.
 }
 
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has full_name", function() { expect(res.getBody().data).to.have.property("full_name"); });
 }

@@ -1,0 +1,36 @@
+meta {
+  name: Toggle User Profile Status
+  type: http
+  seq: 6
+}
+patch {
+  url: {{base_url}}/api/v1/user-profile/{{user_info_id}}/status
+  body: json
+  auth: none
+}
+headers {
+  Content-Type: application/json
+}
+body:json {
+  {
+    "active": false,
+    "comment": "Left the organization"
+  }
+}
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("has full_name", function() { expect(res.getBody().data).to.have.property("full_name"); });
+  test("is_active matches request", function() { expect(res.getBody().data.is_active).to.equal(0); });
+}
+docs {
+  ## Toggle User Profile Status (Enable/Disable)
+
+  Activates or deactivates a user (HR/Superuser use). `comment` is required for
+  both directions.
+
+  Returns the full joined profile record (same shape as Get User Profile By ID)
+  reflecting the new `is_active`/`status_comment`/`date_of_exit` — not `null`.
+
+  Set `"active": true` to reactivate a previously deactivated user (this is
+  what makes deactivated users re-enable-able from the Admin Dashboard).
+}
