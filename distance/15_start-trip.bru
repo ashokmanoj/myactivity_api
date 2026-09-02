@@ -6,7 +6,7 @@ meta {
 
 post {
   url: {{base_url}}/api/v1/distance/start
-  body: multipart-form
+  body: multipartForm
   auth: bearer
 }
 
@@ -16,14 +16,14 @@ auth:bearer {
 
 body:multipart-form {
   userId: 1
-  vehicleType: Bike
+  vehicleType: Others
   startOdoReading: 1200
   startDistanceTimestamp: 1713859200000
   state: Assam
   district: Jorhat
   rmUserId: 2
   uuid: trip-uuid-002
-  startSelfie: @file(/path/to/start_selfie.jpg)
+  startSelfie: @file(C:\Users\manoj\OneDrive\Pictures\133873081429583745.jpg) @contentType(image/jpeg)
 }
 
 tests {
@@ -35,16 +35,9 @@ tests {
 
 docs {
   ## Start Trip
-
+  
   Opens a new trip for any `vehicleType` — `Bike`, `Car`, or `Others`.
-
-  ⚠️ **Before testing**: replace the example `startDistanceTimestamp` below
-  with a *current* epoch-ms value (e.g. `Date.now()` in a browser console, or
-  https://currentmillis.com). The web admin's list views default to
-  "today only" — a trip started with a stale example timestamp will save and
-  return fine, but won't show up in the Distance screen until you widen or
-  clear its date filter.
-
+  
   ### Fields
   | Field                  | Required | Description                                             |
   |------------------------|----------|-----------------------------------------------------------|
@@ -56,18 +49,12 @@ docs {
   | rmUserId               | No       | Auto-resolved from user_institution_map/reporting_rm if omitted |
   | uuid                   | No       | Client-generated ID for idempotent retries                 |
   | startSelfie            | No       | Selfie/photo file taken at the start of the trip. `multipart/form-data` is optional here — a plain JSON body with no file still works exactly as before for Bike/Car clients that don't send a selfie. |
-
+  
   For `vehicleType: 'Others'` (Bus/Auto/Taxi/mixed-vehicle travel), the trip
   starts the same way — the modes-of-travel data (what used to be a separate
   `/distance/other/*` API) is now captured entirely at End (see
   16_end-trip.bru).
-
-  ⚠️ **Bike/Car note**: this Start Trip endpoint still accepts `vehicleType:
-  'Bike'`/`'Car'`, but there is no matching End Trip for them anymore —
-  `POST /distance/end` now only accepts `'Others'` trips. End a Bike/Car trip
-  via `POST /distance/sync` instead (01_sync-trip.bru), which handles both
-  starting and ending in one idempotent, uuid-keyed call.
-
+  
   ### Response
   Returns the full trip record (same shape as Get Trip By ID) with an empty
   `legs: []` (populated at End for Others trips) and `end_distance_timestamp: null`.

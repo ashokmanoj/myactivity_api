@@ -6,7 +6,7 @@ meta {
 
 post {
   url: {{base_url}}/api/v1/distance/sync
-  body: multipart-form
+  body: multipartForm
   auth: bearer
 }
 
@@ -30,9 +30,10 @@ tests {
   test("has id", function() { expect(res.getBody().data).to.have.property("id"); });
   test("has executive_name", function() { expect(res.getBody().data).to.have.property("executive_name"); });
 }
+
 docs {
   ## Sync Trip — START / END (idempotent, keyed by uuid)
-
+  
   Returns the full joined trip record (same shape as Get Trip By ID — includes
   `executive_name`, `rm_name`, `gps_distance_km`, `unread_count`, etc.), not
   the old minimal `{ trip_id, total_distance, required_amount, message }` —
