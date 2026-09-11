@@ -16,7 +16,7 @@ auth:bearer {
 
 body:multipart-form {
   id: 1
-  legs: [{"mode":"Bus","paymentMethod":"Cash","amount":50,"remarks":"Morning bus to depot"},{"mode":"Taxi","paymentMethod":"Online","amount":220,"remarks":"Client site taxi"}]
+  legs: [{"mode":"Bus","paymentMethod":"Cash","amount":50,"remarks":"Morning bus to depot","from":"Guwahati","to":"Jorhat"},{"mode":"Taxi","paymentMethod":"Online","amount":220,"remarks":"Client site taxi","from":"Jorhat","to":"Client Site"}]
   endSelfie: @file(C:\Users\manoj\OneDrive\Pictures\133873081429583745.jpg) @contentType(image/jpeg)
   legPhoto1: @file(C:\Users\manoj\OneDrive\Pictures\133873081429583745.jpg) @contentType(image/jpeg)
   legPhoto2: @file(C:\Users\manoj\OneDrive\Pictures\Screenshot 2025-03-14 155858.png) @contentType(image/png)
@@ -57,19 +57,23 @@ docs {
   ### Legs JSON format
   ```json
   [
-    { "mode": "Bus",  "paymentMethod": "Cash",   "amount": 50,  "remarks": "Morning bus to depot" },
-    { "mode": "Taxi", "paymentMethod": "Online", "amount": 220, "remarks": "Client site taxi" }
+    { "mode": "Bus",  "paymentMethod": "Cash",   "amount": 50,  "remarks": "Morning bus to depot", "from": "Guwahati", "to": "Jorhat" },
+    { "mode": "Taxi", "paymentMethod": "Online", "amount": 220, "remarks": "Client site taxi",      "from": "Jorhat",   "to": "Client Site" }
   ]
   ```
+  `from`/`to` are optional free-text location names for that leg (e.g. "From
+  Guwahati To Jorhat") — stored as-is, not validated against any place list.
+
   The trip's fare (`required_amount`/`approved_amount`) is computed
   server-side as the sum of every leg's `amount` — there is no separate
   trip-level amount field to send.
-  
+
   Ending an already-ended trip is a no-op — it just returns the current state
   rather than erroring or duplicating legs.
-  
+
   ### Response
   Returns the full trip record (same shape as Get Trip By ID) with the
   submitted `legs[]` (each with its own `mode`/`payment_method`/`amount`/
-  `photo_path`/`remarks`) and `end_distance_timestamp` now set.
+  `photo_path`/`remarks`/`from_location`/`to_location`) and
+  `end_distance_timestamp` now set.
 }
