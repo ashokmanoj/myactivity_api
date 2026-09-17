@@ -1,0 +1,34 @@
+meta {
+  name: SURVEY-10: Get Dynamic Survey Submission By Id
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{base_url}}/api/v1/survey/submissions/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  ## Get Dynamic Survey Submission By Id
+
+  Full detail view of one dynamic survey submission — same shape returned
+  by `POST /survey/submissions` on create.
+
+  ### Response
+  `data`: `{ submission_id, project_id, institution_id, school_name,
+  submitted_by, submitted_by_name, project_name, created_at, updated_at,
+  answers: [{ answer_id, question_id, repeat_index, answer_value, remarks,
+  q_id, section, group_label, repeat_group, question, q_type }] }`
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has answers array", function() { expect(res.getBody().data.answers).to.be.an("array"); });
+}

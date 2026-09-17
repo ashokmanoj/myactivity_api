@@ -1,0 +1,40 @@
+meta {
+  name: SURVEY-09: Get Dynamic Survey Submissions
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{base_url}}/api/v1/survey/submissions?projectId=21&page=1&pageSize=20
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  projectId: 21
+  page: 1
+  pageSize: 20
+}
+
+docs {
+  ## Get Dynamic Survey Submissions
+
+  Paginated list of dynamic survey submissions — optionally filtered to one
+  project. Summary rows only (no answers) — use
+  `GET /survey/submissions/:id` for the full detail with every answer.
+
+  ### Response
+  `data`: `{ rows: [{ submission_id, project_id, institution_id,
+  school_name, created_at, submitted_by_name, project_name }], total, page,
+  pageSize }`
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has rows", function() { expect(res.getBody().data).to.have.property("rows"); });
+}

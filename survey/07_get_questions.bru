@@ -1,0 +1,59 @@
+meta {
+  name: SURVEY-07: Get Dynamic Survey Questions
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{base_url}}/api/v1/survey/questions?projectId=22
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  projectId: 22
+}
+
+docs {
+  ## Get Dynamic Survey Questions
+
+  Returns the ordered, active question list for one project — this is the
+  dynamic, project-scoped survey system, separate from the older fixed-shape
+  `POST /survey` endpoint. Every project can have a completely different
+  question set with zero code changes; questions live in `survey_question`
+  (managed like any other Admin Dashboard table).
+
+  The mobile app should fetch this once when the user opens the Survey
+  feature for their assigned project, then render one input per question
+  using `q_type` to pick the widget:
+  - `text` — text input
+  - `number` — numeric input
+  - `boolean` — Yes/No toggle
+  - `select` — dropdown, options in `options` (JSON array)
+  - `photo` — camera/gallery picker; upload as a file field on submit, named
+    after that question's `q_id`
+
+  `section`/`group_label` are for rendering headings — e.g. section
+  "D. Site Access..." with sub-items visually clustered under group_label
+  "65\" Integrated Touch e-Board...".
+
+  `repeat_group` marks a question as belonging to a repeatable block (e.g.
+  `virtual_classroom`) — show an "Add another" button that re-asks every
+  question sharing that same `repeat_group` value, incrementing
+  `repeatIndex` on submit for each new instance (1st classroom, 2nd
+  classroom, ...). Questions with `repeat_group: null` are asked once.
+
+  ### Response
+  `data[]`: `{ question_id, q_id, section, group_label, repeat_group,
+  question, q_type, options, sort_order }`
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

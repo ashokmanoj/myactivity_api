@@ -1,0 +1,70 @@
+meta {
+  name: SURVEY-08: Submit Dynamic Survey
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{base_url}}/api/v1/survey/submissions
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  projectId: 21
+  schoolName: Test School
+  answers: [{"questionId":122,"value":"Test School"},{"questionId":154,"value":"true","remarks":"Paved road, 2km"},{"questionId":157,"value":"Clear"},{"questionId":191,"value":""}]
+  PHOTO_FRONT: @file(C:\Users\manoj\OneDrive\Pictures\133873081429583745.jpg) @contentType(image/jpeg)
+}
+
+docs {
+  ## Submit Dynamic Survey
+
+  Submits answers for the dynamic, project-scoped survey system.
+
+  ### Fields
+  | Field | Required | Description |
+  |---|---|---|
+  | projectId | Yes | Which project's question set these answers belong to |
+  | institutionId | No | FK to institution, if the school is matched to one |
+  | schoolName | No | Fallback display name if not matched to an institution |
+  | answers | Yes | JSON array — see format below |
+  | `<q_id>` file fields | No | For each `q_type: 'photo'` question being answered, attach a file field named after that question's `q_id` (e.g. `PHOTO_FRONT`) |
+
+  ### `answers` JSON format
+  ```json
+  [
+    { "questionId": 122, "value": "Test School" },
+    { "questionId": 154, "value": "true", "remarks": "Paved road, 2km" },
+    { "questionId": 157, "value": "Clear" },
+    { "questionId": 191, "value": "" }
+  ]
+  ```
+  - `questionId` — the `question_id` from `GET /survey/questions`
+  - `repeatIndex` (optional, default 1) — which instance this answer belongs
+    to, for `repeat_group` questions (1st classroom vs 2nd classroom, etc.)
+  - `value` — the answer; for `q_type: 'photo'` questions, send an empty
+    string here and attach the actual file as a separate multipart field
+    named after the question's `q_id` — the uploaded filename overrides
+    whatever `value` was sent
+  - `remarks` (optional) — free-text note alongside this specific answer
+
+  Answers referencing a `questionId` that doesn't belong to the given
+  `projectId` are silently skipped, not errored.
+
+  ### Response
+  Full submission record with every saved answer, each including its
+  question's `q_id`/`section`/`question`/`q_type` for easy display without a
+  second lookup.
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has submission_id", function() { expect(res.getBody().data).to.have.property("submission_id"); });
+  test("has answers", function() { expect(res.getBody().data.answers).to.be.an("array"); });
+}
