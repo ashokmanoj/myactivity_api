@@ -1,0 +1,39 @@
+meta {
+  name: SURVEY-12: Update Survey Question
+  type: http
+  seq: 12
+}
+
+put {
+  url: {{base_url}}/api/v1/survey/questions/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "question": "Updated question text",
+    "sortOrder": 15
+  }
+}
+
+docs {
+  ## Update Survey Question
+
+  Partial update — only send the fields you want to change; omitted fields
+  keep their current value. Can also be used to un-hide a question by
+  passing `"isActive": true` (the counterpart to
+  `DELETE /survey/questions/:id`, which hides it).
+
+  Fields: `section`, `groupLabel`, `repeatGroup`, `question`, `qType`,
+  `options`, `sortOrder`, `isActive`.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}

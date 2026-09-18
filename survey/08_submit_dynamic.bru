@@ -32,6 +32,7 @@ docs {
   | projectId | Yes | Which project's question set these answers belong to |
   | institutionId | No | FK to institution, if the school is matched to one |
   | schoolName | No | Fallback display name if not matched to an institution |
+  | taskId | No | FK to the task_list row this survey was assigned through (Task Activity > Implementation > Survey). When present, that task is auto-marked Completed once the submission is saved — no separate status-update call needed. |
   | answers | Yes | JSON array — see format below |
   | `<q_id>` file fields | No | For each `q_type: 'photo'` question being answered, attach a file field named after that question's `q_id` (e.g. `PHOTO_FRONT`) |
 

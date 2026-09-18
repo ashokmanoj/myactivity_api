@@ -1,0 +1,50 @@
+meta {
+  name: SURVEY-11: Create Survey Question
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{base_url}}/api/v1/survey/questions
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "projectId": 22,
+    "qId": "NEW_Q1",
+    "section": "A. School Details",
+    "groupLabel": null,
+    "repeatGroup": null,
+    "question": "New question text",
+    "qType": "text",
+    "options": null,
+    "sortOrder": 95
+  }
+}
+
+docs {
+  ## Create Survey Question
+
+  Adds one question to a project's survey. Used by the web app's
+  question-manager UI (RMH/Superuser only — frontend-gated, not enforced
+  server-side, same as the rest of this app).
+
+  `qId` must be unique within the project — reuses an existing `qId` on the
+  same project and it'll hit the `survey_question(project_id, q_id)` unique
+  constraint.
+
+  `qType`: `text` | `number` | `boolean` | `select` | `photo`. For `select`,
+  pass `options` as a JSON array of choice strings.
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has question_id", function() { expect(res.getBody().data).to.have.property("question_id"); });
+}

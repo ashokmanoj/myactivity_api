@@ -37,4 +37,10 @@ docs {
   Query params (all optional):
     projectId, categoryId, subCategoryId, priority (High/Medium/Low),
     status (Pending/InProgress/Completed), executiveId, from, to (ISO dates)
+
+  Each row now includes is_survey (0/1, from its sub-category). When 1, the
+  mobile app should treat this task as a survey assignment: render the form
+  from GET /survey/questions?projectId=<project_id> and submit via
+  POST /survey/submissions with taskId=<task_id> in the body — that call
+  auto-marks the task Completed, so no separate status-update call is needed.
 }

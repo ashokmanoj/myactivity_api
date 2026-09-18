@@ -29,8 +29,11 @@ docs {
 
   ### Response
   `data`: `{ rows: [{ submission_id, project_id, institution_id,
-  school_name, created_at, submitted_by_name, project_name }], total, page,
+  school_name, task_id, created_at, submitted_by_name, project_name }], total, page,
   pageSize }`
+
+  `task_id` is set when the survey was submitted against a Task Activity
+  assignment (Implementation > Survey), null for standalone submissions.
 }
 
 tests {

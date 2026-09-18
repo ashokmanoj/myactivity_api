@@ -32,7 +32,14 @@ docs {
 
   Response:
     [
-      { "sub_category_id": 1, "category_id": 1, "sub_category_name": "New Installation", "sort_order": 1 },
+      { "sub_category_id": 1, "category_id": 1, "sub_category_name": "New Installation", "sort_order": 1, "is_survey": 0 },
       ...
     ]
+
+  is_survey: 1 marks a sub-category (currently "Survey" under "Implementation")
+  as a survey-delivery task. When a task is created with this sub-category,
+  the mobile app should render the dynamic survey form
+  (GET /survey/questions?projectId=<task.project_id>) instead of a normal
+  task-completion screen, and submit via POST /survey/submissions with the
+  task's task_id included — that auto-marks the task Completed.
 }
