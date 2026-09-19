@@ -1,0 +1,38 @@
+meta {
+  name: SURVEY-15: Get Sections
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{base_url}}/api/v1/survey/sections?projectId=22
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  projectId: 22
+}
+
+docs {
+  ## Get Sections
+
+  This project's section list — used by the question-manager UI's "Section"
+  dropdown. Sections are per-project (each project's paper form has its own
+  headings). Not required before creating a question: POST /survey/questions
+  accepts a plain `section` name and creates a new section row automatically
+  if none exists yet with that name for the project.
+
+  ### Response
+  `data[]`: `{ section_id, project_id, section_name, sort_order }`
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

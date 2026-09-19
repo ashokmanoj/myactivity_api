@@ -1,0 +1,33 @@
+meta {
+  name: SURVEY-14: Get Question Types
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{base_url}}/api/v1/survey/question-types
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  ## Get Question Types
+
+  Fixed, global list of answer types (`text`, `number`, `boolean`, `select`,
+  `photo`) — used by the question-manager UI's "Answer Type" dropdown instead
+  of a hardcoded list, and to resolve the `qTypeId` sent to
+  POST/PUT /survey/questions.
+
+  ### Response
+  `data[]`: `{ type_id, type_name }`
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

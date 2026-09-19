@@ -48,8 +48,13 @@ docs {
   classroom, ...). Questions with `repeat_group: null` are asked once.
 
   ### Response
-  `data[]`: `{ question_id, q_id, section, group_label, repeat_group,
-  question, q_type, options, sort_order }`
+  `data[]`: `{ question_id, q_id, section_id, section, group_label,
+  repeat_group, question, q_type_id, q_type, options, sort_order }`
+
+  `section`/`q_type` here are the resolved display names (joined from
+  `survey_section`/`survey_question_type`) — `section_id`/`q_type_id` are
+  the underlying foreign keys, present for the question-manager UI's
+  edit/create forms. Mobile only needs the name fields to render.
 }
 
 tests {

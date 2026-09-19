@@ -22,7 +22,7 @@ body:json {
     "groupLabel": null,
     "repeatGroup": null,
     "question": "New question text",
-    "qType": "text",
+    "qTypeId": 1,
     "options": null,
     "sortOrder": 95
   }
@@ -39,8 +39,17 @@ docs {
   same project and it'll hit the `survey_question(project_id, q_id)` unique
   constraint.
 
-  `qType`: `text` | `number` | `boolean` | `select` | `photo`. For `select`,
-  pass `options` as a JSON array of choice strings.
+  `section`/`q_type` are stored as IDs (`survey_section.section_id`,
+  `survey_question_type.type_id`) — same category_id/sub_category_id pattern
+  as Task Categories. Pass either:
+  - `sectionId` — an existing section's id (see GET /survey/sections), or
+  - `section` — a plain name; if no section with that name exists yet for
+    this project, one is created automatically.
+
+  `qTypeId` is required — see GET /survey/question-types for the fixed list
+  (text=1, number=2, boolean=3, select=4, photo=5, though always look these
+  up rather than hardcoding). For `select`, pass `options` as a JSON array of
+  choice strings.
 }
 
 tests {
