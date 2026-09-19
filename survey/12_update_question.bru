@@ -29,8 +29,13 @@ docs {
   passing `"isActive": true` (the counterpart to
   `DELETE /survey/questions/:id`, which hides it).
 
-  Fields: `sectionId` or `section` (name, found-or-created), `groupLabel`,
-  `repeatGroup`, `question`, `qTypeId`, `options`, `sortOrder`, `isActive`.
+  Fields: `qId`, `sectionId` or `section` (name, found-or-created),
+  `groupLabel`, `repeatGroup`, `question`, `qTypeId`, `options`, `sortOrder`,
+  `isActive`.
+
+  Renaming `qId` to one already used by another question in the same project
+  returns a 400 (`survey_question(project_id, q_id)` is unique) instead of a
+  raw DB error.
 }
 
 tests {
