@@ -34,7 +34,7 @@ docs {
   | schoolName | No | Fallback display name if not matched to an institution |
   | taskId | No | FK to the task_list row this survey was assigned through (Task Activity > Implementation > Survey). When present, that task is auto-marked Completed once the submission is saved — no separate status-update call needed. |
   | answers | Yes | JSON array — see format below |
-  | `<q_id>` file fields | No | For each `q_type: 'photo'` question being answered, attach a file field named after that question's `q_id` (e.g. `PHOTO_FRONT`) |
+  | `<q_id>` file fields | No | For each `q_type: 'photo'` question being answered, attach a file field named after that question's `q_id` (e.g. `PHOTO_FRONT`). Attach it more than once (same field name, up to 5 times) to upload multiple photos for that one question — no `answers` entry is needed for photo questions at all, the file(s) alone are enough |
 
   ### `answers` JSON format
   ```json
@@ -48,11 +48,20 @@ docs {
   - `questionId` — the `question_id` from `GET /survey/questions`
   - `repeatIndex` (optional, default 1) — which instance this answer belongs
     to, for `repeat_group` questions (1st classroom vs 2nd classroom, etc.)
-  - `value` — the answer; for `q_type: 'photo'` questions, send an empty
-    string here and attach the actual file as a separate multipart field
-    named after the question's `q_id` — the uploaded filename overrides
-    whatever `value` was sent
-  - `remarks` (optional) — free-text note alongside this specific answer
+  - `value` — the answer. Not used for `q_type: 'photo'` questions — those
+    are driven entirely by the attached file field(s), see above
+  - `remarks` (optional) — free-text note alongside this specific answer. For
+    a `q_type: 'photo'` question, include one entry with just `questionId`
+    and `remarks` (no `value` needed) to attach a remark to all of that
+    question's photos
+
+  ### Multiple photos per question (up to 5)
+  Attach the same field, named after the question's `q_id`, multiple times in
+  the multipart body — each attachment becomes its own image, in the order
+  attached. A 6th+ file for the same question is accepted by the upload but
+  discarded and not saved to any answer. Every image is returned in the
+  response as its own entry in `answers`, sharing the same `q_id`/`question`
+  but with an increasing `repeat_index` (1st photo, 2nd photo, ...).
 
   Answers referencing a `questionId` that doesn't belong to the given
   `projectId` are silently skipped, not errored.
