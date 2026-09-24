@@ -23,6 +23,7 @@ body:multipart-form {
   amount: 65
   expenseDate: 2026-08-01
   stateType: Within State
+  districtType: Outside District
   foodSubType: Breakfast
   paymentMethod: Cash
   remarks: Breakfast during field visit
@@ -67,6 +68,7 @@ docs {
   | amount        | number  | yes      | total amount                               |
   | expenseDate   | date    | yes      | YYYY-MM-DD — date of the meal              |
   | stateType     | string  | no       | `Within State` or `Other State`            |
+  | districtType  | string  | no       | `Inside District` or `Outside District`    |
   | foodSubType   | string  | no       | Breakfast / Lunch / Dinner / Snacks        |
   | paymentMethod | string  | no       | Cash / Online / UPI / Card (default: Cash) |
   | remarks       | string  | no       |                                            |
@@ -90,6 +92,7 @@ docs {
   | remarks        | string   |                                    |
   | bill_image_path| string   | path of first uploaded image       |
   | state_type     | string   | Within State / Other State         |
+  | district_type  | string   | Inside District / Outside District |
   | food_sub_type  | string   | Breakfast / Lunch / Dinner / Snacks|
   | hotel_name     | null     |                                    |
   | stay_location  | null     |                                    |
