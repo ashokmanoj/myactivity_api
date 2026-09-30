@@ -1,0 +1,113 @@
+meta {
+  name: MA-EXP-01e: Submit Faulty Item Sent To Store Expense (Mobile)
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/api/v1/expense/faulty-item-submit
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  userId: 5
+  companyId: 2
+  projectId: 3
+  type: expense
+  hasBill: true
+  amount: 65
+  expenseDate: 2026-08-18
+  modeOfDispatch: Courier
+  docketNumber: CC123456789
+  paymentMethod: Cash
+  remarks: Faulty router sent back to store
+  images: @file(/path/to/bill1.jpg)
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+
+  var data = res.getBody().data;
+
+  test("has expense_id", function() { expect(data).to.have.property("expense_id"); });
+  test("purpose is Faulty Item Sent To Store", function() { expect(data.purpose).to.equal("Faulty Item Sent To Store"); });
+  test("has mode_of_dispatch", function() { expect(data).to.have.property("mode_of_dispatch"); });
+  test("has docket_number",  function() { expect(data).to.have.property("docket_number"); });
+  test("has amount",         function() { expect(data).to.have.property("amount"); });
+  test("has payment_method", function() { expect(data).to.have.property("payment_method"); });
+  test("has full_name",      function() { expect(data).to.have.property("full_name"); });
+  test("has overall_status", function() { expect(data).to.have.property("overall_status"); });
+  test("has created_at",     function() { expect(data).to.have.property("created_at"); });
+}
+
+docs {
+  ## Submit Faulty Item Sent To Store Expense (Mobile) — POST /expense/faulty-item-submit
+
+  `purpose` is automatically set to `Faulty Item Sent To Store` by the server — no need to send it.
+
+  `modeOfDispatch` picks which detail fields apply — send only the ones for
+  the chosen mode (the others are ignored if sent, but not rejected):
+
+  - `modeOfDispatch: Courier` → send `docketNumber`
+  - `modeOfDispatch: Local Transport` → send `driverName`, `driverNumber`, `vehicleNumber`
+
+  These are the same underlying fields used by the separate Material
+  Dispatch / Courier purposes — reused here rather than duplicated.
+
+  Multiple photos: send several files under the same `images` field (up to
+  10) — a plain array, no per-photo metadata needed.
+
+  ### Request Fields
+
+  | Field          | Type    | Required | Notes                                                  |
+  |----------------|---------|----------|---------------------------------------------------------|
+  | userId         | int     | yes      | executive's user_id                                    |
+  | companyId      | int     | yes      |                                                          |
+  | projectId      | int     | no       |                                                          |
+  | type           | string  | no       | `expense` (default)                                     |
+  | hasBill        | boolean | no       | true = receipt/photo attached                           |
+  | amount         | number  | yes      | total amount                                            |
+  | expenseDate    | date    | yes      | YYYY-MM-DD                                              |
+  | modeOfDispatch | string  | yes      | `Courier` or `Local Transport`                          |
+  | docketNumber   | string  | no       | Courier mode: docket / tracking number                  |
+  | driverName     | string  | no       | Local Transport mode: driver's name                     |
+  | driverNumber   | string  | no       | Local Transport mode: driver's phone number              |
+  | vehicleNumber  | string  | no       | Local Transport mode: vehicle registration number       |
+  | paymentMethod  | string  | no       | Cash / Online / UPI / Card (default: Cash)              |
+  | remarks        | string  | no       |                                                          |
+  | images         | file[]  | no       | up to 10 photos (field name: `images`)                  |
+
+  ### Response (201) — `data` object
+
+  | Field            | Type     | Notes                              |
+  |------------------|----------|------------------------------------|
+  | expense_id       | int      | generated primary key              |
+  | user_id          | int      |                                    |
+  | company_id       | int      |                                    |
+  | project_id       | int      |                                    |
+  | type             | string   | `expense`                          |
+  | purpose          | string   | `Faulty Item Sent To Store`        |
+  | has_bill         | boolean  |                                    |
+  | amount           | number   |                                    |
+  | expense_date     | string   | YYYY-MM-DD                         |
+  | payment_method   | string   | Cash / Online / UPI / Card         |
+  | remarks          | string   |                                    |
+  | mode_of_dispatch | string   | `Courier` or `Local Transport`     |
+  | docket_number    | string   | set when mode is Courier           |
+  | driver_name      | string   | set when mode is Local Transport   |
+  | driver_number    | string   | set when mode is Local Transport   |
+  | vehicle_number   | string   | set when mode is Local Transport   |
+  | overall_status   | string   | `Pending` (default)                |
+  | payment_status   | string   | null until paid                    |
+  | created_at       | datetime | ISO 8601                           |
+  | full_name        | string   | executive's name                   |
+  | emp_code         | string   |                                    |
+  | project_name     | string   |                                    |
+  | images           | object[] | one entry per uploaded photo: `{ image_path, image_type, photo_lat, photo_lng, photo_location }` |
+}
