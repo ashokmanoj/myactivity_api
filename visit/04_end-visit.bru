@@ -4,7 +4,7 @@ meta {
   seq: 4
 }
 
-patch {
+post {
   url: {{base_url}}/api/v1/visit/1/end
   body: multipartForm
   auth: bearer
@@ -27,9 +27,12 @@ tests {
 docs {
   ## End Visit
 
-  Replace `1` in the URL with the actual visit `id`. Records departure —
-  `visit_end_at` is set to `NOW()` server-side. Any authenticated user can
-  call this.
+  Replace `1` in the URL with the visit's numeric `id` OR its `uuid` — mobile
+  can reference a visit either way, since the uuid is the only thing it knows
+  for certain before the Start Visit response comes back. Records departure —
+  `visit_end_at` is set to `NOW()` server-side, and stays fixed on a retry
+  (idempotent) even if a later retry brings a photo an earlier one didn't have.
+  Any authenticated user can call this.
 
   ### Request fields
 
