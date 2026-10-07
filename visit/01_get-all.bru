@@ -28,11 +28,13 @@ tests {
 }
 
 docs {
-  ## Get All Visits (Superuser only)
+  ## Get All Visits
 
-  Superuser-only test harness for the `visit_details` table (mobile "New Task
+  Live local testing harness for the `visit_details` table (mobile "New Task
   Activity" / START VISIT flow) — a start photo+timestamp on arrival, an end
-  photo+timestamp on leaving.
+  photo+timestamp on leaving. Any authenticated user can call these endpoints
+  (same as distance/expense) — there's also a Superuser-only web page at
+  `/admin/visit-details-test` for inspecting data from a browser.
 
   ### Query params (all optional)
 

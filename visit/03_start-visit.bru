@@ -29,10 +29,12 @@ tests {
 }
 
 docs {
-  ## Start Visit (Superuser only)
+  ## Start Visit
 
   Records arrival at an institution — the authenticated caller becomes the
-  visit's `user_id`, `visit_start_at` is set to `NOW()` server-side.
+  visit's `user_id`, `visit_start_at` is set to `NOW()` server-side. Any
+  authenticated user can call this (mobile field executives, during live
+  local testing).
 
   ### Request fields
 

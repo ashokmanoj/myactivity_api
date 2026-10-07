@@ -25,10 +25,11 @@ tests {
 }
 
 docs {
-  ## End Visit (Superuser only)
+  ## End Visit
 
   Replace `1` in the URL with the actual visit `id`. Records departure —
-  `visit_end_at` is set to `NOW()` server-side.
+  `visit_end_at` is set to `NOW()` server-side. Any authenticated user can
+  call this.
 
   ### Request fields
 

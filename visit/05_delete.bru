@@ -1,5 +1,5 @@
 meta {
-  name: VISIT-05: Delete Visit (Superuser)
+  name: VISIT-05: Delete Visit
   type: http
   seq: 5
 }
@@ -20,9 +20,9 @@ tests {
 }
 
 docs {
-  ## Delete Visit (Superuser only)
+  ## Delete Visit
 
   Replace `1` in the URL with the actual visit `id`. Hard-deletes the row —
   this domain is a test harness with no approval/payment trail to preserve,
-  unlike expense/distance.
+  unlike expense/distance. Any authenticated user can call this.
 }
