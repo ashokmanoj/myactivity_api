@@ -1,0 +1,52 @@
+meta {
+  name: VISIT-01: Get All Visits
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/visit
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  ~projectId: 2
+  ~institutionId: 11
+  ~userId: 5
+  ~active: true
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
+
+docs {
+  ## Get All Visits (Superuser only)
+
+  Superuser-only test harness for the `visit_details` table (mobile "New Task
+  Activity" / START VISIT flow) — a start photo+timestamp on arrival, an end
+  photo+timestamp on leaving.
+
+  ### Query params (all optional)
+
+  | Param         | Type | Notes                      |
+  |---------------|------|-----------------------------|
+  | projectId     | int  |                             |
+  | institutionId | int  |                             |
+  | userId        | int  | who started the visit       |
+  | active        | bool | `true`/`false`               |
+
+  ### Response — `data` array, each item
+
+  Same joined shape as `GET /visit/:id` (02_get-by-id.bru) — includes
+  `project_name`, `institution_name`, `institute_code`, `full_name`, `emp_code`.
+
+  Newest first (`ORDER BY created_at DESC`).
+}

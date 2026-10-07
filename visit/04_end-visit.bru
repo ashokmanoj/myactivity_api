@@ -1,0 +1,42 @@
+meta {
+  name: VISIT-04: End Visit
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{base_url}}/api/v1/visit/1/end
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  ~image: @file(/path/to/end-photo.jpg)
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has visit_end_at", function() { expect(res.getBody().data.visit_end_at).to.not.equal(null); });
+}
+
+docs {
+  ## End Visit (Superuser only)
+
+  Replace `1` in the URL with the actual visit `id`. Records departure —
+  `visit_end_at` is set to `NOW()` server-side.
+
+  ### Request fields
+
+  | Field | Type | Required | Notes                                  |
+  |-------|------|----------|------------------------------------------|
+  | image | file | no       | field name: `image` — the departure photo |
+
+  ### Response
+  Full joined visit row — same shape as `GET /visit/:id` (02_get-by-id.bru),
+  now with `visit_end_image`/`visit_end_at` populated.
+}

@@ -1,0 +1,48 @@
+meta {
+  name: VISIT-03: Start Visit
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/api/v1/visit
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  projectId: 2
+  institutionId: 11
+  uuid: mobile-generated-uuid-1
+  ~image: @file(/path/to/start-photo.jpg)
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has id", function() { expect(res.getBody().data).to.have.property("id"); });
+  test("has visit_start_at", function() { expect(res.getBody().data).to.have.property("visit_start_at"); });
+}
+
+docs {
+  ## Start Visit (Superuser only)
+
+  Records arrival at an institution — the authenticated caller becomes the
+  visit's `user_id`, `visit_start_at` is set to `NOW()` server-side.
+
+  ### Request fields
+
+  | Field         | Type   | Required | Notes                                   |
+  |---------------|--------|----------|------------------------------------------|
+  | projectId     | int    | yes      |                                           |
+  | institutionId | int    | yes      |                                           |
+  | uuid          | string | no       | client-generated, for offline-sync dedup |
+  | image         | file   | no       | field name: `image` — the arrival photo  |
+
+  ### Response (201)
+  Full joined visit row — same shape as `GET /visit/:id` (02_get-by-id.bru).
+}

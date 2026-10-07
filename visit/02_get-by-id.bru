@@ -1,0 +1,49 @@
+meta {
+  name: VISIT-02: Get Visit By Id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/visit/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has id", function() { expect(res.getBody().data).to.have.property("id"); });
+}
+
+docs {
+  ## Get Visit By Id (Superuser only)
+
+  Replace `1` in the URL with the actual visit `id`.
+
+  ### Response — `data` object
+
+  | Field               | Type     | Notes                              |
+  |---------------------|----------|-------------------------------------|
+  | id                  | int      |                                      |
+  | uuid                | string   | client-generated, for sync dedup    |
+  | project_id          | int      |                                      |
+  | project_name        | string   |                                      |
+  | institution_id      | int      |                                      |
+  | institution_name    | string   |                                      |
+  | institute_code      | string   |                                      |
+  | user_id             | int      | who started the visit               |
+  | full_name           | string   |                                      |
+  | emp_code            | string   |                                      |
+  | visit_start_image   | string   | `uploads/visit/<filename>` or null  |
+  | visit_start_at      | datetime | ISO 8601, set when the visit started |
+  | visit_end_image     | string   | `uploads/visit/<filename>` or null  |
+  | visit_end_at        | datetime | null until ended                    |
+  | active              | boolean  |                                      |
+  | created_at          | datetime |                                      |
+  | updated_at          | datetime |                                      |
+}

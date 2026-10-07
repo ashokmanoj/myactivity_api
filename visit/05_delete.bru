@@ -1,0 +1,28 @@
+meta {
+  name: VISIT-05: Delete Visit (Superuser)
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{base_url}}/api/v1/visit/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}
+
+docs {
+  ## Delete Visit (Superuser only)
+
+  Replace `1` in the URL with the actual visit `id`. Hard-deletes the row —
+  this domain is a test harness with no approval/payment trail to preserve,
+  unlike expense/distance.
+}
