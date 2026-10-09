@@ -1,0 +1,66 @@
+meta {
+  name: TASK-ACTIVITY-06: Sync Task Activities (Bulk)
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/api/v1/task-activity/sync
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "visitUuid": "mobile-generated-uuid-1",
+    "activities": [
+      { "uuid": "mobile-generated-activity-uuid-1", "taskId": 1, "statusId": 1, "remarks": "First task" },
+      { "uuid": "mobile-generated-activity-uuid-2", "taskId": 2, "statusId": 2, "remarks": "Second task" }
+    ]
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
+
+docs {
+  ## Sync Task Activities (Bulk)
+
+  Built for the mobile app to catch up after being offline — submits every
+  task activity logged during one visit in a single call, instead of one
+  request per activity. Any authenticated user can call this. JSON body, not
+  multipart — this endpoint doesn't accept images; attach photos afterward
+  per-activity via `POST /task-activity/:id` (03_create.bru's sibling,
+  04_update.bru), once the mobile app has real ids from this response.
+
+  ### Request body
+
+  | Field     | Type   | Required | Notes                                              |
+  |-----------|--------|----------|-----------------------------------------------------|
+  | visitId   | int    | one of visitId/visitUuid | `visit_details.id`                    |
+  | visitUuid | string | one of visitId/visitUuid | `visit_details.uuid`                  |
+  | activities| array  | yes      | each item: `{ uuid?, taskId, statusId?, remarks? }`  |
+
+  Each activity item takes the same fields as `POST /task-activity`
+  (03_create.bru) minus images.
+
+  ### Idempotency and partial failure
+
+  Each item is created through the same idempotent-on-`uuid` path as the
+  single Create endpoint — re-posting the exact same batch (e.g. after the
+  mobile app never received the first response) is safe: already-synced
+  items come back unchanged instead of duplicating or erroring.
+
+  Items are independent — one bad `taskId` doesn't fail the whole batch.
+  The response is always 201 with one result per input item, each either
+  `{ uuid, success: true, data: <full activity row> }` or
+  `{ uuid, success: false, error: <message> }`, in the same order as the
+  request, so the mobile app knows exactly which ones to retry.
+}
