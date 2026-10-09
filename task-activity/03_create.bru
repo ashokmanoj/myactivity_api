@@ -1,0 +1,55 @@
+meta {
+  name: TASK-ACTIVITY-03: Create Task Activity
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/api/v1/task-activity
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  taskId: 1
+  visitUuid: mobile-generated-uuid-1
+  uuid: mobile-generated-activity-uuid-1
+  ~statusId: 1
+  ~remarks: Left side panel needs replacement
+  ~images: @file(/path/to/photo1.jpg)
+  ~images: @file(/path/to/photo2.jpg)
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has id", function() { expect(res.getBody().data).to.have.property("id"); });
+  test("images is array", function() { expect(res.getBody().data.images).to.be.an("array"); });
+}
+
+docs {
+  ## Create Task Activity
+
+  Starts work on a task during a visit. Idempotent on `uuid` — a retry with
+  the same uuid returns the existing activity instead of erroring. Any
+  authenticated user can call this (mobile field executives).
+
+  ### Request fields
+
+  | Field     | Type   | Required | Notes                                        |
+  |-----------|--------|----------|------------------------------------------------|
+  | taskId    | int    | yes      | `assign_task_list.task_id`                      |
+  | visitUuid | string | yes      | `visit_details.uuid` — which visit this is under |
+  | uuid      | string | no       | client-generated, for offline-sync dedup        |
+  | statusId  | int    | no       | `activity_status.id` — default `1` (Pending)    |
+  | remarks   | string | no       |                                                  |
+  | images    | file[] | no       | field name: `images` — up to 10                 |
+
+  ### Response (201)
+  Full joined activity row — same shape as `GET /task-activity/:id`
+  (02_get-by-id.bru).
+}

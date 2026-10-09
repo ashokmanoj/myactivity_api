@@ -1,0 +1,54 @@
+meta {
+  name: TASK-ACTIVITY-02: Get Task Activity By Id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/task-activity/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has id", function() { expect(res.getBody().data).to.have.property("id"); });
+}
+
+docs {
+  ## Get Task Activity By Id
+
+  Replace `1` in the URL with the activity's numeric `id` OR its `uuid`. Any
+  authenticated user can call this.
+
+  ### Response — `data` object
+
+  | Field             | Type     | Notes                                        |
+  |-------------------|----------|------------------------------------------------|
+  | id                | int      |                                                  |
+  | uuid              | string   | client-generated, for sync dedup                |
+  | visit_uuid        | string   | the visit this activity happened during         |
+  | project_name      | string   | via the visit                                   |
+  | institution_name  | string   | via the visit                                   |
+  | user_id           | int      | who's doing the visit                           |
+  | full_name         | string   |                                                  |
+  | emp_code          | string   |                                                  |
+  | task_id           | int      |                                                  |
+  | category_name     | string   | via the task                                    |
+  | sub_category_name | string   | via the task                                    |
+  | task_priority     | string   | the task's own priority                         |
+  | remarks           | string   |                                                  |
+  | status_id         | int      | `activity_status.id`                            |
+  | status_name       | string   | `Pending` / `In Progress` / `Completed`          |
+  | is_active         | int      | `1`/`0`                                         |
+  | activity_start_at | datetime | set when the activity was created               |
+  | activity_end_at   | datetime | null until status_id becomes Completed          |
+  | images            | string[] | `uploads/task-activity/<filename>` paths, in upload order |
+  | created_at        | datetime |                                                  |
+  | updated_at        | datetime |                                                  |
+}

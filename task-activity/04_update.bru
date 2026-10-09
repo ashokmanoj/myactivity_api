@@ -1,0 +1,56 @@
+meta {
+  name: TASK-ACTIVITY-04: Update Task Activity
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/api/v1/task-activity/1
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  ~statusId: 3
+  ~remarks: Replaced the panel, works fine now
+  ~isActive: 1
+  ~images: @file(/path/to/more-photo.jpg)
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}
+
+docs {
+  ## Update Task Activity
+
+  Replace `1` in the URL with the activity's numeric `id` OR its `uuid`.
+  POST, not PATCH — matches this codebase's convention for mobile multipart
+  endpoints (see `/visit/:id/end`). Any authenticated user can call this.
+
+  Any images sent are appended to the existing set, not replacing it — call
+  this more than once as more photos are taken during the same activity.
+
+  Setting `statusId` to the `Completed` row's id sets `activity_end_at` to
+  `NOW()` the first time (looked up by name, not a hardcoded id) — idempotent,
+  so retrying an already-completed update won't move the timestamp, even if
+  that retry also brings a new photo.
+
+  ### Request fields (all optional — send only what changed)
+
+  | Field    | Type   | Notes                                        |
+  |----------|--------|------------------------------------------------|
+  | statusId | int    | `activity_status.id`                            |
+  | remarks  | string |                                                  |
+  | isActive | int    | `1`/`0`                                         |
+  | images   | file[] | field name: `images` — up to 10, appended       |
+
+  ### Response
+  Full joined activity row — same shape as `GET /task-activity/:id`
+  (02_get-by-id.bru).
+}

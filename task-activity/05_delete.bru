@@ -1,0 +1,28 @@
+meta {
+  name: TASK-ACTIVITY-05: Delete Task Activity
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{base_url}}/api/v1/task-activity/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}
+
+docs {
+  ## Delete Task Activity
+
+  Replace `1` in the URL with the activity's numeric `id` OR its `uuid`.
+  Hard-deletes the row — its images (`task_activity_images`) cascade-delete
+  with it. Any authenticated user can call this.
+}

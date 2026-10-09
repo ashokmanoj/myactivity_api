@@ -18,7 +18,7 @@ params:query {
   ~projectId: 2
   ~institutionId: 11
   ~userId: 5
-  ~active: true
+  ~isActive: 1
 }
 
 tests {
@@ -43,7 +43,7 @@ docs {
   | projectId     | int  |                             |
   | institutionId | int  |                             |
   | userId        | int  | who started the visit       |
-  | active        | bool | `true`/`false`               |
+  | isActive      | int  | `1`/`0`                     |
 
   ### Response — `data` array, each item
 

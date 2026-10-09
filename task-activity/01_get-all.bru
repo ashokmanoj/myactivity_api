@@ -1,0 +1,49 @@
+meta {
+  name: TASK-ACTIVITY-01: Get All Task Activities
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/task-activity
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  ~visitUuid: mobile-generated-uuid-1
+  ~taskId: 1
+  ~statusId: 3
+  ~isActive: 1
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
+
+docs {
+  ## Get All Task Activities
+
+  Live local testing harness, same as `/visit` — one record per task worked
+  on during a visit. Any authenticated user can call these endpoints.
+
+  ### Query params (all optional)
+
+  | Param     | Type | Notes                                   |
+  |-----------|------|-------------------------------------------|
+  | visitUuid | str  | the visit (`visit_details.uuid`) it's under |
+  | taskId    | int  | the `assign_task_list.task_id`             |
+  | statusId  | int  | `activity_status.id` — 1=Pending, 2=In Progress, 3=Completed |
+  | isActive  | int  | `1`/`0`                                    |
+
+  ### Response — `data` array, each item
+
+  Same joined shape as `GET /task-activity/:id` (02_get-by-id.bru).
+  Newest first (`ORDER BY created_at DESC`).
+}

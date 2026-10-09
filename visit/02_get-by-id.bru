@@ -44,7 +44,7 @@ docs {
   | visit_start_at      | datetime | ISO 8601, set when the visit started |
   | visit_end_image     | string   | `uploads/visit/<filename>` or null  |
   | visit_end_at        | datetime | null until ended                    |
-  | active              | boolean  |                                      |
+  | is_active           | int      | `1`/`0`                              |
   | created_at          | datetime |                                      |
   | updated_at          | datetime |                                      |
 }
