@@ -27,7 +27,7 @@ body:multipart-form {
   comments: Display panel damaged. Wiring looks loose.
   gpsLat: 26.1445
   gpsLng: 91.7362
-  ~photo: @file(/path/to/meter-photo.jpg)
+  ~photo: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/meter-photo.jpg
 }
 
 tests {
@@ -64,7 +64,9 @@ docs {
     comments    : free text
     gpsLat      : GPS latitude
     gpsLng      : GPS longitude
-    photo       : single image file (JPG/JPEG/PNG/WEBP, max 10 MB)
+    photo       : plain text URL, not a file attachment — upload the photo to
+                  DigitalOcean Spaces first (POST /api/v1/uploads/presigned-urls),
+                  then send the resulting URL here.
 
   Response:
     Full joined record (same shape as Get By ID, including project_name,

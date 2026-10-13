@@ -21,11 +21,19 @@ body:multipart-form {
   geoAddress: Bengaluru Updated
   geoPincode: 560002
   description: Updated description
-  ~photos: @file(C:/path/to/new-photo.jpg)
+  ~photos: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/new-photo.jpg
 }
 
 vars:pre-request {
   base_url: http://192.168.1.128:5000
+}
+
+docs {
+  ## Update Location
+
+  `photos` is one or more plain text URLs, not file attachments — upload each
+  photo to DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`),
+  then repeat the `photos` field with each resulting URL.
 }
 
 tests {

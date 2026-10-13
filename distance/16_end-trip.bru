@@ -16,11 +16,8 @@ auth:bearer {
 
 body:multipart-form {
   id: 1
-  legs: [{"mode":"Bus","paymentMethod":"Cash","amount":50,"remarks":"Morning bus to depot","from":"Guwahati","to":"Jorhat"},{"mode":"Taxi","paymentMethod":"Online","amount":220,"remarks":"Client site taxi","from":"Jorhat","to":"Client Site"}]
-  endSelfie: @file(C:\Users\manoj\OneDrive\Pictures\133873081429583745.jpg) @contentType(image/jpeg)
-  legPhoto1: @file(C:\Users\manoj\OneDrive\Pictures\133873081429583745.jpg) @contentType(image/jpeg)
-  legPhoto2: @file(C:\Users\manoj\OneDrive\Pictures\Screenshot 2025-03-14 155858.png) @contentType(image/png)
-  : 
+  legs: [{"mode":"Bus","paymentMethod":"Cash","amount":50,"remarks":"Morning bus to depot","from":"Guwahati","to":"Jorhat","photo":"https://your-space.sgp1.digitaloceanspaces.com/MyActivity/leg1.jpg"},{"mode":"Taxi","paymentMethod":"Online","amount":220,"remarks":"Client site taxi","from":"Jorhat","to":"Client Site","photo":"https://your-space.sgp1.digitaloceanspaces.com/MyActivity/leg2.jpg"}]
+  endSelfiePic: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/end_selfie.jpg
 }
 
 tests {
@@ -50,19 +47,25 @@ docs {
   |---------------|----------|-----------------------------------------------------------|
   | id            | Yes      | Trip id returned by Start Trip (must be `vehicleType: 'Others'`) |
   | legs          | Yes      | JSON array of legs — see format below                      |
-  | endSelfie     | No       | Selfie/photo taken at the end of the trip                  |
-  | paymentScreenshot | No   | Image file — one overall/general receipt for the whole trip |
-  | legPhoto1 … legPhoto5 | No | Image file per leg, positionally aligned with `legs[]` |
+  | endSelfiePic  | No       | Selfie/photo taken at the end of the trip — a plain text URL |
+
+  `endSelfiePic` and each leg's `photo` are plain text URLs — upload to
+  DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`), then send
+  the resulting URL. This endpoint no longer accepts real file attachments
+  (the old `paymentScreenshot` field was already dead/unused code before this
+  change and has been dropped; `legPhoto1..5` are replaced by each leg's own
+  `photo` field below).
   
   ### Legs JSON format
   ```json
   [
-    { "mode": "Bus",  "paymentMethod": "Cash",   "amount": 50,  "remarks": "Morning bus to depot", "from": "Guwahati", "to": "Jorhat" },
-    { "mode": "Taxi", "paymentMethod": "Online", "amount": 220, "remarks": "Client site taxi",      "from": "Jorhat",   "to": "Client Site" }
+    { "mode": "Bus",  "paymentMethod": "Cash",   "amount": 50,  "remarks": "Morning bus to depot", "from": "Guwahati", "to": "Jorhat",      "photo": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/leg1.jpg" },
+    { "mode": "Taxi", "paymentMethod": "Online", "amount": 220, "remarks": "Client site taxi",      "from": "Jorhat",   "to": "Client Site", "photo": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/leg2.jpg" }
   ]
   ```
   `from`/`to` are optional free-text location names for that leg (e.g. "From
   Guwahati To Jorhat") — stored as-is, not validated against any place list.
+  `photo` is optional per leg.
 
   The trip's fare (`required_amount`/`approved_amount`) is computed
   server-side as the sum of every leg's `amount` — there is no separate

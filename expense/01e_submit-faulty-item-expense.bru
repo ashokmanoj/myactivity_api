@@ -26,7 +26,7 @@ body:multipart-form {
   docketNumber: CC123456789
   paymentMethod: Cash
   remarks: Faulty router sent back to store
-  images: @file(/path/to/bill1.jpg)
+  images: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/bill1.jpg
 }
 
 tests {
@@ -60,8 +60,10 @@ docs {
   These are the same underlying fields used by the separate Material
   Dispatch / Courier purposes — reused here rather than duplicated.
 
-  Multiple photos: send several files under the same `images` field (up to
-  10) — a plain array, no per-photo metadata needed.
+  Multiple photos: `images` is a plain text URL, not a file attachment — upload
+  each photo to DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`),
+  then repeat the `images` field with each resulting URL (up to 10) — a plain
+  array, no per-photo metadata needed.
 
   ### Request Fields
 
@@ -81,7 +83,7 @@ docs {
   | vehicleNumber  | string  | no       | Local Transport mode: vehicle registration number       |
   | paymentMethod  | string  | no       | Cash / Online / UPI / Card (default: Cash)              |
   | remarks        | string  | no       |                                                          |
-  | images         | file[]  | no       | up to 10 photos (field name: `images`)                  |
+  | images         | string[]| no       | up to 10 photo URLs (repeat field name: `images`)       |
 
   ### Response (201) — `data` object
 

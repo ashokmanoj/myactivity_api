@@ -25,8 +25,8 @@ body:multipart-form {
   gpsLat: 12.9716
   gpsLng: 77.5946
   answers: [{"questionId":1,"qId":"Q_PM_001","answer":"YES"},{"questionId":2,"qId":"Q_PM_002","answer":"NO"},{"questionId":3,"qId":"Q_PM_003","answer":"YES"},{"questionId":4,"qId":"Q_PM_004","answer":"N/A"},{"questionId":5,"qId":"Q_PM_005","answer":"YES"},{"questionId":6,"qId":"Q_PM_006","answer":"YES"},{"questionId":7,"qId":"Q_PM_007","answer":"NO"},{"questionId":8,"qId":"Q_PM_008","answer":"YES"},{"questionId":9,"qId":"Q_PM_009","answer":"N/A"}]
-  photo_3: @file(/path/to/photo_q3.jpg)
-  photo_7: @file(/path/to/photo_q7.jpg)
+  photo_3: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo_q3.jpg
+  photo_7: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo_q7.jpg
 }
 
 docs {
@@ -51,14 +51,16 @@ docs {
     gpsLat         : GPS latitude at time of inspection
     gpsLng         : GPS longitude at time of inspection
 
-  File fields (optional — one per question that has a photo):
-    photo_<questionId> : image file (JPG/JPEG/PNG/WEBP, max 10 MB)
+  Photo fields (optional — one per question that has a photo):
+    photo_<questionId> : plain text URL, not a file attachment — upload each
+                         photo to DigitalOcean Spaces first
+                         (POST /api/v1/uploads/presigned-urls), then send the
+                         resulting URL here
     e.g. photo_1, photo_3, photo_7
 
   Photo matching logic:
-    - Uploaded file photo_3 → stored at /uploads/pm/<uuid>.jpg
-    - photo_path saved in pm_answer row where question_id = 3
-    - If no file uploaded for a question, answer is saved without photo
+    - photo_3 URL → saved as photo_path in pm_answer row where question_id = 3
+    - If no URL sent for a question, answer is saved without photo
 
   Response:
     Full joined session (same shape as Get Session By ID) — an array with one

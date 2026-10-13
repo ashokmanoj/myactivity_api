@@ -20,8 +20,8 @@ body:multipart-form {
   uuid: mobile-generated-activity-uuid-1
   ~statusId: 1
   ~remarks: Left side panel needs replacement
-  ~images: @file(/path/to/photo1.jpg)
-  ~images: @file(/path/to/photo2.jpg)
+  ~images: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo1.jpg
+  ~images: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo2.jpg
 }
 
 tests {
@@ -38,16 +38,20 @@ docs {
   the same uuid returns the existing activity instead of erroring. Any
   authenticated user can call this (mobile field executives).
 
+  `images` is one or more plain text URLs, not file attachments — upload each
+  photo to DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`),
+  then repeat the `images` field with each resulting URL.
+
   ### Request fields
 
-  | Field     | Type   | Required | Notes                                        |
-  |-----------|--------|----------|------------------------------------------------|
-  | taskId    | int    | yes      | `assign_task_list.task_id`                      |
-  | visitUuid | string | yes      | `visit_details.uuid` — which visit this is under |
-  | uuid      | string | no       | client-generated, for offline-sync dedup        |
-  | statusId  | int    | no       | `activity_status.id` — default `1` (Pending)    |
-  | remarks   | string | no       |                                                  |
-  | images    | file[] | no       | field name: `images` — up to 10                 |
+  | Field     | Type    | Required | Notes                                        |
+  |-----------|---------|----------|------------------------------------------------|
+  | taskId    | int     | yes      | `assign_task_list.task_id`                      |
+  | visitUuid | string  | yes      | `visit_details.uuid` — which visit this is under |
+  | uuid      | string  | no       | client-generated, for offline-sync dedup        |
+  | statusId  | int     | no       | `activity_status.id` — default `1` (Pending)    |
+  | remarks   | string  | no       |                                                  |
+  | images    | string[]| no       | field name: `images` — up to 10 photo URLs      |
 
   ### Response (201)
   Full joined activity row — same shape as `GET /task-activity/:id`

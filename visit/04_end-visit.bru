@@ -15,7 +15,7 @@ auth:bearer {
 }
 
 body:multipart-form {
-  ~image: @file(/path/to/end-photo.jpg)
+  ~image: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/end-photo.jpg
 }
 
 tests {
@@ -34,11 +34,15 @@ docs {
   (idempotent) even if a later retry brings a photo an earlier one didn't have.
   Any authenticated user can call this.
 
+  `image` is a plain text URL, not a file attachment — upload the photo to
+  DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`), then send
+  the resulting URL here.
+
   ### Request fields
 
-  | Field | Type | Required | Notes                                  |
-  |-------|------|----------|------------------------------------------|
-  | image | file | no       | field name: `image` — the departure photo |
+  | Field | Type   | Required | Notes                                  |
+  |-------|--------|----------|------------------------------------------|
+  | image | string | no       | field name: `image` — URL of the departure photo |
 
   ### Response
   Full joined visit row — same shape as `GET /visit/:id` (02_get-by-id.bru),

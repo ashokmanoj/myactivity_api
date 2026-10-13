@@ -18,7 +18,7 @@ body:multipart-form {
   projectId: 2
   institutionId: 11
   uuid: mobile-generated-uuid-1
-  ~image: @file(/path/to/start-photo.jpg)
+  ~image: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/start-photo.jpg
 }
 
 tests {
@@ -36,6 +36,10 @@ docs {
   authenticated user can call this (mobile field executives, during live
   local testing).
 
+  `image` is a plain text URL, not a file attachment — upload the photo to
+  DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`), then send
+  the resulting URL here.
+
   ### Request fields
 
   | Field         | Type   | Required | Notes                                   |
@@ -43,7 +47,7 @@ docs {
   | projectId     | int    | yes      |                                           |
   | institutionId | int    | yes      |                                           |
   | uuid          | string | no       | client-generated, for offline-sync dedup |
-  | image         | file   | no       | field name: `image` — the arrival photo  |
+  | image         | string | no       | field name: `image` — URL of the arrival photo |
 
   ### Response (201)
   Full joined visit row — same shape as `GET /visit/:id` (02_get-by-id.bru).

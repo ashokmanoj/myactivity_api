@@ -25,8 +25,8 @@ body:multipart-form {
   docketNumber: CC123456789
   paymentMethod: Cash
   remarks: Courier of documents to head office
-  images: @file(/path/to/bill1.jpg)
-  images: @file(/path/to/payment-screenshot.jpg)
+  images: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/bill1.jpg
+  images: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/payment-screenshot.jpg
 }
 
 tests {
@@ -51,8 +51,10 @@ docs {
 
   `purpose` is automatically set to `Courier` by the server — no need to send it.
 
-  Multiple photos (bill / payment screenshot): send several files under the same
-  `images` field (up to 10) — a plain array, no per-photo metadata needed.
+  Multiple photos (bill / payment screenshot): `images` is a plain text URL, not
+  a file attachment — upload each photo to DigitalOcean Spaces first
+  (`POST /api/v1/uploads/presigned-urls`), then repeat the `images` field with
+  each resulting URL (up to 10) — a plain array, no per-photo metadata needed.
 
   ### Request Fields
 
@@ -68,7 +70,7 @@ docs {
   | docketNumber  | string  | no       | courier docket / tracking number           |
   | paymentMethod | string  | no       | Cash / Online / UPI / Card (default: Cash) |
   | remarks       | string  | no       |                                            |
-  | images        | file[]  | no       | up to 10 photos (field name: `images`)     |
+  | images        | string[]| no       | up to 10 photo URLs (repeat field name: `images`) |
 
   ### Response (201) — `data` object
 

@@ -18,7 +18,7 @@ body:multipart-form {
   ~statusId: 3
   ~remarks: Replaced the panel, works fine now
   ~isActive: 1
-  ~images: @file(/path/to/more-photo.jpg)
+  ~images: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/more-photo.jpg
 }
 
 tests {
@@ -35,6 +35,9 @@ docs {
 
   Any images sent are appended to the existing set, not replacing it — call
   this more than once as more photos are taken during the same activity.
+  `images` is one or more plain text URLs, not file attachments — upload each
+  photo to DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`),
+  then repeat the `images` field with each resulting URL.
 
   Setting `statusId` to the `Completed` row's id sets `activity_end_at` to
   `NOW()` the first time (looked up by name, not a hardcoded id) — idempotent,
@@ -43,12 +46,12 @@ docs {
 
   ### Request fields (all optional — send only what changed)
 
-  | Field    | Type   | Notes                                        |
-  |----------|--------|------------------------------------------------|
-  | statusId | int    | `activity_status.id`                            |
-  | remarks  | string |                                                  |
-  | isActive | int    | `1`/`0`                                         |
-  | images   | file[] | field name: `images` — up to 10, appended       |
+  | Field    | Type    | Notes                                        |
+  |----------|---------|------------------------------------------------|
+  | statusId | int     | `activity_status.id`                            |
+  | remarks  | string  |                                                  |
+  | isActive | int     | `1`/`0`                                         |
+  | images   | string[]| field name: `images` — up to 10 photo URLs, appended |
 
   ### Response
   Full joined activity row — same shape as `GET /task-activity/:id`

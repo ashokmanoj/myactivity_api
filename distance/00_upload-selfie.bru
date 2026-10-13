@@ -18,7 +18,7 @@ body:multipart-form {
   userId: 1
   uuid: trip-uuid-001
   endDistanceTimestamp: 1713870000000
-  endSelfie: @file(/path/to/end_selfie.jpg)
+  endSelfiePic: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/end_selfie.jpg
 }
 
 tests {
@@ -28,4 +28,11 @@ tests {
   test("has trip_id", function() { expect(res.getBody().data).to.have.property("trip_id"); });
   test("has total_distance", function() { expect(res.getBody().data).to.have.property("total_distance"); });
   test("has required_amount", function() { expect(res.getBody().data).to.have.property("required_amount"); });
+}
+
+docs {
+  Upload the selfie to DigitalOcean Spaces first
+  (`POST /api/v1/uploads/presigned-urls`), then send the resulting URL here as
+  a plain text field (`endSelfiePic`) — this endpoint no longer accepts a
+  real file attachment.
 }

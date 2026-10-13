@@ -23,7 +23,7 @@ body:multipart-form {
   district: Jorhat
   rmUserId: 2
   uuid: trip-uuid-002
-  startSelfie: @file(C:\Users\manoj\OneDrive\Pictures\133873081429583745.jpg) @contentType(image/jpeg)
+  startSelfiePic: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/start_selfie.jpg
 }
 
 tests {
@@ -48,7 +48,7 @@ docs {
   | state / district       | No       | Used to resolve the per-km rate (Bike/Car only)            |
   | rmUserId               | No       | Auto-resolved from user_institution_map/reporting_rm if omitted |
   | uuid                   | No       | Client-generated ID for idempotent retries                 |
-  | startSelfie            | No       | Selfie/photo file taken at the start of the trip. `multipart/form-data` is optional here — a plain JSON body with no file still works exactly as before for Bike/Car clients that don't send a selfie. |
+  | startSelfiePic         | No       | Selfie/photo taken at the start of the trip — a plain text URL. Upload to DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`), then send the resulting URL here; this endpoint no longer accepts a real file attachment. |
   
   For `vehicleType: 'Others'` (Bus/Auto/Taxi/mixed-vehicle travel), the trip
   starts the same way — the modes-of-travel data (what used to be a separate

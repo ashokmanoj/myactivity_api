@@ -20,7 +20,15 @@ body:multipart-form {
   geoPincode: 785001
   description: Monthly field visit to Jorhat HSS
   institutionId: 1
-  photos: @file(photo1.jpg)
+  photos: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo1.jpg
+}
+
+docs {
+  ## Create Location (with Photos)
+
+  `photos` is one or more plain text URLs, not file attachments — upload each
+  photo to DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`),
+  then repeat the `photos` field with each resulting URL.
 }
 
 tests {

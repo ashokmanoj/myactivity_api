@@ -32,9 +32,9 @@ body:multipart-form {
   receptionistPhone: 9876543210
   paymentMethod: Online
   remarks: Field visit accommodation
-  billImage1: @file(C:\Users\manoj\OneDrive\Pictures\133886079486205543.jpg) @contentType(image/jpeg)
-  billImage2: @file(C:\Users\manoj\OneDrive\Pictures\133873081349287261.jpg) @contentType(image/jpeg)
-  hotelImage: @file(C:\Users\manoj\OneDrive\Pictures\133886079486205543.jpg) @contentType(image/jpeg)
+  billImage1: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/bill1.jpg
+  billImage2: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/bill2.jpg
+  hotelImage: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/hotel1.jpg
   hotelImageLat: 13.0210
   hotelImageLng: 77.5520
   hotelImageLocation: Yeswanthpur, Bengaluru
@@ -72,7 +72,7 @@ docs {
   
   `purpose` is automatically set to `Stay` by the server — no need to send it.
   
-  Photos use named per-slot fields, not a generic array: up to 5 bill photos (`billImage1`..`billImage5`, file only — no location needed) plus 1 hotel photo (`hotelImage`, paired with `hotelImageLat`/`hotelImageLng`/`hotelImageLocation`).
+  Photos use named per-slot fields, not a generic array: up to 5 bill photos (`billImage1`..`billImage5`) plus 1 hotel photo (`hotelImage`, paired with `hotelImageLat`/`hotelImageLng`/`hotelImageLocation`). Each is a plain text URL, not a file attachment — upload every photo to DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`), then send the resulting URL in its slot.
   
   ### Request Fields
   
@@ -95,8 +95,8 @@ docs {
   | receptionistPhone  | string  | no       | hotel receptionist's phone number          |
   | paymentMethod      | string  | no       | Cash / Online / UPI / Card (default: Cash) |
   | remarks       | string  | no       |                                            |
-  | billImage1 … billImage5 | file | no  | up to 5 separate bill-photo fields (`billImage1`, `billImage2`, … `billImage5`) — send only as many as you have, in any subset of the 5 slots. No location fields — bill photos don't carry GPS. |
-  | hotelImage           | file   | no | the one hotel photo (separate field from the bill photos) |
+  | billImage1 … billImage5 | string | no  | up to 5 separate bill-photo URL fields (`billImage1`, `billImage2`, … `billImage5`) — send only as many as you have, in any subset of the 5 slots. No location fields — bill photos don't carry GPS. |
+  | hotelImage           | string | no | URL of the one hotel photo (separate field from the bill photos) |
   | hotelImageLat        | number | no | GPS latitude `hotelImage` was taken at |
   | hotelImageLng        | number | no | GPS longitude `hotelImage` was taken at |
   | hotelImageLocation   | string | no | address/location text for `hotelImage` |

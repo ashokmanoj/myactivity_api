@@ -23,12 +23,20 @@ body:multipart-form {
   geoPincode: 560001
   description: Main office location
   ~institutionId: 1
-  ~photos: @file(C:/path/to/photo1.jpg)
-  ~photos: @file(C:/path/to/photo2.jpg)
+  ~photos: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo1.jpg
+  ~photos: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo2.jpg
 }
 
 vars:pre-request {
   base_url: http://192.168.1.128:5000
+}
+
+docs {
+  ## Create Location
+
+  `photos` is one or more plain text URLs, not file attachments — upload each
+  photo to DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`),
+  then repeat the `photos` field with each resulting URL.
 }
 
 tests {

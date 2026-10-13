@@ -20,7 +20,7 @@ body:multipart-form {
   startDistanceTimestamp: 1713859200000
   rmUserId: 2
   uuid: trip-uuid-001
-  startSelfie: @file(/path/to/start_selfie.jpg)
+  startSelfiePic: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/start_selfie.jpg
 }
 
 tests {
@@ -33,10 +33,15 @@ tests {
 
 docs {
   ## Sync Trip — START / END (idempotent, keyed by uuid)
-  
+
   Returns the full joined trip record (same shape as Get Trip By ID — includes
   `executive_name`, `rm_name`, `gps_distance_km`, `unread_count`, etc.), not
   the old minimal `{ trip_id, total_distance, required_amount, message }` —
   the top-level `message` ("Trip started" / "Trip ended" / "Trip already
   exists") still tells you which branch fired.
+
+  `startSelfiePic`/`endSelfiePic` are plain text URLs — upload the photo to
+  DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`), then send
+  the resulting URL here. This endpoint no longer accepts a real file
+  attachment.
 }

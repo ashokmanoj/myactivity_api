@@ -1,0 +1,75 @@
+meta {
+  name: UPLOADS-01: Get Presigned Upload URLs
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/v1/uploads/presigned-urls
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "files": [
+      { "fileName": "photo.jpg", "fileType": "image/jpeg" }
+    ]
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+  test("has uploadUrl", function() { expect(res.getBody().data[0]).to.have.property("uploadUrl"); });
+}
+
+docs {
+  ## Get Presigned Upload URLs (DigitalOcean Spaces)
+
+  Any authenticated user can call this. Returns a short-lived signed URL per
+  file — the client (mobile/web) then uploads the file's bytes **directly to
+  DigitalOcean Spaces**, bypassing this backend entirely. Our database never
+  stores the file's bytes, only the resulting `fileName`/`objectKey` string,
+  once the caller saves it onto whatever record the photo belongs to
+  (expense bill, visit photo, task activity image, ...).
+
+  ### Request body
+
+  | Field          | Type   | Required | Notes                                   |
+  |----------------|--------|----------|-------------------------------------------|
+  | files           | array | yes      | up to 20 per request                      |
+  | files[].fileName| string| yes      | no slashes or `..` — becomes part of the object key |
+  | files[].fileType| string| yes      | MIME type, e.g. `image/jpeg` — must match the `Content-Type` header sent on the actual upload |
+
+  ### Response — `data` array, one entry per requested file
+
+  | Field            | Type   | Notes                                                        |
+  |------------------|--------|------------------------------------------------------------|
+  | fileName         | string | server-generated, `<uuid>-<original name>` — always unique, never trust the raw input name for storage (two uploads with the same name would otherwise silently overwrite each other) |
+  | fileType         | string | echoed back                                                 |
+  | objectKey        | string | full path inside the Space (`<folder>/<fileName>`) — **this is what to persist in our own database**, not the bytes |
+  | uploadUrl        | string | presigned PUT URL — expires in `expiresInSeconds`            |
+  | uploadHeaders    | object | headers the client MUST send with the PUT, exactly as given (`Content-Type`, `x-amz-acl`) — they're part of the signature, a mismatch causes `403 SignatureDoesNotMatch` |
+  | publicUrl        | string | where the file is readable from once uploaded (object is `public-read`) |
+  | expiresInSeconds | int    | how long `uploadUrl` stays valid (default 900 / 15 min)      |
+
+  ### How the client actually uploads
+
+  ```
+  PUT <uploadUrl>
+  Content-Type: <fileType, exactly as requested>
+  x-amz-acl: public-read
+
+  <raw file bytes>
+  ```
+
+  A `200` from that PUT means the file is live at `publicUrl` immediately
+  (no further confirmation call needed) — the client just needs to then save
+  `objectKey` (or `fileName`) wherever that photo belongs in our own API.
+}

@@ -17,19 +17,20 @@ auth:bearer {
 body:multipart-form {
   message: Attaching the corrected bill scan for your review.
   toRole: rm
-  attachment: @file(/path/to/corrected_bill.jpg)
+  attachment: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/corrected_bill.jpg
 }
 
 docs {
   ## Send a Chat Message with File Attachment
 
-  Same as `09_send-message` but includes a file in `attachment`.
+  Same as `09_send-message` but includes a URL in `attachment`.
 
-  Supported file types: image/jpeg, image/png, image/webp, application/pdf.
-  Max file size: 10 MB.
+  `attachment` is a plain text URL, not a file attachment — upload the file to
+  DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`), then send
+  the resulting URL here.
 
-  The `attachment_path` in the response (and in future message fetches)
-  can be resolved to a full URL using the frontend `getImageUrl()` helper.
+  The `attachment_path` in the response is that same URL, ready to use directly
+  — no further resolution needed.
 
   ### Response
   Returns the full saved message row (`sender_name`, `sender_role`, `to_role`,

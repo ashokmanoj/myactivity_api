@@ -25,7 +25,8 @@ body:multipart-form {
   expenseDate: 2026-08-01
   paymentMethod: Cash
   remarks: Miscellaneous expense during field visit
-  ~images: @file(/path/to/receipt.jpg)
+  ~images: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/receipt1.jpg
+  ~images: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/receipt2.jpg
 }
 
 tests {
@@ -53,7 +54,12 @@ docs {
   
   Use `/expense/food-submit` for Food, `/expense/stay-submit` for Stay.
   This endpoint accepts any `purpose` value from the `/expense/purposes` list.
-  
+
+  `images` is one or more plain text URLs, not file attachments — upload each
+  photo to DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`),
+  then send the resulting URL(s) here. Repeat the `images` field for more
+  than one photo.
+
   ### Request Fields
   
   | Field         | Type    | Required | Notes                                      |
@@ -68,7 +74,7 @@ docs {
   | expenseDate   | date    | no       | YYYY-MM-DD                                 |
   | paymentMethod | string  | no       | Cash / Online / UPI / Card (default: Cash) |
   | remarks       | string  | no       |                                            |
-  | images        | file[]  | no       | up to 10 photos (field name: `images`)     |
+  | images        | string[]| no       | up to 10 photo URLs (repeat field name: `images`) |
   
   ### Response (201) — `data` object
   
@@ -86,7 +92,7 @@ docs {
   | expense_date   | string   | YYYY-MM-DD or null                 |
   | payment_method | string   | Cash / Online / UPI / Card         |
   | remarks        | string   |                                    |
-  | bill_image_path| string   | path of first uploaded image       |
+  | bill_image_path| string   | URL of first uploaded image         |
   | state_type     | string   | null unless Food purpose           |
   | district_type  | string   | null unless Food purpose           |
   | food_sub_type  | string   | null unless Food purpose           |
@@ -101,5 +107,5 @@ docs {
   | full_name      | string   | executive's name                   |
   | emp_code       | string   |                                    |
   | project_name   | string   |                                    |
-  | images         | string[] | array of all uploaded image paths  |
+  | images         | string[] | array of all uploaded image URLs   |
 }
