@@ -1,0 +1,64 @@
+meta {
+  name: UPLOADS-02: List Spaces Files (Superuser)
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/uploads/spaces-files?maxKeys=50
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  maxKeys: 50
+  ~continuationToken:
+  ~search:
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has files array", function() { expect(res.getBody().data.files).to.be.an("array"); });
+}
+
+docs {
+  ## List Spaces Files (Superuser)
+
+  Lists files that have been uploaded to DigitalOcean Spaces, for the admin
+  file-manager screen. **Superuser role only** — any other authenticated role
+  gets `403`.
+
+  ### Query params
+
+  | Field             | Type   | Required | Notes                                                        |
+  |-------------------|--------|----------|----------------------------------------------------------------|
+  | maxKeys           | int    | no       | page size, default 50, max 200                                 |
+  | continuationToken | string | no       | pass back the previous response's `nextContinuationToken` to fetch the next page |
+  | search            | string | no       | substring filter on the file's full key — see note below       |
+
+  ### Search note
+
+  Object keys are server-generated as `<uuid>-<originalFileName>`, not the
+  original filename alone, so S3-style prefix filtering can't find a file by
+  its original name. `search` instead scans pages internally (up to 5000 keys
+  per request) collecting substring matches before returning a page — slower
+  than a plain browse, but still paginated via the same `continuationToken`.
+
+  ### Response — `data` object
+
+  | Field                 | Type    | Notes                                              |
+  |-----------------------|---------|-----------------------------------------------------|
+  | files                 | array   | this page's files, newest/oldest order as returned by Spaces |
+  | files[].objectKey     | string  | full key inside the bucket (`<folder>/<fileName>`) — needed for delete |
+  | files[].fileName      | string  | `objectKey` with the folder prefix stripped          |
+  | files[].publicUrl     | string  | direct URL to view/download the file                 |
+  | files[].byteSize      | int     | file size in bytes                                    |
+  | files[].lastModified  | string  | ISO 8601 upload timestamp                             |
+  | isTruncated           | boolean | true if more files exist beyond this page             |
+  | nextContinuationToken | string  | pass to the next call's `continuationToken` to page forward; `null` when there are no more pages |
+}

@@ -1,0 +1,52 @@
+meta {
+  name: UPLOADS-03: Delete Spaces File (Superuser)
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{base_url}}/api/v1/uploads/spaces-files?objectKey=MyActivity/4f59324f-a4fa-4561-8051-6a056abd4c19-photo.jpg
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  objectKey: MyActivity/4f59324f-a4fa-4561-8051-6a056abd4c19-photo.jpg
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}
+
+docs {
+  ## Delete Spaces File (Superuser)
+
+  Permanently deletes one file from DigitalOcean Spaces. **Superuser role
+  only** — any other authenticated role gets `403`. There is no trash/undo —
+  this is a real delete against the live Space.
+
+  Use `objectKey` exactly as returned by `GET /uploads/spaces-files` (the
+  `files[].objectKey` field), URL-encoded in the query string.
+
+  Deleting an object here does **not** remove any reference to its URL that
+  may already be saved on an expense/visit/task-activity/etc. row in our own
+  database — that row would be left pointing at a now-missing file. Confirm
+  the file isn't still referenced before deleting.
+
+  ### Query params
+
+  | Field     | Type   | Required | Notes                                                    |
+  |-----------|--------|----------|-------------------------------------------------------------|
+  | objectKey | string | yes      | must start with the configured Spaces folder (e.g. `MyActivity/`) — a key outside it is rejected with `400` |
+
+  ### Response — `data` object
+
+  | Field     | Type   | Notes                     |
+  |-----------|--------|---------------------------|
+  | objectKey | string | the key that was deleted  |
+}
