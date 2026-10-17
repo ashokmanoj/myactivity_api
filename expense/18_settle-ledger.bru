@@ -1,0 +1,54 @@
+meta {
+  name: MA-EXP-18: Settle Ledger Balance
+  type: http
+  seq: 18
+}
+
+post {
+  url: {{base_url}}/api/v1/expense/user/47/ledger/settle
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "amount": 654,
+    "comment": "Cash reconciliation for October"
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has expense_id", function() { expect(res.getBody().data).to.have.property("expense_id"); });
+}
+
+docs {
+  ## Settle Ledger Balance — POST /expense/user/:userId/ledger/settle
+
+  **Accounts (or Superuser) only.** Records a manual correction to an
+  executive's outstanding Payable balance in one step — inserts a new
+  advance-type row that's pre-approved and marked paid immediately, so it
+  shows up in the transaction ledger as a single **Consolidation Adjustment**
+  credit rather than a separate Advance Request + Payment Made pair.
+
+  Use this to reconcile a balance directly (e.g. a cash settlement outside
+  the normal expense-submission flow) rather than creating a new expense claim.
+
+  ### Request body
+
+  | Field   | Type   | Required | Notes                                  |
+  |---------|--------|----------|-------------------------------------------|
+  | amount  | number | yes      | must be a positive number                  |
+  | comment | string | no       | free text, stored as the accounts_comment  |
+
+  ### Response (200) — `data` object
+
+  | Field      | Type | Notes                              |
+  |------------|------|-------------------------------------|
+  | expense_id | int  | the generated settlement row's id   |
+}

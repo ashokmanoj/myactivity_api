@@ -1,0 +1,61 @@
+meta {
+  name: MA-TK-06: Sync Tool Kit Photos (Mobile)
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/api/v1/tool-kit/sync
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "images": [
+      { "userId": 47, "uuid": "mobile-generated-uuid-1", "image": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/toolkit1.jpg" },
+      { "userId": 47, "uuid": "mobile-generated-uuid-2", "image": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/toolkit2.jpg" }
+    ]
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
+
+docs {
+  ## Sync Tool Kit Photos (Mobile) — POST /tool-kit/sync
+
+  Bulk-syncs every tool kit photo captured offline, in one call — built for
+  mobile, so it doesn't have to make one request per photo after reconnecting.
+  Each photo goes through the same idempotent-on-uuid path as the single
+  Create endpoint, so re-posting the same batch after a partial network
+  failure is safe — already-synced photos just update in place instead of
+  duplicating.
+
+  Safe to call with a mix of new and already-synced items in the same batch.
+
+  ### Request body
+
+  | Field            | Type   | Required | Notes                                   |
+  |------------------|--------|----------|------------------------------------------|
+  | images            | array | yes      | non-empty array of photo entries         |
+  | images[].userId   | int   | yes      | the field executive's user_id            |
+  | images[].uuid     | string| no       | client-generated, for offline-sync dedup |
+  | images[].image    | string| yes      | URL of the uploaded tool kit photo       |
+
+  ### Response (201) — `data` array, one entry per submitted photo
+
+  | Field   | Type    | Notes                                              |
+  |---------|---------|------------------------------------------------------|
+  | uuid    | string  | echoed back, or null if not sent                      |
+  | success | boolean |                                                        |
+  | data    | object  | present when `success` — same shape as Create's response |
+  | error   | string  | present when `!success` — why that one entry failed   |
+}

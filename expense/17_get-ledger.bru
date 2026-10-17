@@ -1,0 +1,69 @@
+meta {
+  name: MA-EXP-17: Get Executive Ledger
+  type: http
+  seq: 17
+}
+
+get {
+  url: {{base_url}}/api/v1/expense/user/47/ledger
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has transactions array", function() { expect(res.getBody().data.transactions).to.be.an("array"); });
+}
+
+docs {
+  ## Get Executive Ledger — GET /expense/user/:userId/ledger
+
+  Returns one executive's full advance-vs-expense history, in two shapes:
+
+  - `ledger` / `totalAdvance` / `totalExpense` / `closingBalance` — the original
+    simple model (every submitted advance credits, every submitted expense
+    debits, regardless of approval stage). Kept for backward compatibility
+    with the full-page Ledger screen.
+  - `transactions` — a real transaction-style log, used by the Expense list's
+    "Net Payable Balance" banner and slide-in Ledger panel. Only counts money
+    that has actually moved or been approved:
+    - **Advance Request** — credited the moment an advance is submitted
+    - **Approved Expense** — debited only once the claim reaches final (TA)
+      approval — a pending claim doesn't touch the balance yet
+    - **Payment Made** — debited when an advance is actually disbursed
+      (`payment_status` → `Paid`)
+    - **Consolidation Adjustment** — a manual correction made via
+      `POST /expense/user/:userId/ledger/settle`
+
+  These two balances can legitimately differ — `closingBalance` includes
+  every submitted expense whether or not it's been approved yet;
+  `transactions`' running balance only reflects approved/paid money.
+
+  ### Response (200) — `data` object
+
+  | Field          | Type     | Notes                                            |
+  |----------------|----------|---------------------------------------------------|
+  | user           | object   | `{ user_id, full_name, emp_code, mobile_number, role_name, state_name }` |
+  | ledger         | object[] | legacy per-row shape: `{ slNo, expense_id, type, purpose, entry_date, overall_status, payment_status, advance, expense, balance }` |
+  | transactions   | object[] | new transaction log, oldest first — see below      |
+  | totalAdvance   | number   | sum of every submitted advance (legacy model)      |
+  | totalExpense   | number   | sum of every submitted expense (legacy model)      |
+  | closingBalance | number   | legacy running balance — positive = Receivable, negative = Payable |
+
+  ### `transactions[]` shape
+
+  | Field          | Type   | Notes                                                    |
+  |----------------|--------|------------------------------------------------------------|
+  | date           | string | ISO timestamp of the event (submission/approval/payment)    |
+  | transactionId  | string | `TR#<expense_id>` — `-PAY` suffix for a Payment Made event, `-ADJ` for a Consolidation Adjustment |
+  | description    | string | `Advance Request (ADVANCE)` / `Approved Expense (EXPENSE)` / `Payment Made (PAYMENT)` / `Consolidation Adjustment` |
+  | amount         | number | signed — positive for a credit, negative for a debit        |
+  | type           | string | human-readable source, e.g. `Credit (from company)`, `Debit (from <name>)`, `Debit (Payout)`, `Credit (Adjustment)` |
+  | kind           | string | plain `Credit` or `Debit` — for coloring, independent of the `type` text |
+  | runningBalance | number | cumulative balance after this transaction — positive = Receivable, negative = Payable |
+}

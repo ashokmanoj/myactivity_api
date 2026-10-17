@@ -1,0 +1,30 @@
+meta {
+  name: MA-TK-03: Get Tool Kit Photo By Id
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/v1/tool-kit/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}
+
+docs {
+  ## Get Tool Kit Photo By Id — GET /tool-kit/:id
+
+  Replace `1` in the URL with the real `tool_kit_image_id`.
+
+  ### Response (200)
+  Same shape as `GET /tool-kit` (02_get-all.bru), a single object.
+  `404` if no row exists with that id.
+}

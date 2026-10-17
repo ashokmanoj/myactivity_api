@@ -1,0 +1,43 @@
+meta {
+  name: MA-TK-02: Get All Tool Kit Photos
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/tool-kit?userId=47
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  userId: 47
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
+
+docs {
+  ## Get All Tool Kit Photos — GET /tool-kit
+
+  Omit `userId` to fetch every executive's tool kit photos (web admin view) —
+  each row is joined with the executive's `full_name`/`emp_code`. Only
+  `is_active = 1` rows are returned.
+
+  ### Query params
+
+  | Field  | Type | Required | Notes                                   |
+  |--------|------|----------|----------------------------------------|
+  | userId | int  | no       | filter to one executive's photos only   |
+
+  ### Response (200) — `data` array
+
+  Same row shape as the Create response, plus `full_name` and `emp_code`.
+}

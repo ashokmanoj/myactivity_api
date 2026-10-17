@@ -1,0 +1,47 @@
+meta {
+  name: MA-TK-04: Update Tool Kit Photo
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/api/v1/tool-kit/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "image": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/toolkit1-updated.jpg"
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}
+
+docs {
+  ## Update Tool Kit Photo — PUT /tool-kit/:id
+
+  Replace `1` in the URL with the real `tool_kit_image_id`. Send only the
+  fields that changed — everything else is left as-is.
+
+  `image` is a plain text URL, not a file attachment — upload the new photo
+  to DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`), then
+  send the resulting URL here.
+
+  ### Request body (all optional)
+
+  | Field    | Type   | Notes                                  |
+  |----------|--------|------------------------------------------|
+  | image    | string | replaces the photo URL (and image_name)   |
+  | isActive | int    | `1`/`0`                                   |
+
+  ### Response (200)
+  Same shape as `GET /tool-kit/:id`. `404` if no row exists with that id.
+}

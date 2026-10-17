@@ -1,0 +1,61 @@
+meta {
+  name: MA-TK-01: Create Tool Kit Photo
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/v1/tool-kit
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": 47,
+    "uuid": "mobile-generated-uuid-1",
+    "image": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/toolkit1.jpg"
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has tool_kit_image_id", function() { expect(res.getBody().data).to.have.property("tool_kit_image_id"); });
+}
+
+docs {
+  ## Create Tool Kit Photo — POST /tool-kit
+
+  Records one photo of a field executive's tool kit. `image` is a plain text
+  URL, not a file attachment — upload the photo to DigitalOcean Spaces first
+  (`POST /api/v1/uploads/presigned-urls`), then send the resulting URL here.
+
+  Idempotent on `uuid` — retrying with the same uuid updates the existing row
+  (e.g. a newer photo replacing an earlier one) instead of creating a duplicate.
+
+  ### Request body
+
+  | Field  | Type   | Required | Notes                                       |
+  |--------|--------|----------|------------------------------------------------|
+  | userId | int    | yes      | the field executive's user_id                  |
+  | uuid   | string | no       | client-generated, for offline-sync dedup        |
+  | image  | string | yes      | URL of the uploaded tool kit photo              |
+
+  ### Response (201) — `data` object
+
+  | Field             | Type     | Notes                              |
+  |-------------------|----------|------------------------------------|
+  | tool_kit_image_id | int      | generated primary key              |
+  | user_id           | int      |                                    |
+  | uuid              | string   | or null if not sent                |
+  | image_name        | string   | derived from the URL's last path segment |
+  | fullpath_url      | string   | the Spaces URL                     |
+  | is_active         | int      | `1`/`0`                            |
+  | created_at        | datetime | ISO 8601                           |
+  | updated_at        | datetime | ISO 8601                           |
+}

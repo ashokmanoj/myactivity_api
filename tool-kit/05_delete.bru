@@ -1,0 +1,35 @@
+meta {
+  name: MA-TK-05: Delete Tool Kit Photo
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{base_url}}/api/v1/tool-kit/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+}
+
+docs {
+  ## Delete Tool Kit Photo — DELETE /tool-kit/:id
+
+  Soft delete — sets `is_active = 0` rather than removing the row, so it
+  drops out of `GET /tool-kit` but the record (and the file in Spaces) is
+  kept. Replace `1` in the URL with the real `tool_kit_image_id`.
+
+  ### Response (200) — `data` object
+
+  | Field             | Type | Notes        |
+  |-------------------|------|----------------|
+  | tool_kit_image_id | int  |                |
+  | is_active         | int  | always `0`     |
+}
