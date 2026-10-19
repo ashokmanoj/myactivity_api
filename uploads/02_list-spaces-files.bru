@@ -18,6 +18,8 @@ params:query {
   maxKeys: 50
   ~continuationToken:
   ~search:
+  ~dateFrom: 2026-10-17
+  ~dateTo: 2026-10-17
 }
 
 tests {
@@ -40,14 +42,20 @@ docs {
   | maxKeys           | int    | no       | page size, default 50, max 200                                 |
   | continuationToken | string | no       | pass back the previous response's `nextContinuationToken` to fetch the next page |
   | search            | string | no       | substring filter on the file's full key — see note below       |
+  | dateFrom          | string | no       | `YYYY-MM-DD`, inclusive — only files last-modified on/after this date |
+  | dateTo            | string | no       | `YYYY-MM-DD`, inclusive — only files last-modified on/before this date |
 
-  ### Search note
+  ### Search / date-filter note
 
   Object keys are server-generated as `<uuid>-<originalFileName>`, not the
   original filename alone, so S3-style prefix filtering can't find a file by
-  its original name. `search` instead scans pages internally (up to 5000 keys
-  per request) collecting substring matches before returning a page — slower
-  than a plain browse, but still paginated via the same `continuationToken`.
+  its original name — and Spaces always returns objects in lexicographic key
+  order, never by upload time. Passing `search` and/or `dateFrom`/`dateTo`
+  makes this endpoint scan pages internally (up to 5000 keys per request)
+  testing each object's key/`LastModified` and collecting matches before
+  returning a page — slower than a plain browse, but still paginated via the
+  same `continuationToken`. `search` and the date range combine (AND logic)
+  when both are sent.
 
   ### Response — `data` object
 

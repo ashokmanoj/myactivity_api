@@ -1,0 +1,62 @@
+meta {
+  name: UPLOADS-04: Bulk Delete Spaces Files (Superuser)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/api/v1/uploads/spaces-files/bulk-delete
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "objectKeys": [
+      "MyActivity/4f59324f-a4fa-4561-8051-6a056abd4c19-photo1.jpg",
+      "MyActivity/8c6923f7-ee4b-49ef-abbf-8cd6bf07ab89-photo2.jpg"
+    ]
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has deleted array", function() { expect(res.getBody().data.deleted).to.be.an("array"); });
+}
+
+docs {
+  ## Bulk Delete Spaces Files (Superuser) — POST /uploads/spaces-files/bulk-delete
+
+  Permanently deletes up to 200 files from DigitalOcean Spaces in one call.
+  **Superuser role only** — any other authenticated role gets `403`. There is
+  no trash/undo — this is a real delete against the live Space.
+
+  Use `objectKey` values exactly as returned by `GET /uploads/spaces-files`
+  (the `files[].objectKey` field).
+
+  Deleting a file here does **not** remove any reference to its URL that may
+  already be saved on an expense/visit/task-activity/etc. row in our own
+  database — those rows would be left pointing at a now-missing file. Confirm
+  none of the selected files are still referenced before deleting.
+
+  A partial failure (e.g. a key that no longer exists) does not fail the
+  whole batch — check `errors[]` for anything that didn't delete.
+
+  ### Request body
+
+  | Field      | Type     | Required | Notes                                                    |
+  |------------|----------|----------|--------------------------------------------------------------|
+  | objectKeys | string[] | yes      | 1–200 keys, each must start with the configured Spaces folder (e.g. `MyActivity/`) — any key outside it is rejected with `400` for the whole request |
+
+  ### Response (200) — `data` object
+
+  | Field           | Type     | Notes                                           |
+  |-----------------|----------|---------------------------------------------------|
+  | deleted         | string[] | object keys that were successfully deleted         |
+  | errors          | object[] | `{ objectKey, message }` for any key that failed to delete |
+}
