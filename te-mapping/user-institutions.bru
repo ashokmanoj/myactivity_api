@@ -1,0 +1,39 @@
+meta {
+  name: TE Mapping - Institutions By User
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/te-mapping/user/47
+  body: none
+  auth: bearer
+}
+
+params:query {
+  ~projectId: 1
+  ~districtId: 1
+  ~blockId: 1
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  ## TE Mapping - Institutions By User
+
+  The institutions (schools) assigned to one technical user.
+
+  Response `data`:
+  - user_id
+  - total_institutions
+  - institutions[] — map_id, institution_id, institution_name, institute_code,
+    project_id/name, district_id/name, block_id/name, pincode, address,
+    latitude, longitude, is_verified, rm_user_id, rm_full_name, assigned_at
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("has institutions", function() { expect(res.getBody().data.institutions).to.be.an("array"); });
+}

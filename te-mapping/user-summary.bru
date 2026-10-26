@@ -1,0 +1,50 @@
+meta {
+  name: TE Mapping - User Summary
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/te-mapping/user-summary
+  body: none
+  auth: bearer
+}
+
+params:query {
+  ~projectId: 1
+  ~districtId: 1
+  ~blockId: 1
+  ~rmId: 1
+  ~designationId: 1
+  ~userId: 47
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  ## TE Mapping - User Summary
+
+  One row per technical user with how many institutions (schools) are assigned
+  to them in `user_institution_map` (active mappings, active institutions only).
+  Sorted by `total_institutions` descending. All query params are optional filters.
+
+  Response fields per user:
+  - user_id, full_name, emp_code, mobile_number
+  - designation_id, designation_name
+  - rm_user_id, rm_full_name — latest RM on the user's mappings
+  - total_institutions — schools assigned
+  - with_location      — of those, how many have a master lat/lon
+  - verified           — of those, how many are location-verified
+  - project_count, district_count
+  - projects, districts — comma-separated names
+  - last_assigned_at
+
+  District/block fall back to the institution's own when the mapping row has none.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("has data array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

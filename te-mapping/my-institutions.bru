@@ -1,0 +1,38 @@
+meta {
+  name: TE Mapping - My Institutions (Mobile)
+  type: http
+  seq: 0
+}
+
+get {
+  url: {{base_url}}/api/v1/te-mapping/my-institutions
+  body: none
+  auth: bearer
+}
+
+params:query {
+  ~projectId: 1
+  ~districtId: 1
+  ~blockId: 1
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  ## TE Mapping - My Institutions (Mobile)
+
+  Institutions (schools) assigned to the logged-in user. The user comes from the
+  Bearer token, so no userId is passed and a user can only see their own list.
+
+  Response `data`: { user_id, total_institutions, institutions[] }
+  Each institution: map_id, institution_id, institution_name, institute_code,
+  project_id/name, district_id/name, block_id/name, pincode, address,
+  latitude, longitude, is_verified, rm_user_id, rm_full_name, assigned_at
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("has institutions", function() { expect(res.getBody().data.institutions).to.be.an("array"); });
+}
