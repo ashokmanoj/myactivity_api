@@ -1,0 +1,36 @@
+meta {
+  name: Get Location Types
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{base_url}}/api/v1/location/types
+  body: none
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+vars:pre-request {
+  base_url: http://192.168.1.128:5000
+}
+
+docs {
+  ## Get Location Types
+
+  Mobile Add Location → Location Type dropdown. Active rows from the
+  `location_type` master, in `sort_order`: School, Home, Courier Office,
+  BEO Office, Store, Studio, IS Office, DPO Office, Block Office, Xerox, Others.
+
+  Each row: `location_type_id`, `location_type_name`, `sort_order`.
+  Send the chosen `location_type_name` as `locationType` on Create / Update / Sync.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
