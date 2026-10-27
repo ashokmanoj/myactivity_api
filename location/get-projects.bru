@@ -1,0 +1,39 @@
+meta {
+  name: Get Location Projects
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{base_url}}/api/v1/location/projects?userId=1
+  body: none
+  auth: none
+}
+
+params:query {
+  userId: 1
+}
+
+headers {
+  Content-Type: application/json
+}
+
+vars:pre-request {
+  base_url: http://192.168.1.128:5000
+}
+
+docs {
+  ## Get Location Projects
+
+  Mobile Add Location → Project dropdown. Returns active projects whose
+  `state` matches the user's `state_of_posting` (user_information).
+  Empty list when the user has no state of posting set.
+
+  Each row: `project_id`, `project_name`, `state`.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

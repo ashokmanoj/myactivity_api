@@ -1,0 +1,39 @@
+meta {
+  name: Get Location Institutions
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{base_url}}/api/v1/location/institutions?projectId=1
+  body: none
+  auth: none
+}
+
+params:query {
+  projectId: 1
+}
+
+headers {
+  Content-Type: application/json
+}
+
+vars:pre-request {
+  base_url: http://192.168.1.128:5000
+}
+
+docs {
+  ## Get Location Institutions
+
+  Mobile Add Location → Institution dropdown, loaded after a project is
+  picked. Returns active institutions under that project (institution.project_id
+  or an active institution_project_map row).
+
+  Each row: `institute_id`, `institution_name`, `institute_code`, `latitude`, `longitude`.
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}

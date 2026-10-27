@@ -21,6 +21,10 @@ body:multipart-form {
   geoAddress: Bengaluru Updated
   geoPincode: 560002
   description: Updated description
+  ~projectId: 1
+  ~projectName: Assam ICT
+  ~institutionId: 1
+  ~institutionName: Jorhat HSS
   ~photos: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/new-photo.jpg
 }
 
@@ -34,6 +38,9 @@ docs {
   `photos` is one or more plain text URLs, not file attachments — upload each
   photo to DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`),
   then repeat the `photos` field with each resulting URL.
+
+  Omitted fields keep their current value. Changing `projectId` /
+  `institutionId` without the matching name refreshes the name from the master.
 }
 
 tests {

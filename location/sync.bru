@@ -25,7 +25,11 @@ body:json {
         "lon": 77.594566,
         "geoAddress": "Bengaluru, Karnataka",
         "geoPincode": "560001",
-        "description": "Synced from mobile"
+        "description": "Synced from mobile",
+        "projectId": 1,
+        "projectName": "Assam ICT",
+        "institutionId": 1,
+        "institutionName": "Jorhat HSS"
       }
     ]
   }
@@ -47,4 +51,7 @@ docs {
   location to sync. Each synced row is now the full joined location record
   (same shape as Get Location By ID, including `photos[]`), not just the bare
   synced row.
+
+  `projectId`, `projectName`, `institutionId`, `institutionName` are optional;
+  a missing name is filled from the project / institution master by id.
 }

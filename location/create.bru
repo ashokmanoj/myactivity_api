@@ -22,7 +22,10 @@ body:multipart-form {
   geoAddress: Bengaluru, Karnataka
   geoPincode: 560001
   description: Main office location
+  ~projectId: 1
+  ~projectName: Assam ICT
   ~institutionId: 1
+  ~institutionName: Jorhat HSS
   ~photos: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo1.jpg
   ~photos: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo2.jpg
 }
@@ -37,6 +40,12 @@ docs {
   `photos` is one or more plain text URLs, not file attachments — upload each
   photo to DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`),
   then repeat the `photos` field with each resulting URL.
+
+  `projectId` comes from Get Location Projects (projects in the user's state of
+  posting); `institutionId` from Get Location Institutions for that project.
+  `projectName` and `institutionName` are optional — when omitted they are
+  filled from the project / institution master using the ids. The response
+  includes `project_id`, `project_name`, `institution_id`, `institution_name`.
 }
 
 tests {
