@@ -1,0 +1,56 @@
+meta {
+  name: SETTINGS-08: App Block Status (Mobile App)
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{base_url}}/api/v1/settings/app-block/status
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  ~projectId: 2
+  ~stateId: 1
+}
+
+docs {
+  ★ MOBILE APP — whole-app block set by Superuser ★
+
+  A Superuser can block the ENTIRE app for a company / state / project / user
+  (Module Settings screen → "Block App") with a custom title + message,
+  e.g. "App is under update". The user stays blocked until a Superuser unblocks.
+
+  A user is blocked if ANY of their scopes is blocked; the most specific
+  scope's message is returned (user → project → state → company).
+
+  1) Every other API call made by a blocked Field Executive returns:
+       HTTP 423
+       { success: false, appBlocked: true, title, message }
+     → Mobile app: on ANY response with appBlocked === true, replace the whole
+       UI with a full-screen "blocked" page showing title + message.
+
+  2) This endpoint is NEVER blocked (always 200), so the blocked screen can
+     poll it (e.g. every 60s + on app resume / "Retry" button):
+       data: { isBlocked, title, message, scopeType, blockedAt }
+     → isBlocked === false  →  close the blocked screen, continue normally.
+     Also call it on app startup, alongside /settings/resolve.
+
+  POST /api/v1/auth/logout also stays reachable while blocked.
+
+  Query params (optional — same values the app sends to /settings/resolve;
+  the user's profile project/state are always checked as well):
+  - projectId
+  - stateId
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has isBlocked", function() { expect(res.getBody().data).to.have.property("isBlocked"); });
+}
