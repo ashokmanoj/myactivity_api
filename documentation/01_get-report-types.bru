@@ -1,11 +1,11 @@
 meta {
-  name: MA-DOC-01: Get Report Types (by Project / State)
+  name: MA-DOC-01: Get Report Types (auto by login state)
   type: http
   seq: 1
 }
 
 get {
-  url: {{base_url}}/api/v1/documentation/report-types?projectId=1
+  url: {{base_url}}/api/v1/documentation/report-types
   body: none
   auth: bearer
 }
@@ -15,8 +15,9 @@ auth:bearer {
 }
 
 params:query {
-  projectId: 1
+  ~projectId: 22
   ~state: Assam
+  ~all: true
 }
 
 tests {
@@ -27,17 +28,31 @@ tests {
 docs {
   ## Get Report Types — GET /documentation/report-types
 
-  Source for the "Select Report Type" dropdown. Report types are state-wise —
-  pass `projectId` (state is taken from `project.state`) or `state` directly
-  to get only the types offered in that state. Omit both for every active
-  type (web admin view). A project with no state set returns an empty list.
+  Source for the "Select Report Type" dropdown. Report types are state-wise.
 
-  ### Query params
+  **Mobile: call it with no params** — the state is picked automatically from
+  the logged-in user (`user_information.state_of_posting`, falling back to
+  `curr_state`), so the dropdown only shows that user's state's types.
 
-  | Field     | Type   | Required | Notes                              |
-  |-----------|--------|----------|------------------------------------|
-  | projectId | int    | no       | filter by the project's state      |
-  | state     | string | no       | e.g. `Assam` (case-insensitive)    |
+  Which state is used, in priority order:
+
+  | Sent         | State used                                         |
+  |--------------|----------------------------------------------------|
+  | `projectId`  | that project's state (`project.state`)             |
+  | `state`      | that state (case-insensitive)                      |
+  | `all=true`   | none — every active type (web admin view)          |
+  | nothing      | the logged-in user's state; a user with no state on file gets every type |
+
+  A project with no state set returns an empty list. The `message` names the
+  state used, e.g. `"8 report type(s) fetched for Assam"`.
+
+  ### Query params (all optional)
+
+  | Field     | Type    | Notes                                  |
+  |-----------|---------|----------------------------------------|
+  | projectId | int     | use the project's state                |
+  | state     | string  | e.g. `Assam`                           |
+  | all       | boolean | `true` → every active type             |
 
   ### Response (200) — `data` array
 
