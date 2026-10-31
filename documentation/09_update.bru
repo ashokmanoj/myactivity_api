@@ -1,0 +1,54 @@
+meta {
+  name: MA-DOC-09: Update Documentation
+  type: http
+  seq: 9
+}
+
+put {
+  url: {{base_url}}/api/v1/documentation/1
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  remarks: Updated remarks
+  ~attachFeedback: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/attach-feedback-2.jpg
+  files: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo1.jpg
+  files: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo2.jpg
+}
+
+body:json {
+  {
+    "remarks": "Updated remarks",
+    "files": [
+      { "url": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo1.jpg" },
+      { "url": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo2.jpg" }
+    ]
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+}
+
+docs {
+  ## Update Documentation — PUT /documentation/:id
+
+  Send only the fields that changed. Accepts every Create field (except
+  `uuid`/`userId`) plus `isActive` (`1`/`0`). Takes multipart/form-data
+  (active body above) or JSON, same as Create.
+
+  `files`, when sent, **replaces** the whole attachment list — send the full
+  list you want kept (send `[]` to remove all). Omit it to leave attachments
+  untouched.
+
+  Changing `projectId` or `reportTypeId` re-checks that the report type is
+  offered in the project's state (`400` if not).
+
+  ### Response (200)
+  Same shape as `GET /documentation/:id`. `404` if not found.
+}

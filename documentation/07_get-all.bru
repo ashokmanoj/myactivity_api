@@ -1,0 +1,50 @@
+meta {
+  name: MA-DOC-07: Get All Documentation
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{base_url}}/api/v1/documentation?userId=47
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  userId: 47
+  ~projectId: 1
+  ~institutionId: 10
+  ~reportTypeId: 7
+  ~fromDate: 2026-10-01
+  ~toDate: 2026-10-31
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
+
+docs {
+  ## Get All Documentation — GET /documentation
+
+  Every filter is optional — omit them all for every report (web admin view).
+  Only `is_active = 1` rows are returned, newest `report_date` first.
+
+  ### Query params
+
+  | Field         | Type   | Notes                          |
+  |---------------|--------|--------------------------------|
+  | userId        | int    | one executive's reports only   |
+  | projectId     | int    |                                |
+  | institutionId | int    |                                |
+  | reportTypeId  | int    |                                |
+  | fromDate      | string | `YYYY-MM-DD`, inclusive        |
+  | toDate        | string | `YYYY-MM-DD`, inclusive        |
+
+  ### Response (200) — `data` array
+  Same row shape as the Create response.
+}

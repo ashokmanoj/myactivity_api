@@ -1,0 +1,117 @@
+meta {
+  name: MA-DOC-06: Create Documentation
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/api/v1/documentation
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  userId: 47
+  uuid: mobile-generated-uuid-1
+  projectId: 22
+  institutionId: 20
+  reportTypeId: 7
+  reportDate: 2026-10-31
+  remarks: Timetable displayed in lab
+  hmLetterImage: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/hm-letter.jpg
+  attachFeedback: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/attach-feedback.jpg
+  files: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo1.jpg
+  files: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/report.pdf
+  files: https://your-space.sgp1.digitaloceanspaces.com/MyActivity/clip.mp4
+}
+
+body:json {
+  {
+    "userId": 47,
+    "uuid": "mobile-generated-uuid-1",
+    "projectId": 22,
+    "institutionId": 20,
+    "reportTypeId": 7,
+    "reportDate": "2026-10-31",
+    "remarks": "Timetable displayed in lab",
+    "hmLetterImage": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/hm-letter.jpg",
+    "attachFeedback": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/attach-feedback.jpg",
+    "files": [
+      { "url": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo1.jpg" },
+      { "url": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/report.pdf" },
+      { "url": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/clip.mp4", "fileType": "video" }
+    ]
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("has id", function() { expect(res.getBody().data).to.have.property("id"); });
+  test("files is array", function() { expect(res.getBody().data.files).to.be.an("array"); });
+}
+
+docs {
+  ## Create Documentation — POST /documentation
+
+  All image/PDF/video fields are plain text URLs, not file attachments —
+  upload to DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`),
+  then send the resulting URLs here.
+
+  Accepts **multipart/form-data** (what the mobile app sends — active body
+  above) or **JSON** (switch the body mode to JSON in Bruno; same fields).
+  In form-data, repeat the `files` field once per attachment (or send one
+  `files` field holding a JSON array string); the type is taken from each
+  URL's extension.
+
+  Idempotent on `uuid` — retrying with the same uuid updates the existing
+  report instead of creating a duplicate.
+
+  `reportTypeId` must be offered in the project's state (see
+  `GET /documentation/report-types?projectId=`), otherwise `400`.
+
+  ### Request body
+
+  | Field            | Type   | Required | Notes                                             |
+  |------------------|--------|----------|---------------------------------------------------|
+  | userId           | int    | no       | defaults to the logged-in user                    |
+  | uuid             | string | no       | client-generated, for offline-sync dedup          |
+  | projectId        | int    | yes      |                                                   |
+  | institutionId    | int    | yes      | `institution.institute_id`                        |
+  | reportTypeId     | int    | yes      |                                                   |
+  | reportDate       | string | no       | `YYYY-MM-DD`, defaults to today                   |
+  | remarks          | string | no       |                                                   |
+  | hmLetterImage    | string | yes      | URL of the HM letter photo                        |
+  | attachFeedback   | string | no       | URL of the feedback picture                       |
+  | files            | array  | yes      | at least one additional image / PDF / MP4, in display order; form-data: repeat the field |
+  | files[].url      | string | yes      | uploaded file URL (a plain URL string also works) |
+  | files[].fileType | string | no       | `image`/`pdf`/`video` or a MIME type; else from the extension (pdf → pdf, mp4/mov/3gp/mkv/webm → video, anything else → image) |
+
+  ### Response (201) — `data` object
+
+  | Field            | Type     | Notes                                          |
+  |------------------|----------|------------------------------------------------|
+  | id               | int      |                                                |
+  | uuid             | string   |                                                |
+  | user_id          | int      |                                                |
+  | full_name        | string   | submitting user                                |
+  | emp_code         | string   |                                                |
+  | project_id       | int      |                                                |
+  | project_name     | string   | snapshotted at submit time                     |
+  | state            | string   | the project's state                            |
+  | institute_id     | int      |                                                |
+  | institution_name | string   | snapshotted at submit time                     |
+  | report_type_id   | int      |                                                |
+  | report_type_name | string   | snapshotted at submit time                     |
+  | report_date      | date     |                                                |
+  | remarks          | string   |                                                |
+  | hm_letter_image  | string   |                                                |
+  | attach_feedback  | string   |                                                |
+  | files            | array    | `[{ id, file_type, file_name, fullpath_url }]` |
+  | is_active        | int      | `1`/`0`                                        |
+  | created_at       | datetime |                                                |
+  | updated_at       | datetime |                                                |
+}

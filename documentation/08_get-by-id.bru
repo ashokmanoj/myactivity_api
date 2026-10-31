@@ -1,0 +1,25 @@
+meta {
+  name: MA-DOC-08: Get Documentation By Id
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{base_url}}/api/v1/documentation/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+}
+
+docs {
+  ## Get Documentation By Id — GET /documentation/:id
+
+  Same shape as the Create response. `404` if no row exists with that id.
+}

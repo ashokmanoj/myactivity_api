@@ -1,0 +1,44 @@
+meta {
+  name: MA-DOC-03: Create Report Type
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/api/v1/documentation/report-types
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Lab Inventory",
+    "sortOrder": 9,
+    "states": ["Assam", "Odisha"]
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("has id", function() { expect(res.getBody().data).to.have.property("id"); });
+}
+
+docs {
+  ## Create Report Type — POST /documentation/report-types
+
+  ### Request body
+
+  | Field     | Type     | Required | Notes                                    |
+  |-----------|----------|----------|------------------------------------------|
+  | name      | string   | yes      | unique                                   |
+  | sortOrder | int      | no       | dropdown order, default `0`              |
+  | states    | string[] | no       | state names, must match `project.state`  |
+
+  ### Response (201)
+  Same shape as `GET /documentation/report-types/:id`. `409` if the name
+  already exists.
+}

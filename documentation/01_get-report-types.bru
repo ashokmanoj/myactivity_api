@@ -1,0 +1,53 @@
+meta {
+  name: MA-DOC-01: Get Report Types (by Project / State)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/documentation/report-types?projectId=1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  projectId: 1
+  ~state: Assam
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
+
+docs {
+  ## Get Report Types — GET /documentation/report-types
+
+  Source for the "Select Report Type" dropdown. Report types are state-wise —
+  pass `projectId` (state is taken from `project.state`) or `state` directly
+  to get only the types offered in that state. Omit both for every active
+  type (web admin view). A project with no state set returns an empty list.
+
+  ### Query params
+
+  | Field     | Type   | Required | Notes                              |
+  |-----------|--------|----------|------------------------------------|
+  | projectId | int    | no       | filter by the project's state      |
+  | state     | string | no       | e.g. `Assam` (case-insensitive)    |
+
+  ### Response (200) — `data` array
+
+  | Field            | Type     | Notes                          |
+  |------------------|----------|--------------------------------|
+  | id               | int      | use as `reportTypeId`          |
+  | report_type_name | string   |                                |
+  | sort_order       | int      | dropdown order                 |
+  | is_active        | int      | `1`/`0`                        |
+  | states           | string[] | states this type applies to    |
+  | created_at       | datetime |                                |
+  | updated_at       | datetime |                                |
+}

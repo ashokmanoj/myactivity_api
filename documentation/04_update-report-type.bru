@@ -1,0 +1,44 @@
+meta {
+  name: MA-DOC-04: Update Report Type
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/api/v1/documentation/report-types/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "states": ["Assam", "Uttarakhand", "Odisha", "Tripura"]
+  }
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+}
+
+docs {
+  ## Update Report Type — PUT /documentation/report-types/:id
+
+  Send only the fields that changed. `states`, when sent, **replaces** the
+  type's whole state list (send `[]` to remove it from every state).
+
+  ### Request body (all optional)
+
+  | Field     | Type     | Notes                         |
+  |-----------|----------|-------------------------------|
+  | name      | string   |                               |
+  | sortOrder | int      |                               |
+  | states    | string[] | replaces the full state list  |
+  | isActive  | int      | `1`/`0`                       |
+
+  ### Response (200)
+  Same shape as `GET /documentation/report-types/:id`. `404` if not found.
+}

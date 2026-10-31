@@ -1,0 +1,78 @@
+meta {
+  name: MA-DOC-11: Sync Documentation (Mobile)
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{base_url}}/api/v1/documentation/sync
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  reports: [{"userId":47,"uuid":"mobile-generated-uuid-1","projectId":22,"institutionId":20,"reportTypeId":7,"reportDate":"2026-10-30","hmLetterImage":"https://your-space.sgp1.digitaloceanspaces.com/MyActivity/hm-letter.jpg","files":["https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo1.jpg"]},{"userId":47,"uuid":"mobile-generated-uuid-2","projectId":22,"institutionId":20,"reportTypeId":8,"remarks":"Tool kit checked","hmLetterImage":"https://your-space.sgp1.digitaloceanspaces.com/MyActivity/hm-letter-2.jpg","attachFeedback":"https://your-space.sgp1.digitaloceanspaces.com/MyActivity/feedback-2.jpg","files":[{"url":"https://your-space.sgp1.digitaloceanspaces.com/MyActivity/toolkit.mp4"}]}]
+}
+
+body:json {
+  {
+    "reports": [
+      {
+        "userId": 47,
+        "uuid": "mobile-generated-uuid-1",
+        "projectId": 22,
+        "institutionId": 20,
+        "reportTypeId": 7,
+        "reportDate": "2026-10-30",
+        "hmLetterImage": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/hm-letter.jpg",
+        "files": ["https://your-space.sgp1.digitaloceanspaces.com/MyActivity/photo1.jpg"]
+      },
+      {
+        "userId": 47,
+        "uuid": "mobile-generated-uuid-2",
+        "projectId": 22,
+        "institutionId": 20,
+        "reportTypeId": 8,
+        "remarks": "Tool kit checked",
+        "hmLetterImage": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/hm-letter-2.jpg",
+        "attachFeedback": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/feedback-2.jpg",
+        "files": [{ "url": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/toolkit.mp4" }]
+      }
+    ]
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
+
+docs {
+  ## Sync Documentation (Mobile) — POST /documentation/sync
+
+  Bulk-syncs reports captured offline in one call. Each entry goes through
+  the same idempotent-on-uuid path as Create, so re-posting the same batch
+  after a partial network failure is safe.
+
+  Accepts **multipart/form-data** (active body above) or **JSON**. In
+  form-data, send a single `reports` field holding the array as a JSON string.
+
+  ### Request body
+
+  | Field   | Type  | Required | Notes                                      |
+  |---------|-------|----------|--------------------------------------------|
+  | reports | array | yes      | each entry takes the same fields as Create; form-data: JSON string |
+
+  ### Response (201) — `data` array, one entry per submitted report
+
+  | Field   | Type    | Notes                                          |
+  |---------|---------|------------------------------------------------|
+  | uuid    | string  | echoed back, or null if not sent               |
+  | success | boolean |                                                |
+  | data    | object  | present when `success` — same shape as Create  |
+  | error   | string  | present when `!success` — why that entry failed |
+}

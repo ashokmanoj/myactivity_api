@@ -1,0 +1,26 @@
+meta {
+  name: MA-DOC-02: Get Report Type By Id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/documentation/report-types/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+}
+
+docs {
+  ## Get Report Type By Id — GET /documentation/report-types/:id
+
+  Same shape as one item of `GET /documentation/report-types`. Returns
+  inactive types too. `404` if no row exists with that id.
+}

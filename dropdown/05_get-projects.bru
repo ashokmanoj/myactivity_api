@@ -10,12 +10,12 @@ get {
   auth: bearer
 }
 
-auth:bearer {
-  token: {{token}}
+params:query {
+  userId: 47
 }
 
-params:query {
-  ~userId: 47
+auth:bearer {
+  token: {{token}}
 }
 
 tests {
@@ -26,23 +26,23 @@ tests {
 
 docs {
   ## Get Projects — GET /dropdown/projects
-
+  
   Active projects, for filter dropdowns.
-
+  
   Omit `userId` to get every active project. Pass it to scope the list down
   to just the projects in that user's own state (`curr_state`, falling back
   to `perm_state`) — e.g. an RM/RMH's project dropdown should only ever show
   their own state's projects. A user with no state on file (or whose state
   matches no project) gets an empty array back, not every project.
-
+  
   ### Query params
-
+  
   | Field  | Type | Required | Notes                                          |
   |--------|------|----------|---------------------------------------------------|
   | userId | int  | no       | scope to this user's own state's projects only     |
-
+  
   ### Response (200) — `data` array
-
+  
   | Field        | Type   | Notes       |
   |--------------|--------|---------------|
   | project_id   | int    |               |
