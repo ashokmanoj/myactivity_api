@@ -1,0 +1,40 @@
+meta {
+  name: DROPDOWN-06: Get User Projects (Mobile)
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{base_url}}/api/v1/dropdown/user-projects
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
+
+docs {
+  ## Get User Projects — GET /dropdown/user-projects
+
+  Mobile "Select Project" dropdown (Documentation Reports, ...). Returns the
+  distinct active projects the logged-in user has institutions assigned in
+  (`user_institution_map`). The user comes from the Bearer token — no params.
+
+  Next: load institutions for the picked project with
+  `GET /dropdown/user-institutions?projectId=` (07), and report types with
+  `GET /documentation/report-types?projectId=`.
+
+  ### Response (200) — `data` array
+
+  | Field        | Type   | Notes |
+  |--------------|--------|-------|
+  | project_id   | int    | send as `projectId` |
+  | project_name | string |       |
+}

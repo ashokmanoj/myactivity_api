@@ -1,0 +1,50 @@
+meta {
+  name: DROPDOWN-07: Get User Institutions by Project (Mobile)
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{base_url}}/api/v1/dropdown/user-institutions?projectId=22
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  projectId: 22
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
+
+docs {
+  ## Get User Institutions — GET /dropdown/user-institutions?projectId=
+
+  Mobile "Select Institution" dropdown — load it after a project is picked
+  from `GET /dropdown/user-projects` (06). Returns the active institutions
+  assigned to the logged-in user (`user_institution_map`) under that project.
+  The user comes from the Bearer token.
+
+  ### Query params
+
+  | Field     | Type | Required | Notes                                          |
+  |-----------|------|----------|------------------------------------------------|
+  | projectId | int  | no       | omit to get the user's institutions across all projects |
+
+  ### Response (200) — `data` array
+
+  | Field            | Type   | Notes                     |
+  |------------------|--------|---------------------------|
+  | institute_id     | int    | send as `institutionId`   |
+  | institution_name | string |                           |
+  | institute_code   | string |                           |
+  | project_id       | int    |                           |
+  | project_name     | string |                           |
+}
