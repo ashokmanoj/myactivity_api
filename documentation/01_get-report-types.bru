@@ -10,14 +10,14 @@ get {
   auth: bearer
 }
 
-auth:bearer {
-  token: {{token}}
-}
-
 params:query {
   ~projectId: 22
   ~state: Assam
   ~all: true
+}
+
+auth:bearer {
+  token: {{token}}
 }
 
 tests {
@@ -27,35 +27,35 @@ tests {
 
 docs {
   ## Get Report Types — GET /documentation/report-types
-
+  
   Source for the "Select Report Type" dropdown. Report types are state-wise.
-
+  
   **Mobile: call it with no params** — the state is picked automatically from
   the logged-in user (`user_information.state_of_posting`, falling back to
   `curr_state`), so the dropdown only shows that user's state's types.
-
+  
   Which state is used, in priority order:
-
+  
   | Sent         | State used                                         |
   |--------------|----------------------------------------------------|
   | `projectId`  | that project's state (`project.state`)             |
   | `state`      | that state (case-insensitive)                      |
   | `all=true`   | none — every active type (web admin view)          |
   | nothing      | the logged-in user's state; a user with no state on file gets every type |
-
+  
   A project with no state set returns an empty list. The `message` names the
   state used, e.g. `"8 report type(s) fetched for Assam"`.
-
+  
   ### Query params (all optional)
-
+  
   | Field     | Type    | Notes                                  |
   |-----------|---------|----------------------------------------|
   | projectId | int     | use the project's state                |
   | state     | string  | e.g. `Assam`                           |
   | all       | boolean | `true` → every active type             |
-
+  
   ### Response (200) — `data` array
-
+  
   | Field            | Type     | Notes                          |
   |------------------|----------|--------------------------------|
   | id               | int      | use as `reportTypeId`          |

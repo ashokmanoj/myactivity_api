@@ -1,0 +1,57 @@
+meta {
+  name: TASK-PHOTOS-04: Sync Task Photos (Bulk)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/api/v1/task-photos/sync
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "photos": [
+      { "uuid": "mobile-generated-photo-uuid-1", "visitUuid": "mobile-generated-uuid-1", "taskId": 1, "photoCategoryId": 1, "image": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/podium1.jpg" },
+      { "uuid": "mobile-generated-photo-uuid-2", "visitUuid": "mobile-generated-uuid-1", "taskId": 1, "photoCategoryId": 2, "image": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/classroom1.jpg" },
+      { "uuid": "mobile-generated-photo-uuid-3", "visitUuid": "mobile-generated-uuid-1", "taskId": 1, "photoCategoryId": 3, "image": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/antenna1.jpg" }
+    ]
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
+
+docs {
+  ## Sync Task Photos (Bulk)
+
+  Built for the mobile app to catch up after being offline: submits many
+  task photos in one call instead of one request per photo. Each item takes
+  the same fields as `POST /task-photos` (03_create.bru), and items may span
+  different visits and tasks.
+
+  ### Request body
+
+  | Field  | Type  | Required | Notes                                                              |
+  |--------|-------|----------|--------------------------------------------------------------------|
+  | photos | array | yes      | each item: `{ uuid?, visitUuid \| visitId, taskId, photoCategoryId, image }` |
+
+  ### Idempotency and partial failure
+
+  Each item goes through the same idempotent-on-`uuid` path as Create, so
+  re-posting the same batch is safe.
+
+  Items are independent: one bad item doesn't fail the batch. The response is
+  always 201 with one result per input item, in request order, each either
+  `{ uuid, success: true, data: <task_photos row> }` or
+  `{ uuid, success: false, error: <message> }`, so the app knows exactly
+  which ones to retry. An empty or missing `photos` array returns 400.
+}

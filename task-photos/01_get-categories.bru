@@ -1,0 +1,40 @@
+meta {
+  name: TASK-PHOTOS-01: Get Photo Categories
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/task-photos/categories
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
+
+docs {
+  ## Get Photo Categories
+
+  Master list of task photo categories (`task_photo_category`), active only,
+  in display order. The mobile app uses it to label the capture slots and to
+  pick the `photoCategoryId` it sends with each photo. Any authenticated user
+  can call this.
+
+  Seeded categories: 1 = Podium Photo, 2 = Classroom Photo, 3 = Antenna Photo.
+
+  ### Response — `data` array, each item
+
+  | Field             | Type | Notes                    |
+  |-------------------|------|--------------------------|
+  | photo_category_id | int  | send as `photoCategoryId` |
+  | category_name     | str  |                          |
+  | sort_order        | int  | display order            |
+}

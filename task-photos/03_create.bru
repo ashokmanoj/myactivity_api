@@ -1,0 +1,59 @@
+meta {
+  name: TASK-PHOTOS-03: Create Task Photo
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/api/v1/task-photos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "uuid": "mobile-generated-photo-uuid-1",
+    "visitUuid": "mobile-generated-uuid-1",
+    "taskId": 1,
+    "photoCategoryId": 1,
+    "image": "https://your-space.sgp1.digitaloceanspaces.com/MyActivity/podium1.jpg"
+  }
+}
+
+tests {
+  test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("has task_photo_id", function() { expect(res.getBody().data).to.have.property("task_photo_id"); });
+}
+
+docs {
+  ## Create Task Photo
+
+  Saves one categorised photo taken for a task during a visit (mobile).
+  Idempotent on `uuid`: re-posting the same uuid updates that photo instead
+  of creating a duplicate. `created_by` is taken from the login token.
+
+  `image` is a plain text URL, not a file attachment. Upload the photo to
+  DigitalOcean Spaces first (`POST /api/v1/uploads/presigned-urls`), then
+  send the resulting URL.
+
+  ### Request body
+
+  | Field           | Type   | Required                  | Notes                                   |
+  |-----------------|--------|---------------------------|-----------------------------------------|
+  | uuid            | string | no                        | client-generated, for offline-sync dedup |
+  | visitUuid       | string | one of visitUuid/visitId  | `visit_details.uuid`                    |
+  | visitId         | int    | one of visitUuid/visitId  | `visit_details.id`, resolved to its uuid |
+  | taskId          | int    | yes                       | `assign_task_list.task_id`              |
+  | photoCategoryId | int    | yes                       | from `GET /task-photos/categories`      |
+  | image           | string | yes                       | Spaces URL of the uploaded photo        |
+
+  ### Responses
+
+  - **201** — `data` is the saved `task_photos` row.
+  - **400** — a required field is missing, e.g. `"taskId is required"`.
+}

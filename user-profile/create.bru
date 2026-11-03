@@ -26,47 +26,69 @@ body:json {
     "title": "Mr",
     "maritalStatus": "Single",
     "photoAvailable": false,
-    "payrollGroup": "Karnataka",
+    "payrollGroup": "Assam",
     "emergencyPhone": "0987654321",
     "fatherName": "Father Name",
     "motherName": "Mother Name",
     "spouseName": "",
-    "aadharNo": "123412341234",
-    "panNo": "ABCDE1234F",
-    "permanentAddress": "Permanent Address Text",
-    "permanentBlock": "P-Block",
-    "permanentDistrict": "P-District",
-    "permanentState": "P-State",
-    "permanentCountry": "India",
-    "permanentPincode": "560001",
-    "currentAddress": "Current Address Text",
-    "currentBlock": "C-Block",
-    "currentDistrict": "C-District",
-    "currentState": "C-State",
-    "currentCountry": "India",
-    "currentPincode": "560001",
+    "aadharNumber": "123412341234",
+    "panNumber": "ABCDE1234F",
+    "permAddress": "Permanent Address Text",
+    "permBlock": "P-Block",
+    "permDistrict": "P-District",
+    "permState": "Assam",
+    "permCountry": "India",
+    "permPincode": "781001",
+    "currAddress": "Permanent Address Text",
+    "currBlock": "P-Block",
+    "currDistrict": "P-District",
+    "currState": "Assam",
+    "currCountry": "India",
+    "currPincode": "781001",
     "sameAsPermanent": true,
     "bankName": "Test Bank",
     "branchName": "Test Branch",
     "accountNumber": "1234567890",
     "ifscCode": "TEST0001234",
-    "reportingRM": "John Manager",
-    "executiveName": "John Exec",
-    "districtOfPosting": "Bangalore",
+    "roleId": 10,
+    "reportingRm": "John Manager",
+    "executiveName": "Test User Bruno",
+    "stateOfPosting": "Assam",
+    "districtOfPosting": "Kamrup, Nagaon",
     "blockOfPosting": "North",
-    "experienceStatus": "Experienced",
-    "department": "IT",
-    "designation": "Software Engineer",
+    "department": "Operations",
+    "designation": "Technical Executive",
     "dateOfJoining": "2023-01-01",
-    "qualification": "B.Tech",
+    "qualification": "Bachelor's Degree (UG)",
     "collegeName": "Example University",
     "yearOfPassout": "2017",
     "totalExperience": "5 years",
     "lastCompanyName": "Previous Corp",
-    "lastDateOfLeaving": "2022-12-31"
+    "lastDateOfLeaving": "2022-12-31",
+    "referredBy": ""
   }
 }
 
 tests {
   test("Status 201", function() { expect(res.getStatus()).to.equal(201); });
+  test("state_of_posting saved", function() { expect(res.getBody().data.state_of_posting).to.equal("Assam"); });
+}
+
+docs {
+  ## Create User Profile
+
+  Full "Create User (Full Information)" form. The web form sends this as
+  multipart/form-data (with optional `photo`, `aadhar`, `pan`, `bank` files);
+  JSON works for text-only testing.
+
+  Required by the API: `empCode`, `fullName`, `dateOfBirth`, `gender`,
+  `mobileNumber`, `email`. The web form additionally requires every field
+  marked `*` there, including `stateOfPosting`.
+
+  Professional Information:
+  - `roleId` — role id (e.g. 10 = Field Executive). Web form defaults to 10 when blank.
+  - `executiveName` — web form pre-fills it from `fullName` (editable).
+  - `stateOfPosting` — web form pre-fills it from `payrollGroup` (editable);
+    District of Posting options are filtered by this state.
+  - `districtOfPosting` — optional; multiple districts as a comma-separated string.
 }

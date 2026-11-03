@@ -17,4 +17,18 @@ headers {
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
   test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+  test("rows include role_id", function() {
+    const rows = res.getBody().data;
+    if (rows.length) expect(rows[0]).to.have.property("role_id");
+  });
+}
+
+docs {
+  ## Get All User Profiles
+
+  Optional query: `includeInactive=true` to also return deactivated users.
+
+  Each row includes `role_id` (from user_information), `state_of_posting`,
+  `district_of_posting` (comma-separated) and `executive_name`, along with
+  the rest of the profile.
 }

@@ -17,10 +17,26 @@ headers {
 body:json {
   {
     "fullName": "Updated Name Bruno",
-    "designation": "Senior Software Engineer"
+    "designation": "Senior Software Engineer",
+    "roleId": 10,
+    "executiveName": "Updated Name Bruno",
+    "stateOfPosting": "Assam",
+    "districtOfPosting": "Kamrup, Nagaon"
   }
 }
 
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+}
+
+docs {
+  ## Update User Profile
+
+  `PUT /api/v1/user-profile/:userInfoId` — partial update; only fields sent
+  are changed. Same field names as Create.
+
+  - `stateOfPosting` — state the user is posted in.
+  - `districtOfPosting` — optional; comma-separated for multiple districts.
+  - `roleId` — the web edit form now loads the user's current `role_id`, so
+    saving no longer resets the role to Field Executive (10).
 }

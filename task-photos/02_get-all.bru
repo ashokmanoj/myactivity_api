@@ -1,0 +1,62 @@
+meta {
+  name: TASK-PHOTOS-02: Get Task Photos
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/task-photos
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  ~visitUuids: mobile-generated-uuid-1,mobile-generated-uuid-2
+  ~taskId: 1
+  ~photoCategoryId: 1
+}
+
+tests {
+  test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("success true", function() { expect(res.getBody().success).to.equal(true); });
+  test("data is array", function() { expect(res.getBody().data).to.be.an("array"); });
+}
+
+docs {
+  ## Get Task Photos
+
+  Categorised task photos (`task_photos`), active only. The web Activity page
+  calls this with the visit uuids of the cards on its current page and groups
+  the result by visit + task, then by category. Any authenticated user can
+  call this.
+
+  ### Query params (all optional)
+
+  | Param           | Type | Notes                                          |
+  |-----------------|------|------------------------------------------------|
+  | visitUuids      | str  | comma-separated `visit_details.uuid` list      |
+  | taskId          | int  | `assign_task_list.task_id`                     |
+  | photoCategoryId | int  | `task_photo_category.photo_category_id`        |
+
+  ### Response — `data` array, each item
+
+  | Field             | Type   | Notes                               |
+  |-------------------|--------|-------------------------------------|
+  | task_photo_id     | int    |                                     |
+  | uuid              | str    | client-generated id, may be null    |
+  | visit_uuid        | str    |                                     |
+  | task_id           | int    |                                     |
+  | photo_category_id | int    |                                     |
+  | category_name     | str    | e.g. "Podium Photo"                 |
+  | category_order    | int    | category `sort_order`               |
+  | image_name        | str    | file name taken from the URL        |
+  | fullpath_url      | str    | Spaces URL                          |
+  | created_by        | int    | `user_tbl.user_id` of the uploader  |
+  | created_at        | ts     |                                     |
+
+  Ordered by category order, then capture time (oldest first).
+}

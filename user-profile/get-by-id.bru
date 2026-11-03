@@ -16,4 +16,14 @@ headers {
 
 tests {
   test("Status 200", function() { expect(res.getStatus()).to.equal(200); });
+  test("includes role_id", function() { expect(res.getBody().data).to.have.property("role_id"); });
+}
+
+docs {
+  ## Get User Profile By ID
+
+  `GET /api/v1/user-profile/:userInfoId` — active users only.
+
+  Response includes `role_id` (from user_information), `state_of_posting`,
+  `district_of_posting` (comma-separated) and `executive_name`.
 }
