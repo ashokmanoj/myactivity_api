@@ -6,7 +6,10 @@ meta {
 patch {
   url: {{base_url}}/api/v1/user-profile/{{user_info_id}}/status
   body: json
-  auth: none
+  auth: bearer
+}
+auth:bearer {
+  token: {{token}}
 }
 headers {
   Content-Type: application/json
@@ -25,12 +28,16 @@ tests {
 docs {
   ## Toggle User Profile Status (Enable/Disable)
 
-  Activates or deactivates a user (HR/Superuser use). `comment` is required for
-  both directions.
+  Activates or deactivates a user. `comment` is required for both directions.
+
+  Requires a bearer token. Who may call it:
+  - **HR, Superuser** — any user (web: User Management list).
+  - **Regional Manager** — only users reporting to them (`reporting_rm` = the
+    RM's full name), e.g. their Mobile Access Users (web: "Created Users" list).
+  - Anyone else → 403.
 
   Returns the full joined profile record (same shape as Get User Profile By ID)
   reflecting the new `is_active`/`status_comment`/`date_of_exit` — not `null`.
 
-  Set `"active": true` to reactivate a previously deactivated user (this is
-  what makes deactivated users re-enable-able from the Admin Dashboard).
+  Set `"active": true` to reactivate a previously deactivated user.
 }
